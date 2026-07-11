@@ -4,6 +4,13 @@ package it.unicam.cs.mpgc.rpg126599.core;
 
 import java.util.Comparator;
 import java.util.Optional;
+import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.model.Clue;
+import it.unicam.cs.mpgc.rpg126599.model.GameState;
+import it.unicam.cs.mpgc.rpg126599.model.Location;
+import it.unicam.cs.mpgc.rpg126599.model.Player;
+import it.unicam.cs.mpgc.rpg126599.model.RoleType;
+import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
 public class GameEngine {
 
@@ -47,7 +54,7 @@ public class GameEngine {
 
     /** Prima scelta del killer: la casa segreta, il punto in cui dovrà rientrare per vincere. */
     public void chooseHome(String locationId) {
-        requirePhase(TurnPhase.AWAITING_HOME_CHOICE);
+        requirePhase(Turn.AWAITING_HOME_CHOICE);
         requireHumanRole(RoleType.KILLER);
 
         applyChooseHome(locationId);
@@ -56,7 +63,7 @@ public class GameEngine {
 
     /** Seconda scelta del killer: il luogo del primo omicidio, la sua posizione di partenza (diversa da casa). */
     public void chooseMurderLocation(String locationId) {
-        requirePhase(TurnPhase.AWAITING_MURDER_LOCATION_CHOICE);
+        requirePhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
         requireHumanRole(RoleType.KILLER);
         if (locationId.equals(state.getKillerHomeLocationId())) {
             throw new IllegalArgumentException("Il luogo del primo omicidio deve essere diverso dalla tua casa.");
@@ -68,7 +75,7 @@ public class GameEngine {
 
     /** Il killer si sposta su una casella collegata direttamente (1 passo) o tramite una intermedia (2 passi). */
     public void killerMove(String targetLocationId) {
-        requirePhase(TurnPhase.AWAITING_KILLER_ACTION);
+        requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
         int distance = board.distance(state.getKiller().getCurrentLocationId(), targetLocationId);
         if (distance != 1 && distance != 2) {
@@ -81,7 +88,7 @@ public class GameEngine {
 
     /** Il killer lascia un indizio falso su una casella diversa dalla propria (al massimo 2 volte a partita). */
     public void killerLeaveFakeClue(String targetLocationId) {
-        requirePhase(TurnPhase.AWAITING_KILLER_ACTION);
+        requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
         if (state.getKillerFakeCluesRemaining() <= 0) {
             throw new IllegalStateException("Non hai più indizi falsi disponibili.");
@@ -100,7 +107,7 @@ public class GameEngine {
 
     /** Usa uno dei 3 indizi per escludere definitivamente una casella come casa del killer. */
     public void policeUseClue() {
-        requirePhase(TurnPhase.AWAITING_POLICE_ACTION);
+        requirePhase(Turn.AWAITING_POLICE_ACTION);
         requireHumanRole(RoleType.POLICE);
         if (state.getPoliceCluesRemaining() <= 0) {
             throw new IllegalStateException("Non hai più indizi disponibili.");
@@ -113,7 +120,7 @@ public class GameEngine {
 
     /** Il poliziotto si sposta su una casella collegata, senza tentare l'arresto. */
     public void policeMoveTo(String targetLocationId) {
-        requirePhase(TurnPhase.AWAITING_POLICE_ACTION);
+        requirePhase(Turn.AWAITING_POLICE_ACTION);
         requireHumanRole(RoleType.POLICE);
         requireNeighbor(state.getPolice().getCurrentLocationId(), targetLocationId);
 
@@ -124,7 +131,7 @@ public class GameEngine {
 
     /** Il poliziotto tenta l'arresto su una casella collegata: se il killer è lì, vince subito. */
     public void policeAttemptArrest(String targetLocationId) {
-        requirePhase(TurnPhase.AWAITING_POLICE_ACTION);
+        requirePhase(Turn.AWAITING_POLICE_ACTION);
         requireHumanRole(RoleType.POLICE);
         requireNeighbor(state.getPolice().getCurrentLocationId(), targetLocationId);
 
@@ -139,12 +146,12 @@ public class GameEngine {
 
     private void applyChooseHome(String locationId) {
         state.chooseHome(locationId);
-        state.setPhase(TurnPhase.AWAITING_MURDER_LOCATION_CHOICE);
+        state.setPhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
     }
 
     private void applyChooseMurderLocation(String locationId) {
         state.setKillerStartLocation(locationId);
-        state.setPhase(TurnPhase.AWAITING_POLICE_ACTION);
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
 
     private void applyKillerMove(String targetLocationId) {
@@ -159,13 +166,13 @@ public class GameEngine {
         } else if (wasAlreadyAwayFromHome) {
             state.finish(RoleType.KILLER, "Il killer è rientrato a casa senza essere scoperto.");
         }
-        state.setPhase(TurnPhase.AWAITING_POLICE_ACTION);
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
 
     private void applyKillerFakeClue(String targetLocationId) {
         state.addFakeClue(targetLocationId);
         state.useKillerFakeClue();
-        state.setPhase(TurnPhase.AWAITING_POLICE_ACTION);
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
 
     private void applyPoliceUseClue() {
@@ -197,16 +204,16 @@ public class GameEngine {
 
     private void endPoliceTurn() {
         if (state.isFinished()) {
-            state.setPhase(TurnPhase.GAME_OVER);
+            state.setPhase(Turn.GAME_OVER);
             return;
         }
         state.incrementRound();
         if (state.getRoundsElapsed() >= state.getMaxRounds()) {
             state.finish(RoleType.KILLER, "Tempo scaduto: il killer sfugge alla cattura.");
-            state.setPhase(TurnPhase.GAME_OVER);
+            state.setPhase(Turn.GAME_OVER);
             return;
         }
-        state.setPhase(TurnPhase.AWAITING_KILLER_ACTION);
+        state.setPhase(Turn.AWAITING_KILLER_ACTION);
     }
 
     // ---------------------------------------------------------------
@@ -226,7 +233,7 @@ public class GameEngine {
             }
         }
         if (state.isFinished()) {
-            state.setPhase(TurnPhase.GAME_OVER);
+            state.setPhase(Turn.GAME_OVER);
         }
     }
 
@@ -319,7 +326,7 @@ public class GameEngine {
     // Validazioni
     // ---------------------------------------------------------------
 
-    private void requirePhase(TurnPhase expected) {
+    private void requirePhase(Turn expected) {
         if (state.getPhase() != expected) {
             throw new IllegalStateException("Non è il momento per questa azione.");
         }

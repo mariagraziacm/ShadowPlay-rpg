@@ -1,0 +1,244 @@
+package it.unicam.cs.mpgc.rpg126599.controller;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
+import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
+import it.unicam.cs.mpgc.rpg126599.model.GameState;
+import it.unicam.cs.mpgc.rpg126599.model.RoleType;
+import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
+import it.unicam.cs.mpgc.rpg126599.model.Clue;
+import it.unicam.cs.mpgc.rpg126599.model.Turn;
+public class GameController {
+
+    /** Cosa deve succedere al prossimo click su un nodo della mappa. */
+    private enum PendingAction {
+        NONE, MOVE, FAKE_CLUE, ARREST
+    }
+
+    // Iniettato automaticamente da <fx:include fx:id="map" .../> in game_view.fxml
+    @FXML
+    private MapController mapController;
+
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Button useClueButton;
+    @FXML
+    private Button moveButton;
+    @FXML
+    private Button fakeClueButton;
+    @FXML
+    private Button arrestButton;
+
+    private final GameJsonStorage storage = new GameJsonStorage();
+    private GameEngine engine;
+    private PendingAction pendingAction = PendingAction.NONE;
+
+    public void init(GameEngine engine) {
+        this.engine = engine;
+        mapController.setOnNodeClicked(this::onNodeClicked);
+        refreshView();
+    }
+
+    // -----------------------------------------------------------
+    // Click sulla mappa
+    // -----------------------------------------------------------
+
+    private void onNodeClicked(String locationId) {
+        if (engine.getState().isFinished()) {
+            return;
+        }
+        Turn phase = engine.getState().getPhase();
+        RoleType humanRole = engine.getState().getHumanRole();
+
+        try {
+            if (phase == Turn.AWAITING_HOME_CHOICE && humanRole == RoleType.KILLER) {
+                engine.chooseHome(locationId);
+            } else if (phase == Turn.AWAITING_MURDER_LOCATION_CHOICE && humanRole == RoleType.KILLER) {
+                engine.chooseMurderLocation(locationId);
+            } else if (phase == Turn.AWAITING_KILLER_ACTION && humanRole == RoleType.KILLER) {
+                handleKillerNodeClick(locationId);
+            } else if (phase == Turn.AWAITING_POLICE_ACTION && humanRole == RoleType.POLICE) {
+                handlePoliceNodeClick(locationId);
+            } else {
+                return;
+            }
+        } catch (IllegalArgumentException | IllegalStateException invalidAction) {
+            statusLabel.setText(invalidAction.getMessage());
+            return;
+        }
+
+        resetPendingAction();
+        refreshView();
+    }
+
+    private void handleKillerNodeClick(String locationId) {
+        switch (pendingAction) {
+            case MOVE -> engine.killerMove(locationId);
+            case FAKE_CLUE -> engine.killerLeaveFakeClue(locationId);
+            default -> statusLabel.setText("Scegli prima 'Sposta' oppure 'Lascia indizio falso'.");
+        }
+    }
+
+    private void handlePoliceNodeClick(String locationId) {
+        switch (pendingAction) {
+            case MOVE -> engine.policeMoveTo(locationId);
+            case ARREST -> engine.policeAttemptArrest(locationId);
+            default -> statusLabel.setText("Scegli prima 'Sposta' oppure 'Tenta l'arresto'.");
+        }
+    }
+
+    // -----------------------------------------------------------
+    // Pulsanti d'azione
+    // -----------------------------------------------------------
+
+    @FXML
+    private void onUseClue() {
+        try {
+            engine.policeUseClue();
+        } catch (IllegalStateException e) {
+            statusLabel.setText(e.getMessage());
+            return;
+        }
+        refreshView();
+    }
+
+    @FXML
+    private void onSelectMove() {
+        pendingAction = PendingAction.MOVE;
+        boolean isKiller = engine.getState().getHumanRole() == RoleType.KILLER;
+        statusLabel.setText(isKiller
+                ? "Seleziona sulla mappa una casella a 1 o 2 passi di distanza."
+                : "Seleziona sulla mappa una casella collegata alla tua.");
+    }
+
+    @FXML
+    private void onSelectFakeClue() {
+        if (engine.getState().getKillerFakeCluesRemaining() <= 0) {
+            statusLabel.setText("Non hai più indizi falsi disponibili.");
+            return;
+        }
+        pendingAction = PendingAction.FAKE_CLUE;
+        statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso.");
+    }
+
+    @FXML
+    private void onSelectArrest() {
+        pendingAction = PendingAction.ARREST;
+        statusLabel.setText("Seleziona la casella collegata su cui tentare l'arresto.");
+    }
+
+    @FXML
+    private void onSaveGame() {
+        try {
+            storage.save(engine.getState(), Path.of("save.json"));
+            statusLabel.setText("Partita salvata in save.json");
+        } catch (IOException e) {
+            statusLabel.setText("Errore durante il salvataggio.");
+        }
+    }
+
+    @FXML
+    private void onReturnToMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/role_select.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) statusLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 420, 360));
+            stage.setTitle("Whitechapel Lite");
+        } catch (IOException e) {
+            statusLabel.setText("Impossibile tornare al menu.");
+        }
+    }
+
+    // -----------------------------------------------------------
+    // Aggiornamento della view
+    // -----------------------------------------------------------
+
+    private void resetPendingAction() {
+        pendingAction = PendingAction.NONE;
+        mapController.clearSelection();
+    }
+
+    private void refreshView() {
+        mapController.clearAllStates();
+
+        var state = engine.getState();
+        state.getEliminatedHomeCandidates().forEach(mapController::markEliminated);
+        for (Clue clue : state.getFakeClues()) {
+            mapController.markFakeClue(clue.getLocationId());
+        }
+
+        boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
+        if (revealKillerSecrets && state.isHomeChosen()) {
+            mapController.markHome(state.getKillerHomeLocationId());
+        }
+        if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
+            mapController.markKiller(state.getKiller().getCurrentLocationId());
+        }
+        mapController.markPolice(state.getPolice().getCurrentLocationId());
+
+        updateActionButtons();
+        updateStatusLabel();
+    }
+
+    private void updateActionButtons() {
+        Turn phase = engine.getState().getPhase();
+        RoleType humanRole = engine.getState().getHumanRole();
+
+        boolean isPoliceHumanTurn = phase == Turn.AWAITING_POLICE_ACTION && humanRole == RoleType.POLICE;
+        boolean isKillerHumanTurn = phase == Turn.AWAITING_KILLER_ACTION && humanRole == RoleType.KILLER;
+
+        useClueButton.setVisible(isPoliceHumanTurn);
+        useClueButton.setManaged(isPoliceHumanTurn);
+        useClueButton.setDisable(engine.getState().getPoliceCluesRemaining() <= 0);
+
+        arrestButton.setVisible(isPoliceHumanTurn);
+        arrestButton.setManaged(isPoliceHumanTurn);
+
+        moveButton.setVisible(isPoliceHumanTurn || isKillerHumanTurn);
+        moveButton.setManaged(isPoliceHumanTurn || isKillerHumanTurn);
+
+        fakeClueButton.setVisible(isKillerHumanTurn);
+        fakeClueButton.setManaged(isKillerHumanTurn);
+        fakeClueButton.setDisable(engine.getState().getKillerFakeCluesRemaining() <= 0);
+    }
+
+    private void updateStatusLabel() {
+        var state = engine.getState();
+
+        if (state.isFinished()) {
+            String vincitore = state.getWinner() == RoleType.KILLER ? "il Killer" : "il Poliziotto";
+            statusLabel.setText("Partita finita: vince " + vincitore + ". " + state.getEndReason());
+            return;
+        }
+        if (state.getPhase() == Turn.AWAITING_HOME_CHOICE) {
+            statusLabel.setText("Scegli sulla mappa la tua casa segreta: il punto in cui dovrai rientrare per vincere.");
+            return;
+        }
+        if (state.getPhase() == Turn.AWAITING_MURDER_LOCATION_CHOICE) {
+            statusLabel.setText("Scegli sulla mappa il luogo del primo omicidio: la tua posizione di partenza (diversa da casa).");
+            return;
+        }
+
+        String ruolo = state.getHumanRole() == RoleType.KILLER ? "Killer" : "Poliziotto";
+        // Ognuno vede solo i propri indizi rimanenti, mai quelli dell'avversario.
+        String indiziInfo = state.getHumanRole() == RoleType.KILLER
+                ? "indizi falsi rimasti: " + state.getKillerFakeCluesRemaining()
+                : "indizi rimasti: " + state.getPoliceCluesRemaining();
+
+        statusLabel.setText(String.format("Turno %d/%d — sei il %s — %s",
+                state.getRoundsElapsed() + 1, state.getMaxRounds(), ruolo, indiziInfo));
+    }
+}
+
