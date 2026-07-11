@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polyline?>
+
+<AnchorPane prefHeight="741.0" prefWidth="1024.0" stylesheets="@../styke/map.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.whitechapel.controller.MapController">
+   <ImageView fitHeight="741.0" fitWidth="1024.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@../../../../../mappashadow.png" />
+      </image>
+   </ImageView>
+
+    <Circle fx:id="n1" centerX="961" centerY="34" radius="12" styleClass="node" />
+    <Circle fx:id="n2" centerX="910" centerY="53" radius="12" styleClass="node" />
+    <Circle fx:id="n3" centerX="975" centerY="83" radius="12" styleClass="node" />
+    <Circle fx:id="n4" centerX="929" centerY="111" radius="12" styleClass="node" />
+    <Circle fx:id="n5" centerX="413" centerY="164" radius="12" styleClass="node" />
+    <Circle fx:id="n6" centerX="776" centerY="172" radius="12" styleClass="node" />
+
+    <Circle fx:id="n7" centerX="588" centerY="199" radius="12" styleClass="node" />
+    <Circle fx:id="n8" centerX="427" centerY="201" radius="12" styleClass="node" />
+    <Circle fx:id="n9" centerX="957" centerY="219" layoutX="5.0" layoutY="16.0" radius="12" styleClass="node" />
+    <Circle fx:id="n10" centerX="441" centerY="235" radius="12" styleClass="node" />
+
+    <Circle fx:id="n11" centerX="855" centerY="247" radius="12" styleClass="node" />
+    <Circle fx:id="n12" centerX="860" centerY="276" radius="12" styleClass="node" />
+    <Circle fx:id="n13" centerX="253" centerY="304" radius="12" styleClass="node" />
+    <Circle fx:id="n14" centerX="868" centerY="340" radius="12" styleClass="node" />
+
+    <Circle fx:id="n15" centerX="678" centerY="390" radius="12" styleClass="node" />
+    <Circle fx:id="n16" centerX="184" centerY="395" radius="12" styleClass="node" />
+    <Circle fx:id="n17" centerX="629" centerY="399" radius="12" styleClass="node" />
+    <Circle fx:id="n18" centerX="403" centerY="414" radius="12" styleClass="node" />
+    <Circle fx:id="n19" centerX="771" centerY="445" radius="12" styleClass="node" />
+    <Circle fx:id="n20" centerX="961" centerY="447" radius="12" styleClass="node" />
+
+    <Circle fx:id="n21" centerX="667" centerY="513" radius="12" styleClass="node" />
+    <Circle fx:id="n22" centerX="686" centerY="532" radius="12" styleClass="node" />
+    <Circle fx:id="n23" centerX="541" centerY="587" layoutX="10.0" layoutY="-1.0" radius="12" styleClass="node" />
+    <Circle fx:id="n24" centerX="522" centerY="591" layoutX="3.0" layoutY="2.0" radius="12" styleClass="node" />
+    <Circle fx:id="n25" centerX="292" centerY="606" radius="12" styleClass="node" />
+    <Circle fx:id="n26" centerX="482" centerY="663" radius="12" styleClass="node" />
+   <Polyline fill="#80ff0003" layoutX="266.0" layoutY="417.0" points="-13.000015258789062, -113.0, -58.00001525878906, -78.60000610351562, -49.20002746582031, -64.20001220703125, -85.19999694824219, -16.20001220703125" stroke="TRANSPARENT" strokeType="INSIDE" />
+   <Polyline fill="#80ff0000" layoutX="231.0" layoutY="535.0" points="65.0, 71.4000244140625, 61.0, 58.0, 33.79998779296875, -37.399993896484375, -47.00001525878906, -140.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+   <Line endX="14.79998779296875" endY="42.600006103515625" layoutX="414.0" layoutY="159.0" startX="-1.0" startY="5.0" stroke="TRANSPARENT" />
+   <Line endX="19.4000244140625" endY="37.79998779296875" layoutX="423.0" layoutY="199.0" startX="4.20001220703125" startY="6.600006103515625" stroke="TRANSPARENT" />
+   <Line endX="226.20001220703125" endY="-28.0" layoutX="629.0" layoutY="276.0" startX="234.20001220703125" startY="2.399993896484375" stroke="TRANSPARENT" />
+   <Line endX="1.00006103515625" endY="1.0" layoutX="961.0" layoutY="234.0" startX="-105.99993896484375" startY="13.0" stroke="TRANSPARENT" />
+   <Line endX="5.3333740234375" endY="64.5333251953125" layoutX="860.0" layoutY="276.0" startX="6.103515625E-5" stroke="TRANSPARENT" />
+   <Line endX="49.0" endY="-5.0" layoutX="629.0" layoutY="395.0" startY="4.0" stroke="TRANSPARENT" />
+   <Line endX="119.00006103515625" endY="2.0" layoutX="842.0" layoutY="445.0" startX="-70.5333251953125" stroke="TRANSPARENT" />
+   <Line endX="145.666748046875" endY="-48.59999465942383" layoutX="821.0" layoutY="83.0" startX="90.199951171875" startY="-26.199993133544922" stroke="TRANSPARENT" />
+   <Line endX="155.26666259765625" endY="-15.73333740234375" layoutX="821.0" layoutY="96.0" startX="141.39996337890625" startY="-63.73333740234375" stroke="TRANSPARENT" />
+   <Line endX="203.4666748046875" endY="-101.66666412353516" layoutX="776.0" layoutY="183.0" startX="159.7332763671875" startY="-70.73333740234375" stroke="TRANSPARENT" />
+   <Line endX="33.00006103515625" endY="124.0" layoutX="929.0" layoutY="111.0" startX="6.026123046875" startY="-6.199989318847656" stroke="TRANSPARENT" />
+   <Line endX="20.20001220703125" endY="21.66668701171875" layoutX="667.0" layoutY="513.0" startX="1.0" stroke="TRANSPARENT" />
+   <Line endX="46.13336181640625" endY="21.39996337890625" layoutX="512.0" layoutY="573.0" startX="16.26666259765625" startY="21.39996337890625" stroke="TRANSPARENT" />
+   <Polyline fill="#80ff0000" layoutX="372.0" layoutY="330.0" points="70.93331909179688, -92.933349609375, 87.99996948242188, -67.33334350585938, -58.133331298828125, -40.666656494140625, -109.33334350585938, -22.5333251953125" strokeType="INSIDE" />
+   <Line endX="372.5333251953125" endY="35.199981689453125" layoutX="400.0" layoutY="412.0" startX="6.666656494140625" startY="9.600006103515625" stroke="#00000004" />
+   <Line endX="101.3333740234375" endY="107.19998168945312" layoutX="860.0" layoutY="340.0" startX="6.39996337890625" stroke="#00000008" />
+   <Line endX="-96.5333251953125" endY="110.33334350585938" layoutX="868.0" layoutY="339.0" startX="3.7332763671875" stroke="TRANSPARENT" />
+   <Line endX="92.53326416015625" endY="-102.0" layoutX="872.0" layoutY="338.0" startX="-2.4000244140625" startY="-3.866668701171875" stroke="TRANSPARENT" />
+   <Line endX="169.53326416015625" endY="-62.933326721191406" layoutX="763.0" layoutY="172.0" startX="15.933349609375" startY="1.066650390625" stroke="TRANSPARENT" />
+   <Line endX="24.5999755859375" endY="57.133338928222656" layoutX="909.0" layoutY="53.0" startX="-5.2667236328125" stroke="TRANSPARENT" />
+   <Line endX="418.3333740234375" endY="-12.4666748046875" layoutX="559.0" layoutY="97.0" startX="351.13336181640625" startY="-46.59999465942383" stroke="TRANSPARENT" />
+   <Line endX="81.5333251953125" endY="75.73332214355469" layoutX="771.0" layoutY="172.0" startX="6.86669921875" stroke="TRANSPARENT" />
+   <Line endX="99.39996337890625" endY="-45.13334655761719" layoutX="863.0" layoutY="279.0" startX="3.39996337890625" startY="-0.333343505859375" stroke="TRANSPARENT" />
+   <Line endX="3.13336181640625" endY="16.266693115234375" layoutX="763.0" layoutY="432.0" startX="-86.4666748046875" startY="-41.333343505859375" stroke="TRANSPARENT" />
+   <Line endX="176.4666748046875" endY="33.333343505859375" layoutX="691.0" layoutY="304.0" startX="-11.2667236328125" startY="92.0" stroke="TRANSPARENT" />
+   <Line endX="199.6666259765625" endY="-10.666671752929688" layoutX="575.0" layoutY="188.0" startX="19.39996337890625" startY="13.866653442382812" stroke="TRANSPARENT" />
+   <Line endX="239.7332763671875" endY="27.866653442382812" layoutX="616.0" layoutY="222.0" startX="-26.933349609375" startY="-19.066650390625" stroke="TRANSPARENT" />
+   <Line endX="4.26666259765625" endY="-0.3333282470703125" layoutX="588.0" layoutY="199.0" startX="-144.00003051757812" startY="38.066650390625" stroke="TRANSPARENT" />
+   <Line endX="93.0" endY="16.0" layoutX="495.0" layoutY="183.0" startX="-69.13333129882812" startY="15.666671752929688" stroke="TRANSPARENT" />
+   <Line endX="21.7332763671875" endY="-15.86669921875" layoutX="642.0" layoutY="526.0" startX="-87.066650390625" startY="63.066650390625" stroke="TRANSPARENT" />
+   <Line endX="206.26666259765625" endY="163.66668701171875" layoutX="482.0" layoutY="371.0" startX="68.6666259765625" startY="211.66668701171875" stroke="TRANSPARENT" />
+   <Line endX="91.13336181640625" endY="19.26666259765625" layoutX="435.0" layoutY="573.0" startX="49.533355712890625" startY="90.73333740234375" stroke="TRANSPARENT" />
+   <Line endX="122.46670532226562" endY="34.66668701171875" layoutX="361.0" layoutY="628.0" startX="-64.19998168945312" startY="-19.73333740234375" stroke="TRANSPARENT" />
+   <Line endX="121.20001220703125" endY="142.26666259765625" layoutX="406.0" layoutY="450.0" startX="-1.466644287109375" startY="-33.733306884765625" stroke="TRANSPARENT" />
+   <Line endX="226.5999755859375" endY="-14.933349609375" layoutX="403.0" layoutY="412.0" startX="0.466705322265625" startY="4.266693115234375" stroke="TRANSPARENT" />
+   <Line endX="-36.266693115234375" endY="128.13330078125" layoutX="332.0" layoutY="478.0" startX="72.53335571289062" startY="-64.933349609375" stroke="TRANSPARENT" />
+   <Line endX="153.66665649414062" endY="26.0" layoutX="253.0" layoutY="386.0" startX="-63.93336486816406" startY="11.066650390625" stroke="TRANSPARENT" />
+   <Line endX="152.60000610351562" endY="121.0" layoutX="253.0" layoutY="291.0" startX="2.20001220703125" startY="11.133331298828125" stroke="TRANSPARENT" />
+   <Line endX="156.86666870117188" endY="-142.8666534423828" layoutX="253.0" layoutY="301.0" startX="2.20001220703125" stroke="TRANSPARENT" />
+   <Line endX="94.42633056640625" endY="-16.307109832763672" layoutX="815.0" layoutY="66.0" startX="-37.13330078125" startY="112.39997863769531" stroke="TRANSPARENT" />
+   <Line endX="90.6666259765625" endY="190.60000610351562" layoutX="588.0" layoutY="199.0" startX="0.70709228515625" startY="-1.0404510498046875" stroke="TRANSPARENT" />
+   <Line endX="27.066650390625" endY="61.13330078125" layoutX="642.0" layoutY="449.0" startX="35.5999755859375" startY="-51.933349609375" stroke="TRANSPARENT" />
+   <Line endX="100.0" startX="-100.0" stroke="TRANSPARENT" />
+   <Line endX="100.56671142578125" endY="123.9000244140625" layoutX="564.0" layoutY="390.0" startX="63.23333740234375" startY="15.100006103515625" stroke="TRANSPARENT" />
+   <Line endX="48.56671142578125" endY="-64.76666259765625" layoutX="728.0" layoutY="504.0" startX="-60.23333740234375" startY="14.16668701171875" stroke="TRANSPARENT" />
+   <Line endX="93.70001220703125" endY="-89.43331909179688" layoutX="685.0" layoutY="534.0" startX="5.1666259765625" startY="1.23333740234375" stroke="TRANSPARENT" />
+
+</AnchorPane>

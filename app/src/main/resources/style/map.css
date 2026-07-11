@@ -1,0 +1,27 @@
+
+.root{
+    -fx-background-image: url("/images/mappashadow.png");
+    -fx-background-repeat: no-repeat;
+
+    -fx-background-size: cover;
+
+}
+
+.line{
+    -fx-stroke: #2f2f2f;
+    -fx-stroke-width: 2;
+}
+
+.node{
+    -fx-fill: white;
+    -fx-stroke: black;
+    -fx-stroke-width: 2;
+}
+
+.node:hover{
+    -fx-fill: gold;
+}
+
+.node:selected{
+    -fx-fillgr: crimson;
+}
