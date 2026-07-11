@@ -5,15 +5,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.whitechapel.controller.RoleSelectController">
+<VBox alignment="CENTER" spacing="16.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="it.unicam.cs.mpgc.rpg126599.controller.RoleSelectController">
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
     <children>
         <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Whitechapel Lite" />
         <Label text="Scegli il tuo ruolo" />
-        <Button fx:id="killerButton" onAction="#onChooseKiller" prefWidth="200.0" text="Gioca come Killer" />
-        <Button fx:id="policeButton" onAction="#onChoosePolice" prefWidth="200.0" text="Gioca come Poliziotto" />
+        <Button fx:id="killerButton" onAction="#onChooseKiller" prefWidth="220.0" text="Gioca come Killer" />
+        <Button fx:id="policeButton" onAction="#onChoosePolice" prefWidth="220.0" text="Gioca come Poliziotto" />
+        <Button onAction="#onLoadGame" prefWidth="220.0" text="Carica partita salvata" />
+        <Label fx:id="messageLabel" style="-fx-text-fill: #aa3333;" wrapText="true" />
     </children>
 </VBox>
+
