@@ -1,8 +1,10 @@
 ﻿.gradle/
 build/
+app/build/
+**/build/
 .idea/
 .vscode/
 *.img/
-out
-immagine.png
-*.png
+out/
+**/out/
+*.class
