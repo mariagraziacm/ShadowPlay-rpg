@@ -25,7 +25,6 @@ public class GameController {
         NONE, MOVE, FAKE_CLUE, ARREST
     }
 
-    // Iniettato automaticamente da <fx:include fx:id="map" .../> in game_view.fxml
     @FXML
     private MapController mapController;
 
@@ -158,9 +157,7 @@ public class GameController {
         }
     }
 
-    // -----------------------------------------------------------
-    // Aggiornamento della view
-    // -----------------------------------------------------------
+ 
 
     private void resetPendingAction() {
         pendingAction = PendingAction.NONE;
@@ -229,7 +226,8 @@ public class GameController {
         }
 
         String ruolo = state.getHumanRole() == RoleType.KILLER ? "Killer" : "Poliziotto";
-        // Ognuno vede solo i propri indizi rimanenti, mai quelli dell'avversario.
+      
+        
         String indiziInfo = state.getHumanRole() == RoleType.KILLER
                 ? "indizi falsi rimasti: " + state.getKillerFakeCluesRemaining()
                 : "indizi rimasti: " + state.getPoliceCluesRemaining();

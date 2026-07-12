@@ -10,13 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-/**
- * Controller "di sola vista" della mappa: conosce esclusivamente i 26 nodi
- * disegnati in Scene Builder (fx:id n1..n26, con le loro coordinate reali
- * sull'immagine mappashadow.png) e sa come marcarli con le pseudo-classi
- * CSS definite in map.css. Non conosce le regole di gioco: GameController
- * gli passa un semplice callback da invocare quando un nodo viene cliccato.
- */
+
 public class MapController {
 
     private static final PseudoClass SELECTED = PseudoClass.getPseudoClass("selected");
@@ -46,13 +40,7 @@ public class MapController {
     @FXML private Circle n18;
     @FXML private Circle n19;
     @FXML private Circle n20;
-    @FXML private Circle n21;
-    @FXML private Circle n22;
-    @FXML private Circle n23;
-    @FXML private Circle n24;
-    @FXML private Circle n25;
-    @FXML private Circle n26;
-
+    
     private final Map<String, Circle> nodesById = new LinkedHashMap<>();
     private Consumer<String> onNodeClicked = locationId -> { };
 
@@ -78,12 +66,7 @@ public class MapController {
         register("n18", n18);
         register("n19", n19);
         register("n20", n20);
-        register("n21", n21);
-        register("n22", n22);
-        register("n23", n23);
-        register("n24", n24);
-        register("n25", n25);
-        register("n26", n26);
+
 
         nodesById.forEach((locationId, circle) ->
                 circle.setOnMouseClicked(event -> onNodeClicked.accept(locationId)));
@@ -93,17 +76,14 @@ public class MapController {
         nodesById.put(locationId, circle);
     }
 
-    /** ID di tutti i nodi disegnati sulla mappa. */
+
     public Set<String> nodeIds() {
         return nodesById.keySet();
     }
 
-    /** Registra il gestore da chiamare quando l'utente clicca un nodo. */
     public void setOnNodeClicked(Consumer<String> handler) {
         this.onNodeClicked = handler;
     }
-
-    /** Spegne tutti gli stati di gioco su tutti i nodi, prima di ridisegnare. */
     public void clearAllStates() {
         nodesById.values().forEach(circle -> {
             circle.pseudoClassStateChanged(POLICE, false);
@@ -141,7 +121,6 @@ public class MapController {
         }
     }
 
-    /** Evidenzia un solo nodo come "selezionato" (es. durante una scelta in corso). */
     public void setSelected(String locationId) {
         nodesById.forEach((id, circle) -> circle.pseudoClassStateChanged(SELECTED, id.equals(locationId)));
     }
