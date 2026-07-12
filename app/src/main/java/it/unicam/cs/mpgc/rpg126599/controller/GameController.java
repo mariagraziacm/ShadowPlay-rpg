@@ -144,7 +144,9 @@ public class GameController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/roleselect.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) statusLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 420, 360));
+           Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.sizeToScene();
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             statusLabel.setText("Impossibile tornare al menu.");

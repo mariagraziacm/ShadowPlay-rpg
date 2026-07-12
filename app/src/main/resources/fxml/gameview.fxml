@@ -9,8 +9,11 @@
 
 <BorderPane stylesheets="@../style/game.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
    <right>
-        <VBox minHeight="240.0" prefHeight="730.0" prefWidth="286.0" spacing="25.0" styleClass="game-control-bar" BorderPane.alignment="CENTER">
-            <padding>
+        <VBox minHeight="240.0"
+      prefWidth="286.0"
+      spacing="25.0"
+      styleClass="game-control-bar">
+       <padding>
                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
             <children>
@@ -29,6 +32,6 @@
         </VBox>
    </right>
    <center>
-        <fx:include fx:id="map" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="map.fxml" BorderPane.alignment="CENTER" />
-   </center>
+    <fx:include fx:id="map" source="map.fxml" BorderPane.alignment="CENTER" />
+</center>
 </BorderPane>
