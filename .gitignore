@@ -2,5 +2,7 @@
 build/
 .idea/
 .vscode/
-*.iml/
+*.img/
 out
+immagine.png
+*.png
