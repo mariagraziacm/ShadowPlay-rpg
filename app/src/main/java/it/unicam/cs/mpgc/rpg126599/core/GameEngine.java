@@ -326,7 +326,7 @@ public class GameEngine {
 
     private void requirePhase(Turn expected) {
         if (state.getPhase() != expected) {
-            throw new IllegalStateException("Non è il momento per questa azione.");
+            throw new IllegalStateException("Non è il momento per questa azione. Fase attuale: " + state.getPhase());
         }
     }
 

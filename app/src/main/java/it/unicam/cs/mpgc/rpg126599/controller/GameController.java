@@ -81,7 +81,7 @@ public class GameController {
         switch (pendingAction) {
             case MOVE -> engine.killerMove(locationId);
             case FAKE_CLUE -> engine.killerLeaveFakeClue(locationId);
-            default -> statusLabel.setText("Scegli prima 'Sposta' oppure 'Lascia indizio falso'.");
+            default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Lascia indizio falso'.");
         }
     }
 
@@ -89,7 +89,7 @@ public class GameController {
         switch (pendingAction) {
             case MOVE -> engine.policeMoveTo(locationId);
             case ARREST -> engine.policeAttemptArrest(locationId);
-            default -> statusLabel.setText("Scegli prima 'Sposta' oppure 'Tenta l'arresto'.");
+            default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Tenta l'arresto'.");
         }
     }
 
@@ -168,10 +168,8 @@ public class GameController {
             mapController.markFakeClue(clue.getLocationId());
         }
 
-        
         Turn phase = state.getPhase();
         if (phase == Turn.AWAITING_HOME_CHOICE || phase == Turn.AWAITING_MURDER_LOCATION_CHOICE) {
-
             engine.getBoard().all().forEach(loc -> mapController.setInteractable(loc.getId(), true));
         }
 
