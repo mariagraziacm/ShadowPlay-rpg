@@ -1,69 +1,40 @@
-/* ==========================================================================
-   SHADOW PLAY - Game View Stylesheet (game.css)
-   ========================================================================== */
-
-/* Contenitore principale della schermata di gioco */
 .root {
     -fx-font-family: "Georgia", "Times New Roman", serif;
-    -fx-background-color: #eae0c1; /* Applica la pergamena a tutto lo sfondo del gioco */
+    -fx-background-color: #eae0c1; 
 }
-
-/* Sfondo della finestra principale */
 .border-pane {
-    -fx-background-color: #eae0c1; /* Elimina i vuoti bianchi a schermo intero */
+    -fx-background-color: #eae0c1; 
 }
 
-/* Forza la regione centrale a riempire lo spazio disponibile */
 .border-pane .center {
     -fx-background-color: #eae0c1;
     -fx-alignment: center;
 }
 
-/* --------------------------------------------------------------------------
-   BARRA DEI COMANDI LATERALE (Destra)
-   -------------------------------------------------------------------------- */
 .game-control-bar {
-    /* Il gradient ora sfuma solo all'interno del riquadro fluttuante */
     -fx-background-color: linear-gradient(to bottom, #eae0c1, #dfd1a9);
-    
-    /* Bordo completo attorno alla scheda fluttuante */
     -fx-border-color: #8c765c;
     -fx-border-width: 2px;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
-    
-    /* Blocca la larghezza della barra */
     -fx-min-width: 280px;
     -fx-pref-width: 280px;
     -fx-max-width: 280px;
-    
-    /* IMPEDISCE ALLA BARRA DI SCENDERE FINO IN FONDO AL MONITOR */
     -fx-max-height: 550px; 
-    
-    /* Spazio interno ai bottoni */
     -fx-padding: 20px 15px 20px 15px;
     -fx-max-height: 650px;
-    /* Aggiunge un'ombra morbida per far sembrare il menu sollevato rispetto alla mappa */
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.25), 10, 0, 0, 4);
 }
 
-/* Label di stato del gioco (Turni, comunicazioni, errori) */
 .game-status {
     -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-text-fill: #3d3124; /* Il tuo marrone coordinato */
-    
-    /* MODIFICA: Rimuove i limiti di altezza per permettere al testo di espandersi */
+    -fx-text-fill: #3d3124;
     -fx-pref-height: -fx-use-computed-size;
     -fx-max-height: -fx-use-computed-size;
-    
-    /* Spazio sotto il testo per non farlo appiccicare al primo bottone */
     -fx-padding: 0 0 15px 0; 
 }
 
-/* --------------------------------------------------------------------------
-   BOTTONI DELLE AZIONI PRINCIPALI
-   -------------------------------------------------------------------------- */
 .button {
     -fx-background-color: #3d3124;
     -fx-text-fill: #f5eccd;
@@ -101,9 +72,7 @@
     -fx-effect: null;
 }
 
-/* --------------------------------------------------------------------------
-   BOTTONI SECONDARI (Salva partita, Torna al menu)
-   -------------------------------------------------------------------------- */
+
 .button.secondary-button {
     -fx-background-color: #594939;
     -fx-border-color: #73604d;
