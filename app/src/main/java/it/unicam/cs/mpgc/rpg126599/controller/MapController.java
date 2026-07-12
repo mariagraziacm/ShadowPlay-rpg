@@ -175,11 +175,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-/**
- * Controller per la gestione della mappa di gioco.
- * Ottimizzato per l'estendibilità: mappa automaticamente qualsiasi campo Circle annotato con @FXML
- * tramite Reflection, garantendo il rispetto dei principi architetturali senza dipendere da container rigidi.
- */
 public class MapController {
 
     private static final PseudoClass SELECTED = PseudoClass.getPseudoClass("selected");
@@ -190,7 +185,7 @@ public class MapController {
     private static final PseudoClass SEARCHED = PseudoClass.getPseudoClass("searched");
     private static final PseudoClass HOME = PseudoClass.getPseudoClass("home");
 
-    // Mantieni i tuoi campi FXML intatti (garantisce il funzionamento del binding originale di JavaFX)
+
     @FXML private Circle n1; @FXML private Circle n2; @FXML private Circle n3; @FXML private Circle n4;
     @FXML private Circle n5; @FXML private Circle n6; @FXML private Circle n7; @FXML private Circle n8;
     @FXML private Circle n9; @FXML private Circle n10; @FXML private Circle n11; @FXML private Circle n12;

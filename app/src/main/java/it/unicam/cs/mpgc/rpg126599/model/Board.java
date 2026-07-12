@@ -13,19 +13,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-/**
- * Rappresenta la mappa di gioco unicamente come grafo topologico puro.
- * Ottimizzata con il precalcolo delle distanze all'avvio per garantire efficienza O(1).
- */
 public class Board {
 
     private final Map<String, Location> locations = new LinkedHashMap<>();
-    // Mappa a due livelli: allPairsDistances.get(fromId).get(toId) -> distanza
+    
     private final Map<String, Map<String, Integer>> allPairsDistances = new HashMap<>();
 
-    /**
-     * Costruisce la Board e precalcola istantaneamente tutte le distanze minime.
-     */
+
     public Board(Collection<Location> initialLocations) {
         if (initialLocations == null || initialLocations.isEmpty()) {
             throw new IllegalArgumentException("La collezione di nodi non può essere vuota.");
@@ -34,22 +28,18 @@ public class Board {
             this.locations.put(location.getId(), location);
         }
         
-        // Efficienza: esegue la BFS una volta sola per ogni nodo al caricamento
+        
         precomputeDistances();
     }
 
-    /**
-     * Precalcola le distanze tra tutte le coppie di nodi possibili sul grafo.
-     */
+
     private void precomputeDistances() {
         for (String fromId : locations.keySet()) {
             allPairsDistances.put(fromId, computeBfsDistancesFrom(fromId));
         }
     }
 
-    /**
-     * Algoritmo BFS interno che mappa le distanze da un nodo di partenza verso tutti gli altri.
-     */
+    
     private Map<String, Integer> computeBfsDistancesFrom(String startId) {
         Map<String, Integer> distances = new HashMap<>();
         Set<String> visited = new HashSet<>();
@@ -73,9 +63,7 @@ public class Board {
         return distances;
     }
 
-    /**
-     * Restituisce la distanza minima tra due nodi in tempo costante O(1).
-     */
+   
     public int distance(String fromId, String toId) {
         if (fromId.equals(toId)) {
             return 0;

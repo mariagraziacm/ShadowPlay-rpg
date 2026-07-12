@@ -29,9 +29,9 @@
 .game-status {
     -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-text-fill: #3d3124;
-    -fx-pref-height: -fx-use-computed-size;
-    -fx-max-height: -fx-use-computed-size;
+    -fx-text-fill: #3d3124; 
+    -fx-pref-height: use-computed-size;
+    -fx-max-height: use-computed-size;
     -fx-padding: 0 0 15px 0; 
 }
 

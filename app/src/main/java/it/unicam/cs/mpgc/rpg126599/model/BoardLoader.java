@@ -7,13 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Componente infrastrutturale dedicato al caricamento dei dati della mappa da file JSON.
- * Isola completamente l'utilizzo della libreria Gson.
- */
+
 public class BoardLoader {
 
-    /** Carica il file JSON e restituisce una istanza di Board pronta all'uso. */
     public static Board loadFromResource(String resourcePath) {
         Gson gson = new Gson();
 
@@ -30,8 +26,6 @@ public class BoardLoader {
             throw new IllegalStateException("Impossibile caricare il file di mappa dal path: " + resourcePath, e);
         }
     }
-
-    /** DTO adibito unicamente alla deserializzazione di map.json. */
     private static class MapFile {
         List<Location> locations;
     }

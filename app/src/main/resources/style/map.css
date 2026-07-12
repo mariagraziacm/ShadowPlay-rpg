@@ -3,34 +3,27 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
 }
-
 .line {
     -fx-stroke: #2f2f2f;
     -fx-stroke-width: 2;
 }
-
 .node {
     -fx-fill: white;
     -fx-stroke: black;
     -fx-stroke-width: 2;
 }
-
 .node:hover {
     -fx-fill: gold;
 }
-
 .node:selected {
     -fx-fill: crimson;
 }
-
 .node:police {
     -fx-fill: #16337a;
 }
-
 .node:killer {
     -fx-fill: crimson;
 }
-
 .node:eliminated,
 .node:clue,
 .node:searched {

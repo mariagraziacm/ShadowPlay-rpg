@@ -11,9 +11,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import it.unicam.cs.mpgc.rpg126599.model.Board;
+
 import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
-import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;

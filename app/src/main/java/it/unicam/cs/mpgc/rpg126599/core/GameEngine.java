@@ -322,7 +322,6 @@ public class GameEngine {
                 .orElse(fromId);
     }
 
-    // Guardie di validazione
 
     private void requirePhase(Turn expected) {
         if (state.getPhase() != expected) {
