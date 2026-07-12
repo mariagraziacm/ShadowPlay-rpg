@@ -109,8 +109,8 @@ public class GameController {
         pendingAction = PendingAction.MOVE;
         boolean isKiller = engine.getState().getHumanRole() == RoleType.KILLER;
         statusLabel.setText(isKiller
-                ? "Seleziona sulla mappa una casella a 1 o 2 passi di distanza."
-                : "Seleziona sulla mappa una casella collegata alla tua.");
+                ? "Seleziona sulla mappa una casella: puoi muoverti di uno o due passi"
+                : "Seleziona sulla mappa una casella collegata alla tua per spostarti");
     }
 
     @FXML
@@ -120,13 +120,13 @@ public class GameController {
             return;
         }
         pendingAction = PendingAction.FAKE_CLUE;
-        statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso.");
+        statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso per ingannare il poliziotto");
     }
 
     @FXML
     private void onSelectArrest() {
         pendingAction = PendingAction.ARREST;
-        statusLabel.setText("Seleziona la casella collegata su cui tentare l'arresto.");
+        statusLabel.setText("Seleziona la casella su cui tentare l'arresto");
     }
 
     @FXML
@@ -168,10 +168,10 @@ public class GameController {
             mapController.markFakeClue(clue.getLocationId());
         }
 
-        // CORREZIONE CHIRURGICA: Garantisce che le caselle siano cliccabili nei primi turni
+        
         Turn phase = state.getPhase();
         if (phase == Turn.AWAITING_HOME_CHOICE || phase == Turn.AWAITING_MURDER_LOCATION_CHOICE) {
-            // Rende esplicitamente tutti i nodi interattivi per la selezione iniziale
+
             engine.getBoard().all().forEach(loc -> mapController.setInteractable(loc.getId(), true));
         }
 
@@ -228,11 +228,11 @@ public class GameController {
             return;
         }
         if (state.getPhase() == Turn.AWAITING_HOME_CHOICE) {
-            statusLabel.setText("Scegli sulla mappa la tua casa segreta: il punto in cui dovrai rientrare per vincere.");
+            statusLabel.setText("Scegli sulla mappa il tuo nascondiglio: il punto in cui dovrai rientrare per vincere.");
             return;
         }
         if (state.getPhase() == Turn.AWAITING_MURDER_LOCATION_CHOICE) {
-            statusLabel.setText("Scegli sulla mappa il luogo del primo omicidio: la tua posizione di partenza (diversa da casa).");
+            statusLabel.setText("Scegli sulla mappa il luogo del primo omicidio: la tua posizione di partenza (ATTENZIONE: deve essere diversa dal nascondiglio)");
             return;
         }
 
