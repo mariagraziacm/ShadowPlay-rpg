@@ -10,7 +10,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
     <center>
-        <fx:include fx:id="map" source="map_view.fxml" BorderPane.alignment="CENTER" />
+        <fx:include fx:id="map" source="map.fxml" BorderPane.alignment="CENTER" />
     </center>
     <bottom>
         <VBox spacing="8.0" BorderPane.alignment="CENTER">

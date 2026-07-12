@@ -7,44 +7,15 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Polyline?>
 
-<AnchorPane prefHeight="741.0" prefWidth="1024.0" stylesheets="@../styke/map.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.whitechapel.controller.MapController">
-   <ImageView fitHeight="741.0" fitWidth="1024.0" pickOnBounds="true" preserveRatio="true">
+<AnchorPane prefHeight="741.0" prefWidth="1024.0" stylesheets="@../style/map.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.MapController">
+   
+    <ImageView fitHeight="741.0" fitWidth="1024.0" pickOnBounds="true" preserveRatio="true">
       <image>
-         <Image url="@../../../../../mappashadow.png" />
+         <Image url="@/images/mappashadow.png" />
       </image>
-   </ImageView>
+   </ImageView> 
 
-    <Circle fx:id="n1" centerX="961" centerY="34" radius="12" styleClass="node" />
-    <Circle fx:id="n2" centerX="910" centerY="53" radius="12" styleClass="node" />
-    <Circle fx:id="n3" centerX="975" centerY="83" radius="12" styleClass="node" />
-    <Circle fx:id="n4" centerX="929" centerY="111" radius="12" styleClass="node" />
-    <Circle fx:id="n5" centerX="413" centerY="164" radius="12" styleClass="node" />
-    <Circle fx:id="n6" centerX="776" centerY="172" radius="12" styleClass="node" />
-
-    <Circle fx:id="n7" centerX="588" centerY="199" radius="12" styleClass="node" />
-    <Circle fx:id="n8" centerX="427" centerY="201" radius="12" styleClass="node" />
-    <Circle fx:id="n9" centerX="957" centerY="219" layoutX="5.0" layoutY="16.0" radius="12" styleClass="node" />
-    <Circle fx:id="n10" centerX="441" centerY="235" radius="12" styleClass="node" />
-
-    <Circle fx:id="n11" centerX="855" centerY="247" radius="12" styleClass="node" />
-    <Circle fx:id="n12" centerX="860" centerY="276" radius="12" styleClass="node" />
-    <Circle fx:id="n13" centerX="253" centerY="304" radius="12" styleClass="node" />
-    <Circle fx:id="n14" centerX="868" centerY="340" radius="12" styleClass="node" />
-
-    <Circle fx:id="n15" centerX="678" centerY="390" radius="12" styleClass="node" />
-    <Circle fx:id="n16" centerX="184" centerY="395" radius="12" styleClass="node" />
-    <Circle fx:id="n17" centerX="629" centerY="399" radius="12" styleClass="node" />
-    <Circle fx:id="n18" centerX="403" centerY="414" radius="12" styleClass="node" />
-    <Circle fx:id="n19" centerX="771" centerY="445" radius="12" styleClass="node" />
-    <Circle fx:id="n20" centerX="961" centerY="447" radius="12" styleClass="node" />
-
-    <Circle fx:id="n21" centerX="667" centerY="513" radius="12" styleClass="node" />
-    <Circle fx:id="n22" centerX="686" centerY="532" radius="12" styleClass="node" />
-    <Circle fx:id="n23" centerX="541" centerY="587" layoutX="10.0" layoutY="-1.0" radius="12" styleClass="node" />
-    <Circle fx:id="n24" centerX="522" centerY="591" layoutX="3.0" layoutY="2.0" radius="12" styleClass="node" />
-    <Circle fx:id="n25" centerX="292" centerY="606" radius="12" styleClass="node" />
-    <Circle fx:id="n26" centerX="482" centerY="663" radius="12" styleClass="node" />
-   <Polyline fill="#80ff0003" layoutX="266.0" layoutY="417.0" points="-13.000015258789062, -113.0, -58.00001525878906, -78.60000610351562, -49.20002746582031, -64.20001220703125, -85.19999694824219, -16.20001220703125" stroke="TRANSPARENT" strokeType="INSIDE" />
+    <Polyline fill="#80ff0003" layoutX="266.0" layoutY="417.0" points="-13.000015258789062, -113.0, -58.00001525878906, -78.60000610351562, -49.20002746582031, -64.20001220703125, -85.19999694824219, -16.20001220703125" stroke="TRANSPARENT" strokeType="INSIDE" />
    <Polyline fill="#80ff0000" layoutX="231.0" layoutY="535.0" points="65.0, 71.4000244140625, 61.0, 58.0, 33.79998779296875, -37.399993896484375, -47.00001525878906, -140.0" stroke="TRANSPARENT" strokeType="INSIDE" />
    <Line endX="14.79998779296875" endY="42.600006103515625" layoutX="414.0" layoutY="159.0" startX="-1.0" startY="5.0" stroke="TRANSPARENT" />
    <Line endX="19.4000244140625" endY="37.79998779296875" layoutX="423.0" layoutY="199.0" startX="4.20001220703125" startY="6.600006103515625" stroke="TRANSPARENT" />
@@ -92,5 +63,32 @@
    <Line endX="100.56671142578125" endY="123.9000244140625" layoutX="564.0" layoutY="390.0" startX="63.23333740234375" startY="15.100006103515625" stroke="TRANSPARENT" />
    <Line endX="48.56671142578125" endY="-64.76666259765625" layoutX="728.0" layoutY="504.0" startX="-60.23333740234375" startY="14.16668701171875" stroke="TRANSPARENT" />
    <Line endX="93.70001220703125" endY="-89.43331909179688" layoutX="685.0" layoutY="534.0" startX="5.1666259765625" startY="1.23333740234375" stroke="TRANSPARENT" />
+
+    <Circle fx:id="n1" centerX="961" centerY="34" radius="12" styleClass="node" />
+    <Circle fx:id="n2" centerX="910" centerY="53" radius="12" styleClass="node" />
+    <Circle fx:id="n3" centerX="975" centerY="83" radius="12" styleClass="node" />
+    <Circle fx:id="n4" centerX="929" centerY="111" radius="12" styleClass="node" />
+    <Circle fx:id="n5" centerX="413" centerY="164" radius="12" styleClass="node" />
+    <Circle fx:id="n6" centerX="776" centerY="172" radius="12" styleClass="node" />
+    <Circle fx:id="n7" centerX="588" centerY="199" radius="12" styleClass="node" />
+    <Circle fx:id="n8" centerX="427" centerY="201" radius="12" styleClass="node" />
+    <Circle fx:id="n9" centerX="957" centerY="219" layoutX="5.0" layoutY="16.0" radius="12" styleClass="node" />
+    <Circle fx:id="n10" centerX="441" centerY="235" radius="12" styleClass="node" />
+    <Circle fx:id="n11" centerX="855" centerY="247" radius="12" styleClass="node" />
+    <Circle fx:id="n12" centerX="860" centerY="276" radius="12" styleClass="node" />
+    <Circle fx:id="n13" centerX="253" centerY="304" radius="12" styleClass="node" />
+    <Circle fx:id="n14" centerX="868" centerY="340" radius="12" styleClass="node" />
+    <Circle fx:id="n15" centerX="678" centerY="390" radius="12" styleClass="node" />
+    <Circle fx:id="n16" centerX="184" centerY="395" radius="12" styleClass="node" />
+    <Circle fx:id="n17" centerX="629" centerY="399" radius="12" styleClass="node" />
+    <Circle fx:id="n18" centerX="403" centerY="414" radius="12" styleClass="node" />
+    <Circle fx:id="n19" centerX="771" centerY="445" radius="12" styleClass="node" />
+    <Circle fx:id="n20" centerX="961" centerY="447" radius="12" styleClass="node" />
+    <Circle fx:id="n21" centerX="667" centerY="513" radius="12" styleClass="node" />
+    <Circle fx:id="n22" centerX="686" centerY="532" radius="12" styleClass="node" />
+    <Circle fx:id="n23" centerX="541" centerY="587" layoutX="10.0" layoutY="-1.0" radius="12" styleClass="node" />
+    <Circle fx:id="n24" centerX="522" centerY="591" layoutX="3.0" layoutY="2.0" radius="12" styleClass="node" />
+    <Circle fx:id="n25" centerX="292" centerY="606" radius="12" styleClass="node" />
+    <Circle fx:id="n26" centerX="482" centerY="663" radius="12" styleClass="node" />
 
 </AnchorPane>

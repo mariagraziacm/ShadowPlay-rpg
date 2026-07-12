@@ -30,14 +30,14 @@ public class RoleSelectController {
 
     @FXML
     private void onChooseKiller() {
-        Board board = Board.loadFromResource("/maps/map.json");
+        Board board = Board.loadFromResource("/rounds/maps.json");
         GameEngine engine = GameEngine.newGame(board, RoleType.KILLER);
         openGameScreen(engine);
     }
 
     @FXML
     private void onChoosePolice() {
-        Board board = Board.loadFromResource("/maps/map.json");
+        Board board = Board.loadFromResource("/rounds/maps.json");
         GameEngine engine = GameEngine.newGame(board, RoleType.POLICE);
         openGameScreen(engine);
     }
@@ -45,7 +45,7 @@ public class RoleSelectController {
     @FXML
     private void onLoadGame() {
         try {
-            Board board = Board.loadFromResource("/maps/map.json");
+            Board board = Board.loadFromResource("/rounds/maps.json");
             GameState savedState = storage.load(Path.of("save.json"));
             GameEngine engine = GameEngine.resume(board, savedState);
             openGameScreen(engine);
@@ -56,7 +56,7 @@ public class RoleSelectController {
 
     private void openGameScreen(GameEngine engine) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/game_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
             Parent root = loader.load();
 
             GameController gameController = loader.getController();

@@ -1,2 +1,5 @@
 .root{
-    -fx-background-image: url("/images/shadowplaystartpng");}
+    -fx-background-image: url("/images/shadowplaystart.png");
+   -fx-background-size: cover;
+    -fx-background-position: center center;
+}

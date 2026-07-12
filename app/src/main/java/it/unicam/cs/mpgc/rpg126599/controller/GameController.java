@@ -20,7 +20,7 @@ import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 public class GameController {
 
-    /** Cosa deve succedere al prossimo click su un nodo della mappa. */
+    
     private enum PendingAction {
         NONE, MOVE, FAKE_CLUE, ARREST
     }
@@ -98,10 +98,7 @@ public class GameController {
         }
     }
 
-    // -----------------------------------------------------------
-    // Pulsanti d'azione
-    // -----------------------------------------------------------
-
+    
     @FXML
     private void onUseClue() {
         try {
@@ -151,7 +148,7 @@ public class GameController {
     @FXML
     private void onReturnToMenu() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/role_select.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/roleselect.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) statusLabel.getScene().getWindow();
             stage.setScene(new Scene(root, 420, 360));

@@ -6,12 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/role_select.fxml"));
-        primaryStage.setScene(new Scene(root, 400, 300));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/roleselect.fxml"));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Whitechapel Lite — scegli il tuo ruolo");
         primaryStage.show();
     }

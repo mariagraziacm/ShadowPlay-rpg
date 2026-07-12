@@ -1,27 +1,28 @@
-
-.root{
-    -fx-background-image: url("/images/mappashadow.png");
-    -fx-background-repeat: no-repeat;
-
-    -fx-background-size: cover;
-
-}
-
-.line{
+.line {
+    /* Nel tuo FXML usi <Line>, per applicare lo stile usa styleClass="line" sui tag Line dell'FXML */
+    /* Oppure usa il selettore di tipo senza punto: Line { ... } */
     -fx-stroke: #2f2f2f;
     -fx-stroke-width: 2;
 }
 
-.node{
+.node {
     -fx-fill: white;
     -fx-stroke: black;
     -fx-stroke-width: 2;
 }
 
-.node:hover{
+.node:hover {
     -fx-fill: gold;
 }
 
-.node:selected{
-    -fx-fillgr: crimson;
+/* Corretto da -fx-fillgr a -fx-fill */
+.node:selected {
+    -fx-fill: crimson; 
 }
+
+/* Aggiungi le definizioni per le pseudo-classi che usa il GameController unificato */
+.node:police { -fx-fill: blue; }
+.node:killer { -fx-fill: red; }
+.node:eliminated { -fx-fill: gray; -fx-opacity: 0.5; }
+.node:clue { -fx-fill: orange; }
+.node:home { -fx-fill: green; }

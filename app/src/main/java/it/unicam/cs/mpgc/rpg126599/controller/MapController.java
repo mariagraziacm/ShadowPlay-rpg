@@ -150,3 +150,6 @@ public class MapController {
         nodesById.values().forEach(circle -> circle.pseudoClassStateChanged(SELECTED, false));
     }
 }
+
+
+
