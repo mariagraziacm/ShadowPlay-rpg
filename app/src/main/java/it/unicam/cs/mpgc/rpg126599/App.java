@@ -12,7 +12,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/roleselect.fxml"));
         primaryStage.setScene(new Scene(root));
-        primaryStage.setTitle("Whitechapel Lite — scegli il tuo ruolo");
+        primaryStage.setTitle("SHADOW PLAY — inzia a giocaare!");
         primaryStage.show();
     }
 

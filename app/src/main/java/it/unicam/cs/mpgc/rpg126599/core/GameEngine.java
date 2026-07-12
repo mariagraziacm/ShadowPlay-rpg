@@ -55,7 +55,7 @@ public class GameEngine {
         resolveAutomaticPhases();
     }
 
-    /** MOVIMENTO KILLER UMANO (Supporta 1 e 2 passi) */
+
     public void killerMove(String targetLocationId) {
         requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
@@ -184,9 +184,6 @@ public class GameEngine {
         state.setPhase(Turn.AWAITING_KILLER_ACTION);
     }
 
-    // ---------------------------------------------------------------
-    // GESTIONE TURNI AUTOMATICI (SEMPLIFICATA E ANTI-BLOCCO)
-    // ---------------------------------------------------------------
 
     private void resolveAutomaticPhases() {
         int safety = 0;
@@ -263,7 +260,7 @@ public class GameEngine {
         applyKillerMove(target);
     }
 
-    /** BOT POLIZIA AUTOMATICA (Si muove solo sui vicini liberi) */
+  
     private void autoPlayPoliceTurn() {
         String current = state.getPolice().getCurrentLocationId();
         Optional<Location> unvisited = board.firstUnvisitedNeighbor(current, state.getVisitedByPolice());

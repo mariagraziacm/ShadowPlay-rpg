@@ -1,18 +1,12 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-
-/**
- * Indizio falso lasciato dal killer su una casella in cui non si trova
- * realmente. "investigated" è usato solo dalla logica automatica per
- * sapere se ha già controllato questa pista.
- */
 public class Clue {
 
     private String locationId;
     private int roundFound;
     private boolean investigated;
 
-    // Costruttore vuoto richiesto da Gson
+
     public Clue() {
     }
 

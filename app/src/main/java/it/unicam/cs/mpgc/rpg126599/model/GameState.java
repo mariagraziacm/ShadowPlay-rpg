@@ -73,13 +73,13 @@ public class GameState {
         return killerHomeLocationId;
     }
 
-    /** Fissa la casa segreta del killer (punto di ritorno). Non sposta ancora il killer. */
+// Segna la casa del killer che sarà il suo punto di ritrno per vincere la partita
     public void chooseHome(String locationId) {
         this.killerHomeLocationId = locationId;
         this.homeChosen = true;
     }
 
-    /** Fissa il luogo del primo omicidio: è la posizione di partenza del killer, diversa da casa. */
+// Segna la posizione in cui il killer effettua il primo omicidio, deve essere diversa dalla casa scelta, questo è il punto di partenza del killer
     public void setKillerStartLocation(String locationId) {
         this.killer.moveTo(locationId);
         this.visitedByKiller.add(locationId);

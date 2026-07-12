@@ -7,7 +7,6 @@ public class Player {
     private RoleType role;
     private String currentLocationId;
 
-    // Costruttore vuoto richiesto da Gson
     public Player() {
     }
 
