@@ -41,6 +41,12 @@ public class MapController {
     @FXML private Circle n18;
     @FXML private Circle n19;
     @FXML private Circle n20;
+    @FXML private Circle n21;
+    @FXML private Circle n22;
+@FXML private Circle n23;
+@FXML private Circle n24;
+@FXML private Circle n25;
+@FXML private Circle n26;
     
     private final Map<String, Circle> nodesById = new LinkedHashMap<>();
     private Consumer<String> onNodeClicked = locationId -> { };
@@ -67,7 +73,12 @@ public class MapController {
         register("n18", n18);
         register("n19", n19);
         register("n20", n20);
-
+        register("n21", n21);
+        register("n22", n22);       
+        register("n23", n23);
+        register("n24", n24);   
+        register("n25", n25);
+        register("n26", n26);
 
         nodesById.forEach((locationId, circle) ->
                 circle.setOnMouseClicked(event -> onNodeClicked.accept(locationId)));

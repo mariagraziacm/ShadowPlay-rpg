@@ -1,7 +1,10 @@
 package it.unicam.cs.mpgc.rpg126599.core;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+
 import it.unicam.cs.mpgc.rpg126599.model.Board;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
@@ -134,10 +137,13 @@ public class GameEngine {
         state.setPhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
     }
 
-    private void applyChooseMurderLocation(String locationId) {
-        state.setKillerStartLocation(locationId);
-        state.setPhase(Turn.AWAITING_POLICE_ACTION);
-    }
+private void applyChooseMurderLocation(String locationId) {
+    state.setKillerStartLocation(locationId);
+    // Il luogo del delitto è per forza diverso da casa (validato in chooseMurderLocation):
+    // quindi il killer è già "fuori casa" da questo momento, non solo dal primo movimento.
+    state.markLeftHome();
+    state.setPhase(Turn.AWAITING_POLICE_ACTION);
+}
 
     private void applyKillerMove(String targetLocationId) {
         boolean wasAlreadyAwayFromHome = state.hasLeftHome();
@@ -166,14 +172,17 @@ public class GameEngine {
         state.usePoliceClue();
     }
 
-    private String pickHomeCandidateToEliminate() {
-        return board.all().stream()
-                .map(Location::getId)
-                .filter(id -> !id.equals(state.getKillerHomeLocationId()))
-                .filter(id -> !state.getEliminatedHomeCandidates().contains(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Nessuna casella da escludere."));
+  private String pickHomeCandidateToEliminate() {
+    List<String> candidates = board.all().stream()
+            .map(Location::getId)
+            .filter(id -> !id.equals(state.getKillerHomeLocationId()))
+            .filter(id -> !state.getEliminatedHomeCandidates().contains(id))
+            .toList();
+    if (candidates.isEmpty()) {
+        throw new IllegalStateException("Non ci sono più caselle da escludere.");
     }
+    return candidates.get(new Random().nextInt(candidates.size()));
+}
 
     private void applyPoliceMove(String targetLocationId) {
         state.getPolice().moveTo(targetLocationId);

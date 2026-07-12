@@ -1,0 +1,34 @@
+{
+  "killer": {
+    "role": "KILLER",
+    "currentLocationId": "n18"
+  },
+  "police": {
+    "role": "POLICE",
+    "currentLocationId": "n20"
+  },
+  "humanRole": "KILLER",
+  "phase": "GAME_OVER",
+  "killerHomeLocationId": "n18",
+  "homeChosen": true,
+  "killerHasLeftHome": true,
+  "roundsElapsed": 1,
+  "maxRounds": 8,
+  "policeCluesRemaining": 2,
+  "killerFakeCluesRemaining": 2,
+  "eliminatedHomeCandidates": [
+    "n1"
+  ],
+  "failedArrestLocations": [],
+  "fakeClues": [],
+  "visitedByKiller": [
+    "n17",
+    "n18"
+  ],
+  "visitedByPolice": [
+    "n20"
+  ],
+  "finished": true,
+  "winner": "KILLER",
+  "endReason": "Il killer è rientrato a casa senza essere scoperto."
+}
