@@ -4,36 +4,30 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane stylesheets="@../style/game.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
+<BorderPane stylesheets="@../style/game.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
     <center>
         <fx:include fx:id="map" source="map.fxml" />
     </center>
-    <bottom>
-        <VBox maxWidth="Infinity" spacing="12.0" styleClass="game-control-bar" BorderPane.alignment="CENTER">
+   <right>
+        <VBox maxWidth="Infinity" spacing="30.0" styleClass="game-control-bar" BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
             <children>
-                <Label fx:id="statusLabel" styleClass="game-status" text="Puoi spostarti solo di 1 o 2 caselle." wrapText="true" />
-                
-                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="10.0">
-                    <children>
-                        <Button fx:id="useClueButton" onAction="#onUseClue" text="Usa indizio" />
-                        <Button fx:id="moveButton" onAction="#onSelectMove" text="Sposta" />
-                        <Button fx:id="fakeClueButton" onAction="#onSelectFakeClue" text="Lascia indizio falso" />
-                        <Button fx:id="arrestButton" onAction="#onSelectArrest" text="Tenta l'arresto" />
-                    </children>
-                </HBox>
-                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="10.0">
-                    <children>
-                        <Button onAction="#onSaveGame" styleClass="secondary-button" text="Salva partita" />
-                        <Button onAction="#onReturnToMenu" styleClass="secondary-button" text="Torna al menu" />
-                    </children>
-                </HBox>
+                <Label fx:id="statusLabel" prefHeight="73.0" prefWidth="262.0" styleClass="game-status" text="Puoi spostarti solo di 1 o 2 caselle." wrapText="true" />
+                  <Button fx:id="arrestButton" onAction="#onSelectArrest" prefHeight="28.0" prefWidth="261.0" text="Tenta l'arresto" />
+                  <Button fx:id="fakeClueButton" onAction="#onSelectFakeClue" prefHeight="28.0" prefWidth="262.0" text="Lascia indizio falso" />
+                  <Button fx:id="moveButton" onAction="#onSelectMove" prefHeight="28.0" prefWidth="260.0" text="Sposta" />
+                  <Button fx:id="useClueButton" onAction="#onUseClue" prefHeight="28.0" prefWidth="262.0" text="Usa indizio" />
+            <VBox alignment="BOTTOM_CENTER" prefHeight="177.0" prefWidth="262.0" spacing="30.0">
+               <children>
+                        <Button alignment="CENTER" onAction="#onReturnToMenu" prefHeight="30.0" prefWidth="214.0" styleClass="secondary-button" text="Torna al menu" />
+                        <Button onAction="#onSaveGame" prefHeight="30.0" prefWidth="213.0" styleClass="secondary-button" text="Salva partita" />
+               </children>
+            </VBox>
             </children>
         </VBox>
-    </bottom>
+   </right>
 </BorderPane>
