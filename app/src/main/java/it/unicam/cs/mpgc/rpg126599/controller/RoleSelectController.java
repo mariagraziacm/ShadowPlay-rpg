@@ -46,11 +46,11 @@ public class RoleSelectController {
     private void onLoadGame() {
         try {
             Board board = Board.loadFromResource("/rounds/maps.json");
-            GameState savedState = storage.load(Path.of("save.json"));
+            GameState savedState = storage.load(Path.of("Persistence.json"));
             GameEngine engine = GameEngine.resume(board, savedState);
             openGameScreen(engine);
         } catch (IOException e) {
-            messageLabel.setText("Nessun salvataggio valido trovato (save.json).");
+            messageLabel.setText("Nessun salvataggio valido trovato (Persistence.json).");
         }
     }
 

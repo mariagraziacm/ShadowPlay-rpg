@@ -49,9 +49,7 @@ public class GameController {
         refreshView();
     }
 
-    // -----------------------------------------------------------
-    // Click sulla mappa
-    // -----------------------------------------------------------
+
 
     private void onNodeClicked(String locationId) {
         if (engine.getState().isFinished()) {
@@ -137,8 +135,8 @@ public class GameController {
     @FXML
     private void onSaveGame() {
         try {
-            storage.save(engine.getState(), Path.of("save.json"));
-            statusLabel.setText("Partita salvata in save.json");
+            storage.save(engine.getState(), Path.of("Persistence.json"));
+            statusLabel.setText("Partita salvata in Persistence.json");
         } catch (IOException e) {
             statusLabel.setText("Errore durante il salvataggio.");
         }
@@ -151,7 +149,7 @@ public class GameController {
             Parent root = loader.load();
             Stage stage = (Stage) statusLabel.getScene().getWindow();
             stage.setScene(new Scene(root, 420, 360));
-            stage.setTitle("Whitechapel Lite");
+            stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             statusLabel.setText("Impossibile tornare al menu.");
         }
@@ -227,7 +225,7 @@ public class GameController {
 
         String ruolo = state.getHumanRole() == RoleType.KILLER ? "Killer" : "Poliziotto";
       
-        
+
         String indiziInfo = state.getHumanRole() == RoleType.KILLER
                 ? "indizi falsi rimasti: " + state.getKillerFakeCluesRemaining()
                 : "indizi rimasti: " + state.getPoliceCluesRemaining();
