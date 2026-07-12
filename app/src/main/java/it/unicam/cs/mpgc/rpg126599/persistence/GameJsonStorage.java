@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 
-public class GameJsonStorage {
+public class GameJsonStorage implements GameRepository {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
