@@ -1,5 +1,55 @@
-.root{
+
+.root {
     -fx-background-image: url("/images/shadowplaystart.png");
-   -fx-background-size: cover;
+    -fx-background-size: cover;
     -fx-background-position: center center;
+}
+
+.button {
+    
+    -fx-background-color: #3d3124;
+    -fx-text-fill: #f5eccd;
+    -fx-font-family: "Georgia", "Times New Roman", serif;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-border-color: #8c765c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-padding: 10 25 10 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.4), 6, 0, 0, 3);
+}
+
+.button:hover {
+    -fx-background-color: #594939;
+    -fx-border-color: #b39b7d;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.6), 10, 0, 0, 5);
+}
+
+
+.button:pressed {
+    -fx-background-color: #241c14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0), 0, 0, 0, 0);
+}
+
+
+.title {
+    -fx-font-family: "Georgia", "Times New Roman", serif;
+    -fx-font-size: 56px; 
+    -fx-font-weight: 900; 
+    -fx-text-fill: #2b221a; 
+    -fx-letter-spacing: 4px; 
+    -fx-effect: dropshadow(two-pass-box, rgba(43, 34, 26, 0.6), 4, 0, 0, 2);
+}
+
+.subtitle {
+    -fx-font-family: "Georgia", "Times New Roman", serif;
+    -fx-font-size: 24px; 
+    -fx-font-style: italic;
+    -fx-font-weight: normal;
+    -fx-text-fill: #4a3b2c;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 0 0 20 0;
 }

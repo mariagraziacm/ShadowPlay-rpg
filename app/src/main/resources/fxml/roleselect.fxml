@@ -10,11 +10,11 @@
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
     <children>
-        <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Whitechapel Lite" />
-        <Label text="Scegli il tuo ruolo" />
-        <Button fx:id="killerButton" onAction="#onChooseKiller" prefWidth="220.0" text="Gioca come Killer" />
-        <Button fx:id="policeButton" onAction="#onChoosePolice" prefWidth="220.0" text="Gioca come Poliziotto" />
-        <Button onAction="#onLoadGame" prefWidth="220.0" text="Carica partita salvata" />
+        <Label prefHeight="66.0" prefWidth="473.0" styleClass="title" text="SHADOW PLAY" />
+        <Label styleClass="subtitle" text="Scegli il tuo ruolo" />
+        <Button fx:id="killerButton" onAction="#onChooseKiller" prefHeight="42.0" prefWidth="340.0" text="Gioca come Killer" />
+        <Button fx:id="policeButton" onAction="#onChoosePolice" prefHeight="42.0" prefWidth="338.0" text="Gioca come Poliziotto" />
+        <Button onAction="#onLoadGame" prefHeight="42.0" prefWidth="335.0" text="Carica partita salvata" />
         <Label fx:id="messageLabel" style="-fx-text-fill: #aa3333;" wrapText="true" />
     </children>
 </VBox>
