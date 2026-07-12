@@ -106,7 +106,7 @@ Il gioco include un sistema di salvataggio dello stato del tabellone in un file 
 ```
 Persistence.json
 ```
-Anche alla riapertura dell'applicazione è possibile riprendere automaticamente la partita salvata direttamente dal menu principale.
+Anche alla riapertura dell'applicazione è possibile riprendere la partita salvata in qualsiasi momento, selezionando l'apposita opzione dal menù principale.
 
 
 ---
@@ -121,13 +121,12 @@ Il giocatore controlla uno dei due ruoli (**Killer** oppure **Poliziotto**), men
 
 # Utilizzo di strumenti di Intelligenza Artificiale
 
-Il progetto è stato sviluppato con il supporto di strumenti di intelligenza artificiale, utilizzati come assistenti alla programmazione per individuare e correggere i bug 
-(in particolare con la sincronizzazione tra la mappa grafica e il modello logico) e  la progettazione di alcune logiche algoritmiche più complesse.
-Ogni suggerimento è stato comunque valutato, verificato, compreso e  corretto manualmente prima dell'integrazione nel progetto.
+Il progetto è stato sviluppato con il supporto di strumenti di intelligenza artificiale, utilizzati come assistenti alla programmazione per individuare e correggere i bug (in particolare con la sincronizzazione tra la mappa grafica e il modello logico) e per la progettazione di alcune logiche algoritmiche più complesse.
+Ogni suggerimento è stato comunque valutato, verificato, compreso e corretto manualmente prima dell'integrazione nel progetto.
 In particolare:
 
 - **ChatGPT** e **Gemini** sono stati utilizzati per la generazione delle immagini e delle grafiche della schermata iniziale e della mappa di gioco.
 - **Gemini** ha fornito supporto nella rifinitura dei fogli di stile CSS dell'interfaccia JavaFX, migliorandone la coerenza estetica.
 - **Claude Code** è stato utilizzato come supporto nella progettazione della logica di generazione e disposizione dei nodi sulla mappa.
 
-Per una descrizione più dettagliata dell'utilizzo degli strumenti di Intelligenza Artificiale è disponibile la **Wiki** del repository.
+Per una descrizione più dettagliata dell'utilizzo degli strumenti di Intelligenza Artificiale consultare la **Wiki** del repository.
