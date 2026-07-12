@@ -211,7 +211,7 @@ public class MapController {
                 try {
                     Circle circle = (Circle) field.get(this);
                     if (circle != null) {
-                        String id = field.getName(); // Usa il nome della variabile (es. "n1") come ID
+                        String id = field.getName(); 
                         nodesById.put(id, circle);
                         
                         circle.setPickOnBounds(true);
@@ -219,7 +219,7 @@ public class MapController {
                         circle.setOnMouseClicked(event -> onNodeClicked.accept(id));
                     }
                 } catch (IllegalAccessException e) {
-                    // Ignorato in sicurezza durante l'injection
+                    
                 }
             }
         }
