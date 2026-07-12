@@ -1,0 +1,108 @@
+/* ==========================================================================
+   SHADOW PLAY - Game View Stylesheet (game.css)
+   ========================================================================== */
+
+/* Contenitore principale della schermata di gioco */
+.root {
+    -fx-font-family: "Georgia", "Times New Roman", serif;
+}
+
+/* Sfondo della barra dei comandi in basso (Tabellone comandi) */
+.game-control-bar {
+    -fx-background-color: linear-gradient(to bottom, #eae0c1, #dfd1a9);
+    -fx-border-color: #8c765c transparent transparent transparent;
+    -fx-border-width: 2 0 0 0;
+    -fx-max-width: 99999px;
+    
+    /* Ridotto lo spazio sopra e sotto da 15px a 8px */
+    -fx-padding: 8px 15px 8px 15px; 
+}
+
+/* Label di stato del gioco (Turni, comunicazioni, errori) */
+.game-status {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2b221a; /* Colore inchiostro denso */
+    
+    /* Spaziatura interna minima per distanziare il testo dai bottoni */
+    -fx-padding: 0 0 4 0;
+}
+
+/* --------------------------------------------------------------------------
+   BOTTONI DELLE AZIONI PRINCIPALI (Usa indizio, Sposta, Arresto, ecc.)
+   -------------------------------------------------------------------------- */
+.button {
+    -fx-background-color: #3d3124;
+    -fx-text-fill: #f5eccd;
+    -fx-font-family: "Georgia", serif;
+    -fx-font-size: 13px; /* Leggermente più piccolo (era 14px) */
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-border-color: #8c765c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    
+    /* Ridotto il padding verticale da 8px a 5px per renderlo più snello */
+    -fx-padding: 5px 15px 5px 15px; 
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.3), 4, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-background-color: #594939; /* Si schiarisce color bronzo al passaggio del mouse */
+    -fx-border-color: #b39b7d;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.5), 6, 0, 0, 3);
+}
+
+.button:pressed {
+    -fx-background-color: #241c14; /* Effetto premuto molto scuro */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0), 0, 0, 0, 0);
+}
+
+/* STATO DISABILITATO (Es: quando finisci gli indizi rimasti) */
+.button:disabled {
+    -fx-background-color: #bfae93; /* Colore spento e desaturato */
+    -fx-border-color: #9c8b74;
+    -fx-text-fill: #7d6e59;
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+    -fx-effect: null; /* Rimuove l'ombra per farlo sembrare piatto */
+}
+
+/* --------------------------------------------------------------------------
+   BOTTONI SECONDARI (Salva partita, Torna al menu)
+   -------------------------------------------------------------------------- */
+.button.secondary-button {
+    -fx-background-color: #594939; /* Tonalità cuoio/metallo brunito, visivamente più leggeri */
+    -fx-border-color: #73604d;
+    -fx-text-fill: #f5eccd;
+    -fx-font-size: 13px; /* Leggermente più piccoli per dare gerarchia */
+    -fx-padding: 6 14 6 14;
+}
+
+.button.secondary-button:hover {
+    -fx-background-color: #73604d;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #9c856f;
+}
+
+.button.secondary-button:pressed {
+    -fx-background-color: #3d3124;
+}
+
+.button.secondary-button:disabled {
+    -fx-background-color: #bfae93;
+    -fx-text-fill: #7d6e59;
+    -fx-opacity: 0.6;
+}
+.game-control-bar {
+    -fx-background-color: linear-gradient(to bottom, #eae0c1, #dfd1a9);
+    -fx-border-color: #8c765c transparent transparent transparent;
+    -fx-border-width: 2 0 0 0;
+    -fx-max-width: 99999px; /* Forza la barra a coprire tutto lo schermo allargato */
+}
+.border-pane .center {
+    -fx-alignment: center;
+    -fx-background-color: #eae0c1; /* Colore pergamena per riempire eventuali vuoti */
+}

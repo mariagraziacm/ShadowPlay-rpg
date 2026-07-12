@@ -7,19 +7,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
+<BorderPane stylesheets="@../style/game.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
     <center>
-        <fx:include fx:id="map" source="map.fxml" BorderPane.alignment="CENTER" />
+        <fx:include fx:id="map" source="map.fxml" />
     </center>
     <bottom>
-        <VBox spacing="8.0" BorderPane.alignment="CENTER">
+        <VBox maxWidth="Infinity" spacing="12.0" styleClass="game-control-bar" BorderPane.alignment="CENTER">
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
             <children>
-                <Label fx:id="statusLabel" style="-fx-font-size: 13px;" text="In attesa..." wrapText="true" />
-                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label fx:id="statusLabel" styleClass="game-status" text="Puoi spostarti solo di 1 o 2 caselle." wrapText="true" />
+                
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="10.0">
                     <children>
                         <Button fx:id="useClueButton" onAction="#onUseClue" text="Usa indizio" />
                         <Button fx:id="moveButton" onAction="#onSelectMove" text="Sposta" />
@@ -27,10 +27,10 @@
                         <Button fx:id="arrestButton" onAction="#onSelectArrest" text="Tenta l'arresto" />
                     </children>
                 </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="10.0">
                     <children>
-                        <Button onAction="#onSaveGame" text="Salva partita" />
-                        <Button onAction="#onReturnToMenu" text="Torna al menu" />
+                        <Button onAction="#onSaveGame" styleClass="secondary-button" text="Salva partita" />
+                        <Button onAction="#onReturnToMenu" styleClass="secondary-button" text="Torna al menu" />
                     </children>
                 </HBox>
             </children>

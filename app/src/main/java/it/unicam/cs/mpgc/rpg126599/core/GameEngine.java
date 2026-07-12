@@ -47,6 +47,7 @@ public class GameEngine {
     public void chooseHome(String locationId) {
         requirePhase(Turn.AWAITING_HOME_CHOICE);
         requireHumanRole(RoleType.KILLER);
+        requireExistingLocation(locationId);
         applyChooseHome(locationId);
         resolveAutomaticPhases();
     }
@@ -54,6 +55,7 @@ public class GameEngine {
     public void chooseMurderLocation(String locationId) {
         requirePhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
         requireHumanRole(RoleType.KILLER);
+        requireExistingLocation(locationId);
         if (locationId.equals(state.getKillerHomeLocationId())) {
             throw new IllegalArgumentException("Il luogo dell'omicidio deve essere diverso da casa.");
         }
@@ -64,10 +66,10 @@ public class GameEngine {
     public void killerMove(String targetLocationId) {
         requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
-        
+
         String current = state.getKiller().getCurrentLocationId();
         int distance = board.distance(current, targetLocationId);
-        
+
         if (distance != 1 && distance != 2) {
             throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
         }
@@ -289,7 +291,7 @@ public class GameEngine {
             Optional<Location> unvisited = board.neighborsOf(current).stream()
                     .filter(location -> !state.getVisitedByPolice().contains(location.getId()))
                     .findFirst();
-                    
+
             String next = unvisited.map(Location::getId).orElseGet(() -> {
                 List<Location> neighbors = board.neighborsOf(current);
                 return neighbors.get(random.nextInt(neighbors.size())).getId();
@@ -298,8 +300,6 @@ public class GameEngine {
         }
         endPoliceTurn();
     }
-
-
 
     private String findClosestNeighbor(String fromId, String targetId) {
         return board.neighborsOf(fromId).stream()
@@ -313,7 +313,7 @@ public class GameEngine {
         List<Location> notVisited = neighbors.stream()
                 .filter(candidate -> !alreadyVisited.contains(candidate.getId()))
                 .toList();
-        
+
         List<Location> candidates = notVisited.isEmpty() ? neighbors : notVisited;
 
         return candidates.stream()
@@ -345,6 +345,14 @@ public class GameEngine {
     private void requireNotAlreadySearched(String locationId) {
         if (state.isAlreadySearched(locationId)) {
             throw new IllegalArgumentException("Hai già cercato in questa casella: scegline un'altra.");
+        }
+    }
+
+    private void requireExistingLocation(String locationId) {
+        try {
+            board.get(locationId);
+        } catch (java.util.NoSuchElementException e) {
+            throw new IllegalArgumentException("Casella inesistente sulla mappa: " + locationId);
         }
     }
 }
