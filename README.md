@@ -106,8 +106,8 @@ Il gioco include un sistema di salvataggio dello stato del tabellone in un file 
 ```
 Persistence.json
 ```
+Anche alla riapertura dell'applicazione è possibile riprendere automaticamente la partita salvata direttamente dal menu principale.
 
-Alla riapertura dell'applicazione è possibile riprendere automaticamente la partita salvata direttamente dal menu principale.
 
 ---
 
