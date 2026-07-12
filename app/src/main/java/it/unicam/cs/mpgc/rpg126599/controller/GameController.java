@@ -18,9 +18,9 @@ import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
+
 public class GameController {
 
-    
     private enum PendingAction {
         NONE, MOVE, FAKE_CLUE, ARREST
     }
@@ -48,8 +48,6 @@ public class GameController {
         mapController.setOnNodeClicked(this::onNodeClicked);
         refreshView();
     }
-
-
 
     private void onNodeClicked(String locationId) {
         if (engine.getState().isFinished()) {
@@ -95,7 +93,6 @@ public class GameController {
         }
     }
 
-    
     @FXML
     private void onUseClue() {
         try {
@@ -155,42 +152,50 @@ public class GameController {
         }
     }
 
- 
-
     private void resetPendingAction() {
         pendingAction = PendingAction.NONE;
         mapController.clearSelection();
     }
 
-private void refreshView() {
-    mapController.clearAllStates();
-    mapController.resetInteractable();
+    private void refreshView() {
+        mapController.clearAllStates();
+        mapController.resetInteractable();
 
-    var state = engine.getState();
-    state.getEliminatedHomeCandidates().forEach(mapController::markEliminated);
-    state.getFailedArrestLocations().forEach(mapController::markSearched);
-    for (Clue clue : state.getFakeClues()) {
-        mapController.markFakeClue(clue.getLocationId());
-    }
+        var state = engine.getState();
+        state.getEliminatedHomeCandidates().forEach(mapController::markEliminated);
+        state.getFailedArrestLocations().forEach(mapController::markSearched);
+        for (Clue clue : state.getFakeClues()) {
+            mapController.markFakeClue(clue.getLocationId());
+        }
 
-    boolean isPoliceHumanTurn = state.getPhase() == Turn.AWAITING_POLICE_ACTION
-            && state.getHumanRole() == RoleType.POLICE;
-    if (isPoliceHumanTurn) {
-        state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
-    }
+        // CORREZIONE CHIRURGICA: Garantisce che le caselle siano cliccabili nei primi turni
+        Turn phase = state.getPhase();
+        if (phase == Turn.AWAITING_HOME_CHOICE || phase == Turn.AWAITING_MURDER_LOCATION_CHOICE) {
+            // Rende esplicitamente tutti i nodi interattivi per la selezione iniziale
+            engine.getBoard().all().forEach(loc -> mapController.setInteractable(loc.getId(), true));
+        }
 
-    boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
-    if (revealKillerSecrets && state.isHomeChosen()) {
-        mapController.markHome(state.getKillerHomeLocationId());
-    }
-    if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
-        mapController.markKiller(state.getKiller().getCurrentLocationId());
-    }
-    mapController.markPolice(state.getPolice().getCurrentLocationId());
+        boolean isPoliceHumanTurn = phase == Turn.AWAITING_POLICE_ACTION
+                && state.getHumanRole() == RoleType.POLICE;
+        if (isPoliceHumanTurn) {
+            state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
+        }
 
-    updateActionButtons();
-    updateStatusLabel();
-}
+        boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
+        if (revealKillerSecrets && state.isHomeChosen()) {
+            mapController.markHome(state.getKillerHomeLocationId());
+        }
+        if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
+            mapController.markKiller(state.getKiller().getCurrentLocationId());
+        }
+        
+        if (state.getPolice().getCurrentLocationId() != null) {
+            mapController.markPolice(state.getPolice().getCurrentLocationId());
+        }
+
+        updateActionButtons();
+        updateStatusLabel();
+    }
 
     private void updateActionButtons() {
         Turn phase = engine.getState().getPhase();
@@ -232,7 +237,6 @@ private void refreshView() {
         }
 
         String ruolo = state.getHumanRole() == RoleType.KILLER ? "Killer" : "Poliziotto";
-      
 
         String indiziInfo = state.getHumanRole() == RoleType.KILLER
                 ? "indizi falsi rimasti: " + state.getKillerFakeCluesRemaining()
@@ -242,4 +246,3 @@ private void refreshView() {
                 state.getRoundsElapsed() + 1, state.getMaxRounds(), ruolo, indiziInfo));
     }
 }
-

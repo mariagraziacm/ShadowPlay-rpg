@@ -17,6 +17,7 @@ public class GameEngine {
 
     private final Board board;
     private final GameState state;
+    private final Random random = new Random();
 
     private GameEngine(Board board, GameState state) {
         this.board = board;
@@ -31,7 +32,7 @@ public class GameEngine {
         engine.resolveAutomaticPhases();
         return engine;
     }
-/** Ricostruisce il motore da una partita caricata da JSON: la fase è già salvata nello stato. */
+
     public static GameEngine resume(Board board, GameState state) {
         GameEngine engine = new GameEngine(board, state);
         engine.resolveAutomaticPhases();
@@ -41,15 +42,15 @@ public class GameEngine {
     public GameState getState() { return state; }
     public Board getBoard() { return board; }
 
-//LOGICA UMANA: azioni di gioco eseguibili dal giocatore umano
-// Prima scelta del killer: la casa segreta, il punto in cui dovrà rientrare per vincere.
+    // LOGICA UMANA: azioni di gioco eseguibili dal giocatore umano
+
     public void chooseHome(String locationId) {
         requirePhase(Turn.AWAITING_HOME_CHOICE);
         requireHumanRole(RoleType.KILLER);
         applyChooseHome(locationId);
         resolveAutomaticPhases();
     }
-//Seconda scelta del killer: il luogo del primo omicidio, da cui partirà con le prime mosse
+
     public void chooseMurderLocation(String locationId) {
         requirePhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
         requireHumanRole(RoleType.KILLER);
@@ -59,7 +60,6 @@ public class GameEngine {
         applyChooseMurderLocation(locationId);
         resolveAutomaticPhases();
     }
-//Spostamento del killer: può spostarsi di una o due caselle vicine a quella in cui si trova
 
     public void killerMove(String targetLocationId) {
         requirePhase(Turn.AWAITING_KILLER_ACTION);
@@ -72,7 +72,6 @@ public class GameEngine {
             throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
         }
 
-        // Se fa 2 passi, cerchiamo e segnamo la casella di mezzo
         if (distance == 2) {
             board.neighborsOf(current).stream()
                     .filter(n -> board.isNeighbor(n.getId(), targetLocationId))
@@ -83,7 +82,7 @@ public class GameEngine {
         applyKillerMove(targetLocationId);
         resolveAutomaticPhases();
     }
-// Scelta oopzionale nella fase di gioco del killer: può essere lasciato un indizio falso in una casella diversa dalla sua posizione corrente
+
     public void killerLeaveFakeClue(String targetLocationId) {
         requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
@@ -97,8 +96,8 @@ public class GameEngine {
         applyKillerFakeClue(targetLocationId);
         resolveAutomaticPhases();
     }
-// Scelta opzionale nella fase di gioco del poliziotto: può essere usato un indizio per eliminare una casella come possibile luogo in cui il killer si trova
- public void policeUseClue() {
+
+    public void policeUseClue() {
         requirePhase(Turn.AWAITING_POLICE_ACTION);
         requireHumanRole(RoleType.POLICE);
         if (state.getPoliceCluesRemaining() <= 0) {
@@ -108,8 +107,8 @@ public class GameEngine {
         endPoliceTurn();
         resolveAutomaticPhases();
     }
-//Spostamento del poliziotto: può muoversi solo in una casella vicina a quella in cui si trova
-  public void policeMoveTo(String targetLocationId) {
+
+    public void policeMoveTo(String targetLocationId) {
         requirePhase(Turn.AWAITING_POLICE_ACTION);
         requireHumanRole(RoleType.POLICE);
         requireNeighbor(state.getPolice().getCurrentLocationId(), targetLocationId);
@@ -119,8 +118,8 @@ public class GameEngine {
         endPoliceTurn();
         resolveAutomaticPhases();
     }
-//Scelta opzionale nella fase di gioco del poliziotto: può tentare l'arresto del killer in una casella
-  public void policeAttemptArrest(String targetLocationId) {
+
+    public void policeAttemptArrest(String targetLocationId) {
         requirePhase(Turn.AWAITING_POLICE_ACTION);
         requireHumanRole(RoleType.POLICE);
         requireNeighbor(state.getPolice().getCurrentLocationId(), targetLocationId);
@@ -130,20 +129,19 @@ public class GameEngine {
         endPoliceTurn();
         resolveAutomaticPhases();
     }
-// Applicazione delle azioni di gioco
+
+    // Applicazione delle azioni di gioco
 
     private void applyChooseHome(String locationId) {
         state.chooseHome(locationId);
         state.setPhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
     }
 
-private void applyChooseMurderLocation(String locationId) {
-    state.setKillerStartLocation(locationId);
-    // Il luogo del delitto è per forza diverso da casa (validato in chooseMurderLocation):
-    // quindi il killer è già "fuori casa" da questo momento, non solo dal primo movimento.
-    state.markLeftHome();
-    state.setPhase(Turn.AWAITING_POLICE_ACTION);
-}
+    private void applyChooseMurderLocation(String locationId) {
+        state.setKillerStartLocation(locationId);
+        state.markLeftHome();
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
+    }
 
     private void applyKillerMove(String targetLocationId) {
         boolean wasAlreadyAwayFromHome = state.hasLeftHome();
@@ -172,17 +170,17 @@ private void applyChooseMurderLocation(String locationId) {
         state.usePoliceClue();
     }
 
-  private String pickHomeCandidateToEliminate() {
-    List<String> candidates = board.all().stream()
-            .map(Location::getId)
-            .filter(id -> !id.equals(state.getKillerHomeLocationId()))
-            .filter(id -> !state.getEliminatedHomeCandidates().contains(id))
-            .toList();
-    if (candidates.isEmpty()) {
-        throw new IllegalStateException("Non ci sono più caselle da escludere.");
+    private String pickHomeCandidateToEliminate() {
+        List<String> candidates = board.all().stream()
+                .map(Location::getId)
+                .filter(id -> !id.equals(state.getKillerHomeLocationId()))
+                .filter(id -> !state.getEliminatedHomeCandidates().contains(id))
+                .toList();
+        if (candidates.isEmpty()) {
+            throw new IllegalStateException("Non ci sono più caselle da escludere.");
+        }
+        return candidates.get(random.nextInt(candidates.size()));
     }
-    return candidates.get(new Random().nextInt(candidates.size()));
-}
 
     private void applyPoliceMove(String targetLocationId) {
         state.getPolice().moveTo(targetLocationId);
@@ -197,6 +195,7 @@ private void applyChooseMurderLocation(String locationId) {
             state.recordFailedArrest(targetLocationId);
         }
     }
+
     private void endPoliceTurn() {
         if (state.isFinished()) {
             state.setPhase(Turn.GAME_OVER);
@@ -211,16 +210,15 @@ private void applyChooseMurderLocation(String locationId) {
         state.setPhase(Turn.AWAITING_KILLER_ACTION);
     }
 
-// Logica di gioco automatica del ruolo non selezionato dal giocatore umano
+    // Logica di gioco automatica del ruolo non selezionato dal giocatore umano
+
     private void resolveAutomaticPhases() {
         while (!state.isFinished() && phaseBelongsToAutomaticRole()) {
             switch (state.getPhase()) {
                 case AWAITING_HOME_CHOICE, AWAITING_MURDER_LOCATION_CHOICE -> autoSetupKiller();
                 case AWAITING_KILLER_ACTION -> autoPlayKillerTurn();
                 case AWAITING_POLICE_ACTION -> autoPlayPoliceTurn();
-                case GAME_OVER -> {
-                    // nulla da fare
-                }
+                case GAME_OVER -> { }
             }
         }
         if (state.isFinished()) {
@@ -238,13 +236,6 @@ private void applyChooseMurderLocation(String locationId) {
         };
     }
 
-    /**
-     * Casa e luogo del primo omicidio scelti a tavolino: la casa è il nodo
-     * più lontano dal punto di partenza del poliziotto, il luogo del delitto
-     * è un suo vicino (quindi sempre diverso dalla casa, per costruzione).
-     * Il metodo è idempotente: se la casa è già stata scelta in una chiamata
-     * precedente, sceglie solo il luogo dell'omicidio.
-     */
     private void autoSetupKiller() {
         if (!state.isHomeChosen()) {
             String policeStart = state.getPolice().getCurrentLocationId();
@@ -258,38 +249,26 @@ private void applyChooseMurderLocation(String locationId) {
         applyChooseMurderLocation(murderLocation);
     }
 
-    /**
-     * Turno del killer automatico: a metà partita piazza un indizio falso
-     * (se ne ha ancora), nella prima parte della partita si allontana dalla
-     * propria casa, nell'ultima parte torna verso casa.
-     */
     private void autoPlayKillerTurn() {
         boolean stillHasFakeClues = state.getKillerFakeCluesRemaining() > 0;
         boolean isMidGame = state.getRoundsElapsed() == state.getMaxRounds() / 2;
 
+        String current = state.getKiller().getCurrentLocationId();
+
         if (stillHasFakeClues && isMidGame) {
-            String decoyLocation = board.neighborFarthestFrom(
-                    state.getKiller().getCurrentLocationId(),
-                    state.getKillerHomeLocationId(),
-                    state.getVisitedByKiller()).getId();
+            String decoyLocation = findFarthestNeighbor(current, state.getKillerHomeLocationId(), state.getVisitedByKiller());
             applyKillerFakeClue(decoyLocation);
             return;
         }
 
         boolean shouldHeadHome = state.getRoundsElapsed() >= state.getMaxRounds() - 2;
-        String current = state.getKiller().getCurrentLocationId();
         String target = shouldHeadHome
-                ? board.neighborClosestTo(current, state.getKillerHomeLocationId()).getId()
-                : board.neighborFarthestFrom(current, state.getKillerHomeLocationId(), state.getVisitedByKiller()).getId();
+                ? findClosestNeighbor(current, state.getKillerHomeLocationId())
+                : findFarthestNeighbor(current, state.getKillerHomeLocationId(), state.getVisitedByKiller());
 
         applyKillerMove(target);
     }
 
-    /**
-     * Turno del poliziotto automatico: segue l'indizio falso più recente non
-     * ancora verificato; se non ha piste, ogni due turni usa un indizio per
-     * escludere una casa, altrimenti esplora sistematicamente la mappa.
-     */
     private void autoPlayPoliceTurn() {
         String current = state.getPolice().getCurrentLocationId();
         Optional<Clue> activeLead = state.getFakeClues().stream()
@@ -302,18 +281,50 @@ private void applyChooseMurderLocation(String locationId) {
             applyPoliceArrestAttempt(clue.getLocationId());
             clue.setInvestigated(true);
         } else if (activeLead.isPresent()) {
-            String next = board.neighborClosestTo(current, activeLead.get().getLocationId()).getId();
+            String next = findClosestNeighbor(current, activeLead.get().getLocationId());
             applyPoliceMove(next);
         } else if (state.getPoliceCluesRemaining() > 0 && state.getRoundsElapsed() % 2 == 0) {
             applyPoliceUseClue();
         } else {
-            Optional<Location> unvisited = board.firstUnvisitedNeighbor(current, state.getVisitedByPolice());
-            String next = unvisited.map(Location::getId).orElseGet(() -> board.randomNeighbor(current).getId());
+            Optional<Location> unvisited = board.neighborsOf(current).stream()
+                    .filter(location -> !state.getVisitedByPolice().contains(location.getId()))
+                    .findFirst();
+                    
+            String next = unvisited.map(Location::getId).orElseGet(() -> {
+                List<Location> neighbors = board.neighborsOf(current);
+                return neighbors.get(random.nextInt(neighbors.size())).getId();
+            });
             applyPoliceMove(next);
         }
         endPoliceTurn();
     }
 
+    // ==========================================
+    // METODI DI SUPPORTO INTERNI (SOSTITUTI DI BOARD)
+    // ==========================================
+
+    private String findClosestNeighbor(String fromId, String targetId) {
+        return board.neighborsOf(fromId).stream()
+                .min(Comparator.comparingInt(candidate -> board.distance(candidate.getId(), targetId)))
+                .map(Location::getId)
+                .orElse(fromId);
+    }
+
+    private String findFarthestNeighbor(String fromId, String avoidId, java.util.Set<String> alreadyVisited) {
+        List<Location> neighbors = board.neighborsOf(fromId);
+        List<Location> notVisited = neighbors.stream()
+                .filter(candidate -> !alreadyVisited.contains(candidate.getId()))
+                .toList();
+        
+        List<Location> candidates = notVisited.isEmpty() ? neighbors : notVisited;
+
+        return candidates.stream()
+                .max(Comparator.comparingInt(candidate -> board.distance(candidate.getId(), avoidId)))
+                .map(Location::getId)
+                .orElse(fromId);
+    }
+
+    // Guardie di validazione
 
     private void requirePhase(Turn expected) {
         if (state.getPhase() != expected) {

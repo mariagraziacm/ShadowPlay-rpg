@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg126599.controller;
 
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,12 +10,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.nio.file.Path;
+
 import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.model.BoardLoader; // <--- Importato il loader dedicato
 import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
-
 
 public class RoleSelectController {
 
@@ -30,14 +30,16 @@ public class RoleSelectController {
 
     @FXML
     private void onChooseKiller() {
-        Board board = Board.loadFromResource("/rounds/maps.json");
+        // Modificato: delegato il caricamento a BoardLoader
+        Board board = BoardLoader.loadFromResource("/rounds/maps.json");
         GameEngine engine = GameEngine.newGame(board, RoleType.KILLER);
         openGameScreen(engine);
     }
 
     @FXML
     private void onChoosePolice() {
-        Board board = Board.loadFromResource("/rounds/maps.json");
+        // Modificato: delegato il caricamento a BoardLoader
+        Board board = BoardLoader.loadFromResource("/rounds/maps.json");
         GameEngine engine = GameEngine.newGame(board, RoleType.POLICE);
         openGameScreen(engine);
     }
@@ -45,7 +47,8 @@ public class RoleSelectController {
     @FXML
     private void onLoadGame() {
         try {
-            Board board = Board.loadFromResource("/rounds/maps.json");
+            // Modificato: delegato il caricamento a BoardLoader
+            Board board = BoardLoader.loadFromResource("/rounds/maps.json");
             GameState savedState = storage.load(Path.of("Persistence.json"));
             GameEngine engine = GameEngine.resume(board, savedState);
             openGameScreen(engine);
