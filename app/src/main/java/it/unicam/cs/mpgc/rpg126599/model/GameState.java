@@ -25,6 +25,7 @@ public class GameState {
     private int killerFakeCluesRemaining = 2;
 
     private List<String> eliminatedHomeCandidates = new ArrayList<>();
+    private List<String> failedArrestLocations = new ArrayList<>();
     private List<Clue> fakeClues = new ArrayList<>();
 
     private Set<String> visitedByKiller = new LinkedHashSet<>();
@@ -129,9 +130,24 @@ public class GameState {
         eliminatedHomeCandidates.add(locationId);
     }
 
+        public List<String> getFailedArrestLocations() {
+        return failedArrestLocations;
+    }
+
+    public void recordFailedArrest(String locationId) {
+        failedArrestLocations.add(locationId);
+    }
+     /** Vero se il poliziotto ha già tentato (e fallito) un arresto su questa casella. */
+    public boolean isAlreadySearched(String locationId) {
+        return failedArrestLocations.contains(locationId);
+    }
+
+
     public List<Clue> getFakeClues() {
         return fakeClues;
     }
+
+
 
     public void addFakeClue(String locationId) {
         fakeClues.add(new Clue(locationId, roundsElapsed));

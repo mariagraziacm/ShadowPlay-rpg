@@ -1,6 +1,6 @@
-.line {
+/* .line {
     /* Nel tuo FXML usi <Line>, per applicare lo stile usa styleClass="line" sui tag Line dell'FXML */
-    /* Oppure usa il selettore di tipo senza punto: Line { ... } */
+    /* Oppure usa il selettore di tipo senza punto: Line { ... } 
     -fx-stroke: #2f2f2f;
     -fx-stroke-width: 2;
 }
@@ -15,14 +15,74 @@
     -fx-fill: gold;
 }
 
-/* Corretto da -fx-fillgr a -fx-fill */
+/* Corretto da -fx-fillgr a -fx-fill 
 .node:selected {
     -fx-fill: crimson; 
 }
 
-/* Aggiungi le definizioni per le pseudo-classi che usa il GameController unificato */
+/* Aggiungi le definizioni per le pseudo-classi che usa il GameController unificato 
 .node:police { -fx-fill: blue; }
 .node:killer { -fx-fill: red; }
 .node:eliminated { -fx-fill: gray; -fx-opacity: 0.5; }
 .node:clue { -fx-fill: orange; }
-.node:home { -fx-fill: green; }
+.node:home { -fx-fill: green; }*/
+
+.root {
+    -fx-background-image: url("/images/mappashadow.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+.line {
+    -fx-stroke: #2f2f2f;
+    -fx-stroke-width: 2;
+}
+
+.node {
+    -fx-fill: white;
+    -fx-stroke: black;
+    -fx-stroke-width: 2;
+}
+
+.node:hover {
+    -fx-fill: gold;
+}
+
+/*
+ * ":selected" non è uno pseudo-stato nativo di Circle come :hover: va
+ * "acceso" a mano nel controller con node.pseudoClassStateChanged(...).
+ * MapController lo fa già (vedi PSEUDO_SELECTED). La proprietà corretta è
+ * -fx-fill, non -fx-fillgr (probabile refuso nell'originale).
+ */
+.node:selected {
+    -fx-fill: crimson;
+}
+
+/* Stati di gioco, sullo stesso principio di :selected: attivati da MapController. */
+.node:police {
+    -fx-fill: #16337a;
+}
+
+.node:killer {
+    -fx-fill: crimson;
+}
+
+/*
+ * Casella esclusa dal poliziotto con un indizio, indizio falso lasciato dal
+ * killer e casella dove un arresto è fallito: sono deliberatamente TUTTE
+ * lo stesso grigio. Il poliziotto non deve poter distinguere a colpo
+ * d'occhio una vera esclusione da un depistaggio: l'ambiguità è voluta.
+ */
+.node:eliminated,
+.node:clue,
+.node:searched {
+    -fx-fill: #9e9e9e;
+}
+
+/* Casa segreta del killer: un anello dorato, visibile solo al killer stesso
+   (o a fine partita). Usa lo stroke, non il fill, così si vede anche se il
+   nodo ha già un altro colore di stato (es. indizio falso lasciato lì). */
+.node:home {
+    -fx-stroke: gold;
+    -fx-stroke-width: 4;
+}

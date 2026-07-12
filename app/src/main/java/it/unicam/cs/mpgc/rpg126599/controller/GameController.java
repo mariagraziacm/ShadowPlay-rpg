@@ -162,27 +162,35 @@ public class GameController {
         mapController.clearSelection();
     }
 
-    private void refreshView() {
-        mapController.clearAllStates();
+private void refreshView() {
+    mapController.clearAllStates();
+    mapController.resetInteractable();
 
-        var state = engine.getState();
-        state.getEliminatedHomeCandidates().forEach(mapController::markEliminated);
-        for (Clue clue : state.getFakeClues()) {
-            mapController.markFakeClue(clue.getLocationId());
-        }
-
-        boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
-        if (revealKillerSecrets && state.isHomeChosen()) {
-            mapController.markHome(state.getKillerHomeLocationId());
-        }
-        if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
-            mapController.markKiller(state.getKiller().getCurrentLocationId());
-        }
-        mapController.markPolice(state.getPolice().getCurrentLocationId());
-
-        updateActionButtons();
-        updateStatusLabel();
+    var state = engine.getState();
+    state.getEliminatedHomeCandidates().forEach(mapController::markEliminated);
+    state.getFailedArrestLocations().forEach(mapController::markSearched);
+    for (Clue clue : state.getFakeClues()) {
+        mapController.markFakeClue(clue.getLocationId());
     }
+
+    boolean isPoliceHumanTurn = state.getPhase() == Turn.AWAITING_POLICE_ACTION
+            && state.getHumanRole() == RoleType.POLICE;
+    if (isPoliceHumanTurn) {
+        state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
+    }
+
+    boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
+    if (revealKillerSecrets && state.isHomeChosen()) {
+        mapController.markHome(state.getKillerHomeLocationId());
+    }
+    if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
+        mapController.markKiller(state.getKiller().getCurrentLocationId());
+    }
+    mapController.markPolice(state.getPolice().getCurrentLocationId());
+
+    updateActionButtons();
+    updateStatusLabel();
+}
 
     private void updateActionButtons() {
         Turn phase = engine.getState().getPhase();
