@@ -74,7 +74,7 @@ public class GameState {
         return killerHomeLocationId;
     }
 
-// Segna la casa del killer che sarà il suo punto di ritrno per vincere la partita
+// Segna la casa del killer che sarà il suo punto di ritorno per vincere la partita
     public void chooseHome(String locationId) {
         this.killerHomeLocationId = locationId;
         this.homeChosen = true;

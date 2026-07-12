@@ -2,10 +2,7 @@ package it.unicam.cs.mpgc.rpg126599.model;
 
 import java.util.List;
 
-/**
- * Un singolo nodo della mappa. Le coordinate x/y servono solo a disegnare
- * il nodo nella view: la logica di gioco usa solo id e connections.
- */
+
 public class Location {
 
     private String id;
@@ -14,7 +11,7 @@ public class Location {
     private double y;
     private List<String> connections;
 
-    // Costruttore vuoto richiesto da Gson per la deserializzazione da JSON
+   
     public Location() {
     }
 

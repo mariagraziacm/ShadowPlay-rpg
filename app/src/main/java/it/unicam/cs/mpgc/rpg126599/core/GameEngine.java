@@ -299,9 +299,7 @@ public class GameEngine {
         endPoliceTurn();
     }
 
-    // ==========================================
-    // METODI DI SUPPORTO INTERNI (SOSTITUTI DI BOARD)
-    // ==========================================
+
 
     private String findClosestNeighbor(String fromId, String targetId) {
         return board.neighborsOf(fromId).stream()
