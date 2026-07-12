@@ -1,10 +1,11 @@
 ﻿.gradle/
+**/ .gradle/
 build/
 app/build/
 **/build/
 .idea/
 .vscode/
-*.img/
 out/
 **/out/
-*.class
+*.bin
+*.png
