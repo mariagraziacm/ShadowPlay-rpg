@@ -35,7 +35,7 @@ L'intera architettura del progetto è stata progettata seguendo un approccio mod
 
 ---
 
-# Meccaniche e Regole di gioco
+## Meccaniche e Regole di gioco
 
 ## Fase Iniziale
 
@@ -46,14 +46,14 @@ Successivamente sceglie il luogo del **primo omicidio**, che rappresenta il punt
 ---
 ## Fasi Intermedie 
 
-## Movimento del Killer
+### Movimento del Killer
 
 Durante il proprio turno il Killer può spostarsi di **una o due caselle adiacenti** scegliendo il percorso migliore per depistare il Poliziotto e cercare di raggiungere il proprio nascondiglio 
 senza essere catturato.
 
 ---
 
-## Indizi falsi del Killer
+### Indizi falsi del Killer
 
 Il Killer dispone di **2 indizi falsi** per ogni partita.
 
@@ -61,13 +61,13 @@ Ogni indizio può essere collocato su una casella diversa dalla propria posizion
 
 ---
 
-## Movimento del Poliziotto
+### Movimento del Poliziotto
 
 Durante il proprio turno il Poliziotto può muoversi di **una sola casella adiacente**.
 
 ---
 
-## Indizi del Poliziotto
+### Indizi del Poliziotto
 
 Il Poliziotto dispone di **3 indizi** per partita.
 
@@ -75,7 +75,7 @@ Gli indizi permettono di escludere e rendere visibili sulla mappa alcuni nodi ne
 
 ---
 
-## Tentativo di arresto
+### Tentativo di arresto
 
 Durante il proprio turno il Poliziotto può tentare l'arresto scegliendo una casella adiacente nella quale pensa possa trovarsi il Killer.
 
@@ -84,16 +84,16 @@ Durante il proprio turno il Poliziotto può tentare l'arresto scegliendo una cas
 
 ---
 
-# Fase Finale
+## Fase Finale
 
-## Vittoria del Killer
+### Vittoria del Killer
 
 Il Killer vince se:
 
 - riesce a rientrare nel proprio nascondiglio segreto senza essere arrestato;
 - sopravvive fino allo scadere del numero massimo di turni previsto.
 
-## Vittoria del Poliziotto
+### Vittoria del Poliziotto
 
 Il Poliziotto vince se riesce a individuare e arrestare il Killer prima della fine della partita.
 
@@ -113,9 +113,7 @@ Anche alla riapertura dell'applicazione è possibile riprendere la partita salva
 
 # Modalità Single Player
 
-Shadowplay è progettato come esperienza **single player**.
-
-Il giocatore controlla uno dei due ruoli (**Killer** oppure **Poliziotto**), mentre il ruolo avversario viene gestito automaticamente dal motore di gioco (**GameEngine**) attraverso logiche decisionali dedicate.
+Shadowplay è progettato come esperienza single player. Il giocatore controlla uno dei due ruoli (**Killer** oppure **Poliziotto**), mentre il ruolo avversario viene gestito automaticamente dal motore di gioco (**GameEngine**) attraverso logiche decisionali dedicate.
 
 ---
 
