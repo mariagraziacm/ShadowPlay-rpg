@@ -2,7 +2,7 @@
 
 ## Progetto per il corso di Modellazione e Gestione della Conoscenza
 
-**Shadowplay** è un gioco investigativo digitale a turni ispirato al gioco da tavolo *Lettere da Whitechapel*.
+**Shadowplay** è un GDR investigativo digitale a turni ispirato al gioco da tavolo *Lettere da Whitechapel*.
 
 All'inizio della partita il giocatore sceglie quale ruolo interpretare tra **Killer** e **Poliziotto**. Il ruolo non selezionato viene gestito automaticamente dalla logica interna del gioco.
 
