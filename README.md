@@ -35,9 +35,9 @@ L'intera architettura del progetto è stata progettata seguendo un approccio mod
 
 ---
 
-# Meccaniche e regole di gioco
+# Meccaniche e Regole di gioco
 
-## Fase iniziale
+## Fase Iniziale
 
 All'avvio della partita il **Killer** seleziona segretamente il proprio **nascondiglio** sulla mappa.
 
@@ -84,7 +84,7 @@ Durante il proprio turno il Poliziotto può tentare l'arresto scegliendo una cas
 
 ---
 
-# Condizioni di vittoria
+# Fase Finale
 
 ## Vittoria del Killer
 
@@ -129,5 +129,5 @@ In particolare:
 - **Gemini** ha fornito supporto nella rifinitura dei fogli di stile CSS dell'interfaccia JavaFX, migliorandone la coerenza estetica.
 - **Claude Code** è stato utilizzato come supporto nella progettazione della logica di generazione e disposizione dei nodi sulla mappa.
 
-# WIKI
+# Wiki
 Per una descrizione più dettagliata del progetto e dell'utilizzo degli strumenti di Intelligenza Artificiale consultare la **Wiki** del repository.
