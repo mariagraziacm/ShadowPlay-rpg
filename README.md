@@ -129,4 +129,5 @@ In particolare:
 - **Gemini** ha fornito supporto nella rifinitura dei fogli di stile CSS dell'interfaccia JavaFX, migliorandone la coerenza estetica.
 - **Claude Code** è stato utilizzato come supporto nella progettazione della logica di generazione e disposizione dei nodi sulla mappa.
 
-**NOTA**: Per una descrizione più dettagliata del progetto e dell'utilizzo degli strumenti di Intelligenza Artificiale consultare la **Wiki** del repository.
+# WIKI
+Per una descrizione più dettagliata del progetto e dell'utilizzo degli strumenti di Intelligenza Artificiale consultare la **Wiki** del repository.
