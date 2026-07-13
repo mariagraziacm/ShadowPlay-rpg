@@ -1,8 +1,7 @@
 package it.unicam.cs.mpgc.rpg126599.model;
-
 import java.util.List;
 
-
+//serve per rappresentare un nodo della mappa con coordinate e connessionni
 public class Location {
 
     private String id;

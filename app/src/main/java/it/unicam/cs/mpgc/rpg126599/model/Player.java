@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-
+// entità per rappresentare il giocatore nel gioco, con il suo ruolo e la posizione attuale
 
 public class Player {
 

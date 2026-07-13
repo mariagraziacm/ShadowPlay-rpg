@@ -1,5 +1,5 @@
 package it.unicam.cs.mpgc.rpg126599.model;
-
+// rappresenta un indizi reali e falsi
 public class Clue {
 
     private String locationId;

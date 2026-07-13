@@ -7,7 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.util.List;
 
-
+// classe per caricare la mappa del gioco a partire dal mio json che continene nodi e connessioni, passa tutto a Board che crea la mappa effettiva 
+// e calcola le  distanze
 public class BoardLoader {
 
     public static Board loadFromResource(String resourcePath) {

@@ -66,8 +66,8 @@ public class RoleSelectController {
 
             Stage stage = (Stage) killerButton.getScene().getWindow();
             Scene scene = new Scene(root);
-stage.setScene(scene);
-stage.sizeToScene();
+            stage.setScene(scene);
+            stage.sizeToScene();
             stage.setTitle("SHADOWPLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile aprire la schermata di gioco", e);

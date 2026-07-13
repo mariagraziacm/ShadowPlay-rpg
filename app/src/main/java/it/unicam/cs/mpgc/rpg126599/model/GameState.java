@@ -93,7 +93,7 @@ public class GameState {
     public void markLeftHome() {
         this.killerHasLeftHome = true;
     }
-
+// round giocati
     public int getRoundsElapsed() {
         return roundsElapsed;
     }
@@ -180,7 +180,7 @@ public class GameState {
     public String getEndReason() {
         return endReason;
     }
-
+// setta lo stato finale della partita registrando vincitore e motivo vittoria
     public void finish(RoleType winnerRole, String reason) {
         this.finished = true;
         this.winner = winnerRole;
