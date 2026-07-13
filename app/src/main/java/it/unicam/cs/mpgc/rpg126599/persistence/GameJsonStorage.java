@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
-
+// per salvare e caricare lo stato di una partita 
 public class GameJsonStorage implements GameRepository {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
