@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -18,6 +17,7 @@ import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
+// gestisce schermata di gioco, interazioni con la mappa e bottoni, la schermata si aggiorna in base a turno, ruolo e scelte
 public class GameController {
 
     private enum PendingAction {
@@ -38,7 +38,7 @@ public class GameController {
     @FXML
     private Button arrestButton;
 
-    private final GameJsonStorage storage = new GameJsonStorage();
+    private final GameJsonStorage storage = new GameJsonStorage(); 
     private GameEngine engine;
     private PendingAction pendingAction = PendingAction.NONE;
 
@@ -52,12 +52,12 @@ public class GameController {
         if (engine.getState().isFinished()) {
             return;
         }
-        Turn phase = engine.getState().getPhase();
+        Turn phase = engine.getState().getPhase(); // controlla turno e ruolo
         RoleType humanRole = engine.getState().getHumanRole();
-
+// comportamenti avviati al click sui nodi in base a turno e ruolo
         try {
             if (phase == Turn.AWAITING_HOME_CHOICE && humanRole == RoleType.KILLER) {
-                engine.chooseHome(locationId);
+                engine.chooseHome(locationId); 
             } else if (phase == Turn.AWAITING_MURDER_LOCATION_CHOICE && humanRole == RoleType.KILLER) {
                 engine.chooseMurderLocation(locationId);
             } else if (phase == Turn.AWAITING_KILLER_ACTION && humanRole == RoleType.KILLER) {
@@ -75,7 +75,7 @@ public class GameController {
         resetPendingAction();
         refreshView();
     }
-
+// azioni per killer con click su un nodo
     private void handleKillerNodeClick(String locationId) {
         switch (pendingAction) {
             case MOVE -> engine.killerMove(locationId);
@@ -83,7 +83,7 @@ public class GameController {
             default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Lascia indizio falso'.");
         }
     }
-
+// azioni per poliziotto con click su un nodo
     private void handlePoliceNodeClick(String locationId) {
         switch (pendingAction) {
             case MOVE -> engine.policeMoveTo(locationId);
@@ -91,7 +91,7 @@ public class GameController {
             default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Tenta l'arresto'.");
         }
     }
-
+// poliziotto usa indizio
     @FXML
     private void onUseClue() {
         try {
@@ -111,7 +111,7 @@ public class GameController {
                 ? "Seleziona sulla mappa una casella: puoi muoverti di uno o due passi"
                 : "Seleziona sulla mappa una casella collegata alla tua per spostarti");
     }
-
+// killer lascia indizio falso
     @FXML
     private void onSelectFakeClue() {
         if (engine.getState().getKillerFakeCluesRemaining() <= 0) {
@@ -121,7 +121,7 @@ public class GameController {
         pendingAction = PendingAction.FAKE_CLUE;
         statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso per ingannare il poliziotto");
     }
-
+// poliziotto tentaa arresto
     @FXML
     private void onSelectArrest() {
         pendingAction = PendingAction.ARREST;
@@ -179,7 +179,7 @@ public class GameController {
         if (isPoliceHumanTurn) {
             state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
         }
-
+// mostra nascondiglio e posizione killer solo se l'utente è il killer o se la partita è finita
         boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
         if (revealKillerSecrets && state.isHomeChosen()) {
             mapController.markHome(state.getKillerHomeLocationId());
@@ -187,7 +187,7 @@ public class GameController {
         if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
             mapController.markKiller(state.getKiller().getCurrentLocationId());
         }
-        
+      // poliziotto sempre visibile a tutti  
         if (state.getPolice().getCurrentLocationId() != null) {
             mapController.markPolice(state.getPolice().getCurrentLocationId());
         }
@@ -217,7 +217,7 @@ public class GameController {
         fakeClueButton.setManaged(isKillerHumanTurn);
         fakeClueButton.setDisable(engine.getState().getKillerFakeCluesRemaining() <= 0);
     }
-
+// aggiorna label in base a turno, ruolo e scelte
     private void updateStatusLabel() {
         var state = engine.getState();
 

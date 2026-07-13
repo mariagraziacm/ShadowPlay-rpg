@@ -27,14 +27,14 @@ public class RoleSelectController {
     private Label messageLabel;
 
     private final GameJsonStorage storage = new GameJsonStorage();
-
+// se utente sceglie killer carica mappa per quel ruolo e avvia la partita
     @FXML
     private void onChooseKiller() {
         Board board = BoardLoader.loadFromResource("/rounds/maps.json");
         GameEngine engine = GameEngine.newGame(board, RoleType.KILLER);
         openGameScreen(engine);
     }
-
+// se utente sceglie poliziotto carica mappa per quel ruolo e avvia la partita
     @FXML
     private void onChoosePolice() {
       
@@ -42,7 +42,7 @@ public class RoleSelectController {
         GameEngine engine = GameEngine.newGame(board, RoleType.POLICE);
         openGameScreen(engine);
     }
-
+// carica e apre partita salvata se esiste in memoria
     @FXML
     private void onLoadGame() {
         try {
@@ -55,7 +55,7 @@ public class RoleSelectController {
             messageLabel.setText("Nessun salvataggio valido trovato (Persistence.json).");
         }
     }
-
+// apre schermata di gioco
     private void openGameScreen(GameEngine engine) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));

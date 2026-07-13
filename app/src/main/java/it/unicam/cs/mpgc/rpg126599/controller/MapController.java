@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-
+// controller che gestisce aspetto grafico della mappa del gioco
 public class MapController {
 
     private static final PseudoClass SELECTED = PseudoClass.getPseudoClass("selected");
@@ -34,7 +34,6 @@ public class MapController {
 
     @FXML
     private void initialize() {
-        // Mappatura dinamica ed estendibile tramite Reflection
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(FXML.class) && Circle.class.isAssignableFrom(field.getType())) {
@@ -61,7 +60,6 @@ public class MapController {
 
     public void setOnNodeClicked(Consumer<String> handler) {
         this.onNodeClicked = handler;
-        // Riaggancia dinamicamente i listener se l'handler cambia
         nodesById.forEach((id, circle) -> 
             circle.setOnMouseClicked(event -> onNodeClicked.accept(id))
         );
@@ -77,7 +75,7 @@ public class MapController {
             circle.pseudoClassStateChanged(HOME, false);
         });
     }
-
+// metodi per colorare i nodi della mappa in base a ruoli e stati
     public void markPolice(String locationId) {
         setState(locationId, POLICE);
     }
@@ -120,7 +118,7 @@ public class MapController {
     public void clearSelection() {
         nodesById.values().forEach(circle -> circle.pseudoClassStateChanged(SELECTED, false));
     }
-
+// setta alcuni nodi come non cliccabili in base a condizioni specifiche
     public void setInteractable(String locationId, boolean interactable) {
         Circle circle = nodesById.get(locationId);
         if (circle != null) {
