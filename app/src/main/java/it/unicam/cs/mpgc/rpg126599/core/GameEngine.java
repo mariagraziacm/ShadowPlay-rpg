@@ -12,7 +12,7 @@ import it.unicam.cs.mpgc.rpg126599.model.Location;
 import it.unicam.cs.mpgc.rpg126599.model.Player;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
-
+// motore del gioco che applica le regole, controlla le azioni del giocatore umano e gestisce il turno automatico del ruolo che non viene selezionato dall'utente
 public class GameEngine {
 
     private final Board board;
@@ -23,7 +23,7 @@ public class GameEngine {
         this.board = board;
         this.state = state;
     }
-
+// inizia nuova partita
     public static GameEngine newGame(Board board, RoleType humanRole) {
         Player killer = new Player(RoleType.KILLER, null);
         Player police = new Player(RoleType.POLICE, "n20");
@@ -32,7 +32,7 @@ public class GameEngine {
         engine.resolveAutomaticPhases();
         return engine;
     }
-
+// riprende partita salvata
     public static GameEngine resume(Board board, GameState state) {
         GameEngine engine = new GameEngine(board, state);
         engine.resolveAutomaticPhases();
@@ -42,8 +42,8 @@ public class GameEngine {
     public GameState getState() { return state; }
     public Board getBoard() { return board; }
 
-    // LOGICA UMANA: azioni di gioco eseguibili dal giocatore umano
-
+    // LOGICA PER UTENTE: azioni di gioco che possono essere fatte dal giocatore umano
+// quando il giocatore umano sceglie di giocare come killer deve scegliere il proprio nascondiglio e il luogo dell'omicidio
     public void chooseHome(String locationId) {
         requirePhase(Turn.AWAITING_HOME_CHOICE);
         requireHumanRole(RoleType.KILLER);
@@ -62,7 +62,7 @@ public class GameEngine {
         applyChooseMurderLocation(locationId);
         resolveAutomaticPhases();
     }
-
+// il killer può scegliere di spostarsi di una o due casella alla volta per turno
     public void killerMove(String targetLocationId) {
         requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
@@ -82,7 +82,7 @@ public class GameEngine {
         }
 
         applyKillerMove(targetLocationId);
-        resolveAutomaticPhases();
+        resolveAutomaticPhases(); // gestione automatica del turno del poliziotto
     }
 
     public void killerLeaveFakeClue(String targetLocationId) {
@@ -132,7 +132,7 @@ public class GameEngine {
         resolveAutomaticPhases();
     }
 
-    // Applicazione delle azioni di gioco
+    // regole di gioco vengono applicate modificando così anche lo stato del gioco in base alle sclete fatte durante i turni
 
     private void applyChooseHome(String locationId) {
         state.chooseHome(locationId);
@@ -213,7 +213,7 @@ public class GameEngine {
     }
 
     // Logica di gioco automatica del ruolo non selezionato dal giocatore umano
-
+     // quando il turno del giocatore umano termina fa muovere il ruolo automatico
     private void resolveAutomaticPhases() {
         while (!state.isFinished() && phaseBelongsToAutomaticRole()) {
             switch (state.getPhase()) {
@@ -227,7 +227,7 @@ public class GameEngine {
             state.setPhase(Turn.GAME_OVER);
         }
     }
-
+// controllo se la fase appartiene al ruolo automatico
     private boolean phaseBelongsToAutomaticRole() {
         RoleType automaticRole = state.getHumanRole() == RoleType.KILLER ? RoleType.POLICE : RoleType.KILLER;
         return switch (state.getPhase()) {
@@ -237,7 +237,7 @@ public class GameEngine {
             case GAME_OVER -> false;
         };
     }
-
+// se il ruolo automatico deve giocare come killer setta nascondiglio e primo luogo dell'omicidio
     private void autoSetupKiller() {
         if (!state.isHomeChosen()) {
             String policeStart = state.getPolice().getCurrentLocationId();
@@ -250,7 +250,7 @@ public class GameEngine {
         String murderLocation = board.neighborsOf(state.getKillerHomeLocationId()).get(0).getId();
         applyChooseMurderLocation(murderLocation);
     }
-
+// movimento del killer automatico e strategie appliacte dal killer automatico
     private void autoPlayKillerTurn() {
         boolean stillHasFakeClues = state.getKillerFakeCluesRemaining() > 0;
         boolean isMidGame = state.getRoundsElapsed() == state.getMaxRounds() / 2;
@@ -270,7 +270,7 @@ public class GameEngine {
 
         applyKillerMove(target);
     }
-
+//movimento del poliziotto automatico e strategie usate dal poliziotto automatico
     private void autoPlayPoliceTurn() {
         String current = state.getPolice().getCurrentLocationId();
         Optional<Clue> activeLead = state.getFakeClues().stream()
