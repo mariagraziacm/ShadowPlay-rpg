@@ -227,7 +227,7 @@ public class GameEngine {
             state.setPhase(Turn.GAME_OVER);
         }
     }
-// controllo se la fase appartiene al ruolo automatico
+//controllo se la fase appartiene al ruolo automatico
     private boolean phaseBelongsToAutomaticRole() {
         RoleType automaticRole = state.getHumanRole() == RoleType.KILLER ? RoleType.POLICE : RoleType.KILLER;
         return switch (state.getPhase()) {
