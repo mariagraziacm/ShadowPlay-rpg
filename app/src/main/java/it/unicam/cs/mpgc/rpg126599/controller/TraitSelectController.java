@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
+import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
 public class TraitSelectController {
 
@@ -26,32 +27,44 @@ public class TraitSelectController {
 
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
-        
-        // Esempio: imposta i testi dinamici in base al ruolo scelto
-        traitButton1.setText("Primo Tratto\n\nDescrizione o effetto...");
-        traitButton2.setText("Secondo Tratto\n\nDescrizione o effetto...");
+
+        // Disabilita il pulsante di conferma finché non viene selezionato un tratto
+        confirmButton.setDisable(true);
+        traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            confirmButton.setDisable(newVal == null);
+        });
+
+        // Utilizza getHumanRole() della classe CampaignManager
+        if (campaign.getHumanRole() == RoleType.KILLER) {
+            setupKillerTraits();
+        } else {
+            setupPoliceTraits();
+        }
+    }
+
+    private void setupKillerTraits() {
+        traitButton1.setText("MANIPOLATORE\n\nEnfatizza il depistaggio: i tuoi indizi falsi sono più efficaci nel confondere la Polizia.");
+        traitButton2.setText("CALCOLATORE\n\nPremia il timing: agire nei momenti chiave della partita ti dà un vantaggio.");
+    }
+
+    private void setupPoliceTraits() {
+        traitButton1.setText("CONTINUITÀ INVESTIGATIVA\n\nPremia la continuità investigativa: i tuoi indizi restringono il campo con più efficacia.");
+        traitButton2.setText("PRESSIONE TATTICA\n\nPremia gli arresti corretti: la sicurezza nel colpire nel segno è la tua forza.");
     }
 
     @FXML
     private void onConfirm() {
         ToggleButton selected = (ToggleButton) traitGroup.getSelectedToggle();
         if (selected == null) {
-            System.out.println("Seleziona prima un tratto!");
             return;
         }
 
-        // Salva la scelta nel CampaignManager (es. quale tratto è stato scelto)
-        boolean isFirstTrait = selected == traitButton1;
+        boolean isFirstTrait = (selected == traitButton1);
         campaign.applyTraitSelection(isFirstTrait);
 
         try {
-            // Carica la schermata della partita (sostituisci il percorso con il tuo file FXML)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
             Parent root = loader.load();
-
-            // Se il controller della partita ha un metodo init(), passagli il campaign
-            // MatchController matchController = loader.getController();
-            // matchController.init(campaign);
 
             Stage stage = (Stage) confirmButton.getScene().getWindow();
             Scene scene = new Scene(root);
