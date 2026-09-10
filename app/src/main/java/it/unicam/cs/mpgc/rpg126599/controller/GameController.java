@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Path;
 
-
 import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
@@ -38,6 +37,14 @@ public class GameController {
     @FXML
     private Button arrestButton;
 
+    // Elementi aggiuntivi tratti e abilità
+    @FXML private Button smokeBombButton;
+    @FXML private Button trapKitButton;
+    @FXML private Button shortcutMapButton;
+    @FXML private Button roadblockButton;
+    @FXML private Button checkpointButton;
+    @FXML private Button scannerButton;
+
     private final GameJsonStorage storage = new GameJsonStorage(); 
     private GameEngine engine;
     private PendingAction pendingAction = PendingAction.NONE;
@@ -54,7 +61,8 @@ public class GameController {
         }
         Turn phase = engine.getState().getPhase(); // controlla turno e ruolo
         RoleType humanRole = engine.getState().getHumanRole();
-// comportamenti avviati al click sui nodi in base a turno e ruolo
+
+        // comportamenti avviati al click sui nodi in base a turno e ruolo
         try {
             if (phase == Turn.AWAITING_HOME_CHOICE && humanRole == RoleType.KILLER) {
                 engine.chooseHome(locationId); 
@@ -75,7 +83,8 @@ public class GameController {
         resetPendingAction();
         refreshView();
     }
-// azioni per killer con click su un nodo
+
+    // azioni per killer con click su un nodo
     private void handleKillerNodeClick(String locationId) {
         switch (pendingAction) {
             case MOVE -> engine.killerMove(locationId);
@@ -83,7 +92,8 @@ public class GameController {
             default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Lascia indizio falso'.");
         }
     }
-// azioni per poliziotto con click su un nodo
+
+    // azioni per poliziotto con click su un nodo
     private void handlePoliceNodeClick(String locationId) {
         switch (pendingAction) {
             case MOVE -> engine.policeMoveTo(locationId);
@@ -91,7 +101,8 @@ public class GameController {
             default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Tenta l'arresto'.");
         }
     }
-// poliziotto usa indizio
+
+    // poliziotto usa indizio
     @FXML
     private void onUseClue() {
         try {
@@ -111,7 +122,8 @@ public class GameController {
                 ? "Seleziona sulla mappa una casella: puoi muoverti di uno o due passi"
                 : "Seleziona sulla mappa una casella collegata alla tua per spostarti");
     }
-// killer lascia indizio falso
+
+    // killer lascia indizio falso
     @FXML
     private void onSelectFakeClue() {
         if (engine.getState().getKillerFakeCluesRemaining() <= 0) {
@@ -121,7 +133,8 @@ public class GameController {
         pendingAction = PendingAction.FAKE_CLUE;
         statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso per ingannare il poliziotto");
     }
-// poliziotto tentaa arresto
+
+    // poliziotto tenta l'arresto
     @FXML
     private void onSelectArrest() {
         pendingAction = PendingAction.ARREST;
@@ -144,13 +157,44 @@ public class GameController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/roleselect.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) statusLabel.getScene().getWindow();
-           Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.sizeToScene();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.sizeToScene();
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             statusLabel.setText("Impossibile tornare al menu.");
         }
+    }
+
+    // Metodi gestori per i tratti/abilità della mappa
+    @FXML
+    private void onUseSmokeBomb() {
+        System.out.println("Bomba fumogena usata!");
+    }
+
+    @FXML
+    private void onSelectTrapKit() {
+        System.out.println("Trap Kit selezionato!");
+    }
+
+    @FXML
+    private void onSelectShortcutMap() {
+        System.out.println("Shortcut Map selezionata!");
+    }
+
+    @FXML
+    private void onSelectRoadblock() {
+        System.out.println("Roadblock selezionato!");
+    }
+
+    @FXML
+    private void onSelectCheckpoint() {
+        System.out.println("Checkpoint Mobile selezionato!");
+    }
+
+    @FXML
+    private void onUseScanner() {
+        System.out.println("Scanner usato!");
     }
 
     private void resetPendingAction() {
@@ -179,7 +223,8 @@ public class GameController {
         if (isPoliceHumanTurn) {
             state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
         }
-// mostra nascondiglio e posizione killer solo se l'utente è il killer o se la partita è finita
+
+        // mostra nascondiglio e posizione killer solo se l'utente è il killer o se la partita è finita
         boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
         if (revealKillerSecrets && state.isHomeChosen()) {
             mapController.markHome(state.getKillerHomeLocationId());
@@ -187,7 +232,8 @@ public class GameController {
         if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
             mapController.markKiller(state.getKiller().getCurrentLocationId());
         }
-      // poliziotto sempre visibile a tutti  
+        
+        // poliziotto sempre visibile a tutti 
         if (state.getPolice().getCurrentLocationId() != null) {
             mapController.markPolice(state.getPolice().getCurrentLocationId());
         }
@@ -217,7 +263,8 @@ public class GameController {
         fakeClueButton.setManaged(isKillerHumanTurn);
         fakeClueButton.setDisable(engine.getState().getKillerFakeCluesRemaining() <= 0);
     }
-// aggiorna label in base a turno, ruolo e scelte
+
+    // aggiorna label in base a turno, ruolo e scelte
     private void updateStatusLabel() {
         var state = engine.getState();
 

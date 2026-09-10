@@ -101,4 +101,13 @@ public class CampaignManager {
         }
         currentMatchNumber++;
     }
-}
+    public void applyTraitSelection(boolean isFirstTrait) {
+    // Esempio di gestione del tratto selezionato
+    if (isFirstTrait) {
+        System.out.println("Applicato il primo tratto alla campagna.");
+        // Logica per applicare il primo tratto
+    } else {
+        System.out.println("Applicato il secondo tratto alla campagna.");
+        // Logica per applicare il secondo tratto
+  
+          }  }  }
