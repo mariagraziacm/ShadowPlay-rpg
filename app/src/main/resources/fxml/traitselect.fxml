@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="561.0" prefWidth="724.0" stylesheets="@../style/traitselect.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.TraitSelectController">
+   <children>
+      <Label fx:id="titleLabel" layoutX="242.0" layoutY="40.0" styleClass="subtitle" text="Scegli il tuo tratto" wrapText="true" />
+      
+      <fx:define>
+         <ToggleGroup fx:id="traitGroup" />
+      </fx:define>
+
+      <ToggleButton fx:id="traitButton1" layoutX="41.0" layoutY="120.0" prefHeight="299.0" prefWidth="303.0" styleClass="trait-card-button" text="Tratto 1" toggleGroup="$traitGroup" />
+      
+      <ToggleButton fx:id="traitButton2" layoutX="380.0" layoutY="120.0" prefHeight="299.0" prefWidth="303.0" styleClass="trait-card-button" text="Tratto 2" toggleGroup="$traitGroup" />
+
+      <Button fx:id="confirmButton" layoutX="232.0" layoutY="465.0" onAction="#onConfirm" prefHeight="42.0" prefWidth="260.0" text="Conferma e inizia il match" />
+   </children>
+</AnchorPane>

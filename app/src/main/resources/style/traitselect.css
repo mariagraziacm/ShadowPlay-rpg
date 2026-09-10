@@ -1,0 +1,84 @@
+/* Stile radice e sfondo principale per la vista di selezione tratti */
+.root {
+    -fx-font-family: "Georgia", "Times New Roman", serif;
+    -fx-background-color: #eae0c1;
+}
+
+/* Titolo ("Scegli il tuo tratto") */
+.subtitle {
+    -fx-font-family: "Georgia", serif;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3d3124;
+    -fx-alignment: center;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Contenitore ScrollPane e trasparenza per la vista interna */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: #8c765c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.15), 6, 0, 0, 2);
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Barra di scorrimento personalizzata per il ScrollPane */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #8c765c;
+    -fx-background-radius: 6px;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #594939;
+}
+
+/* Pulsante principale ("Conferma e inizia il match") */
+.button {
+    -fx-background-color: #3d3124;
+    -fx-text-fill: #f5eccd;
+    -fx-font-family: "Georgia", serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-color: #8c765c;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.3), 4, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-background-color: #594939;
+    -fx-border-color: #b39b7d;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.5), 6, 0, 0, 3);
+}
+
+.button:pressed {
+    -fx-background-color: #241c14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0), 0, 0, 0, 0);
+}
+
+.button:disabled {
+    -fx-background-color: #bfae93;
+    -fx-border-color: #9c8b74;
+    -fx-text-fill: #7d6e59;
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+    -fx-effect: null;
+}

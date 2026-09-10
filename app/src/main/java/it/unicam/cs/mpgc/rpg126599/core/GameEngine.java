@@ -9,10 +9,12 @@ import it.unicam.cs.mpgc.rpg126599.model.Board;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
+import it.unicam.cs.mpgc.rpg126599.model.MatchDifficulty;
 import it.unicam.cs.mpgc.rpg126599.model.Player;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
+import it.unicam.cs.mpgc.rpg126599.model.Trait;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
-// motore del gioco che applica le regole, controlla le azioni del giocatore umano e gestisce il turno automatico del ruolo che non viene selezionato dall'utente
+
 public class GameEngine {
 
     private final Board board;
@@ -23,16 +25,24 @@ public class GameEngine {
         this.board = board;
         this.state = state;
     }
-// inizia nuova partita
+
+    // partita singola "storica" (retrocompatibile): usa comunque il bilanciamento del match 1
     public static GameEngine newGame(Board board, RoleType humanRole) {
         Player killer = new Player(RoleType.KILLER, null);
         Player police = new Player(RoleType.POLICE, "n20");
-        GameState state = new GameState(killer, police, humanRole);
+        GameState state = new GameState(killer, police, humanRole, MatchDifficulty.MATCH_1);
         GameEngine engine = new GameEngine(board, state);
         engine.resolveAutomaticPhases();
         return engine;
     }
-// riprende partita salvata
+
+    // avvia un match già preparato dal CampaignManager (bilanciamento e tratti già impostati)
+    public static GameEngine newCampaignMatch(Board board, GameState state) {
+        GameEngine engine = new GameEngine(board, state);
+        engine.resolveAutomaticPhases();
+        return engine;
+    }
+
     public static GameEngine resume(Board board, GameState state) {
         GameEngine engine = new GameEngine(board, state);
         engine.resolveAutomaticPhases();
@@ -42,8 +52,8 @@ public class GameEngine {
     public GameState getState() { return state; }
     public Board getBoard() { return board; }
 
-    // LOGICA PER UTENTE: azioni di gioco che possono essere fatte dal giocatore umano
-// quando il giocatore umano sceglie di giocare come killer deve scegliere il proprio nascondiglio e il luogo dell'omicidio
+    // ================= AZIONI DEL GIOCATORE UMANO =================
+
     public void chooseHome(String locationId) {
         requirePhase(Turn.AWAITING_HOME_CHOICE);
         requireHumanRole(RoleType.KILLER);
@@ -62,7 +72,7 @@ public class GameEngine {
         applyChooseMurderLocation(locationId);
         resolveAutomaticPhases();
     }
-// il killer può scegliere di spostarsi di una o due casella alla volta per turno
+
     public void killerMove(String targetLocationId) {
         requirePhase(Turn.AWAITING_KILLER_ACTION);
         requireHumanRole(RoleType.KILLER);
@@ -74,15 +84,23 @@ public class GameEngine {
             throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
         }
 
+        String intermediate = null;
         if (distance == 2) {
-            board.neighborsOf(current).stream()
+            intermediate = board.neighborsOf(current).stream()
                     .filter(n -> board.isNeighbor(n.getId(), targetLocationId))
                     .findFirst()
-                    .ifPresent(inter -> state.markKillerVisited(inter.getId()));
+                    .map(Location::getId)
+                    .orElse(null);
+        }
+
+        checkMovementNotBlocked(current, targetLocationId, intermediate);
+
+        if (intermediate != null) {
+            state.markKillerVisited(intermediate);
         }
 
         applyKillerMove(targetLocationId);
-        resolveAutomaticPhases(); // gestione automatica del turno del poliziotto
+        resolveAutomaticPhases();
     }
 
     public void killerLeaveFakeClue(String targetLocationId) {
@@ -96,6 +114,46 @@ public class GameEngine {
         }
 
         applyKillerFakeClue(targetLocationId);
+        resolveAutomaticPhases();
+    }
+
+    // Smoke Bomb: copertura per un turno, neutralizza il prossimo Scanner della Polizia
+    public void killerUseSmokeBomb() {
+        requirePhase(Turn.AWAITING_KILLER_ACTION);
+        requireHumanRole(RoleType.KILLER);
+        if (state.getKillerSmokeBombsRemaining() <= 0) {
+            throw new IllegalStateException("Non hai più Smoke Bomb disponibili.");
+        }
+        applyKillerSmokeBomb();
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
+        resolveAutomaticPhases();
+    }
+
+    // Trap Kit: piazza una Trap Zone che rallenta la Polizia se ci entra nel turno immediatamente successivo
+    public void killerPlaceTrap(String targetLocationId) {
+        requirePhase(Turn.AWAITING_KILLER_ACTION);
+        requireHumanRole(RoleType.KILLER);
+        if (state.getKillerTrapKitsRemaining() <= 0) {
+            throw new IllegalStateException("Non hai più Trap Kit disponibili.");
+        }
+        requireExistingLocation(targetLocationId);
+        if (targetLocationId.equals(state.getKiller().getCurrentLocationId())) {
+            throw new IllegalArgumentException("Non puoi piazzare la trappola sulla tua stessa posizione.");
+        }
+        applyKillerPlaceTrap(targetLocationId);
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
+        resolveAutomaticPhases();
+    }
+
+    // Shortcut Map: una sola volta a match, ignora distanza massima, Roadblock e Checkpoint
+    public void killerUseShortcutMap(String targetLocationId) {
+        requirePhase(Turn.AWAITING_KILLER_ACTION);
+        requireHumanRole(RoleType.KILLER);
+        if (state.isKillerShortcutMapUsed()) {
+            throw new IllegalStateException("Hai già usato la Shortcut Map in questo match.");
+        }
+        requireExistingLocation(targetLocationId);
+        applyKillerShortcutMap(targetLocationId);
         resolveAutomaticPhases();
     }
 
@@ -132,7 +190,60 @@ public class GameEngine {
         resolveAutomaticPhases();
     }
 
-    // regole di gioco vengono applicate modificando così anche lo stato del gioco in base alle sclete fatte durante i turni
+    // Roadblock: blocca un intero nodo per il prossimo turno del Killer
+    public void policePlaceRoadblock(String targetLocationId) {
+        requirePhase(Turn.AWAITING_POLICE_ACTION);
+        requireHumanRole(RoleType.POLICE);
+        if (state.getPoliceRoadblocksRemaining() <= 0) {
+            throw new IllegalStateException("Non hai più Roadblock disponibili.");
+        }
+        requireExistingLocation(targetLocationId);
+        state.useRoadblock();
+        state.setActiveRoadblock(targetLocationId);
+        endPoliceTurn();
+        resolveAutomaticPhases();
+    }
+
+    // Checkpoint Token (Checkpoint Mobile): blocca un singolo collegamento adiacente alla propria posizione
+    public void policeUseCheckpoint(String fromId, String toId) {
+        requirePhase(Turn.AWAITING_POLICE_ACTION);
+        requireHumanRole(RoleType.POLICE);
+        if (state.getPoliceCheckpointTokensRemaining() <= 0) {
+            throw new IllegalStateException("Non hai più Checkpoint Token disponibili.");
+        }
+        if (!board.isNeighbor(fromId, toId)) {
+            throw new IllegalArgumentException("Il Checkpoint Token blocca solo un collegamento realmente esistente.");
+        }
+        state.useCheckpointToken();
+        state.setActiveCheckpoint(fromId, toId);
+        endPoliceTurn();
+        resolveAutomaticPhases();
+    }
+
+    // Scanner: lettura rapida dell'area, rivela se il Killer è entro 2 caselle dal punto scelto
+    public void policeUseScanner(String centerLocationId) {
+        requirePhase(Turn.AWAITING_POLICE_ACTION);
+        requireHumanRole(RoleType.POLICE);
+        if (state.getPoliceScannerRemaining() <= 0) {
+            throw new IllegalStateException("Non hai più letture Scanner disponibili in questo match.");
+        }
+        requireExistingLocation(centerLocationId);
+        state.useScanner();
+
+        boolean found;
+        if (state.isKillerSmokeBombActive()) {
+            found = false;
+            state.clearKillerSmokeBombActive();
+        } else {
+            found = board.distance(centerLocationId, state.getKiller().getCurrentLocationId()) <= 2;
+        }
+        state.setLastScannerResult(centerLocationId, found);
+
+        endPoliceTurn();
+        resolveAutomaticPhases();
+    }
+
+    // ================= APPLICAZIONE REGOLE =================
 
     private void applyChooseHome(String locationId) {
         state.chooseHome(locationId);
@@ -157,13 +268,66 @@ public class GameEngine {
         } else if (wasAlreadyAwayFromHome) {
             state.finish(RoleType.KILLER, "Il killer è rientrato a casa senza essere scoperto.");
         }
+        afterKillerAction();
         state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
 
     private void applyKillerFakeClue(String targetLocationId) {
         state.addFakeClue(targetLocationId);
         state.useKillerFakeClue();
+        afterKillerAction();
         state.setPhase(Turn.AWAITING_POLICE_ACTION);
+    }
+
+    private void applyKillerSmokeBomb() {
+        state.useKillerSmokeBomb();
+        state.activateKillerSmokeBomb();
+        afterKillerAction();
+    }
+
+    private void applyKillerPlaceTrap(String targetLocationId) {
+        state.useKillerTrapKit();
+        state.setActiveTrapZone(targetLocationId);
+        afterKillerAction();
+    }
+
+    private void applyKillerShortcutMap(String targetLocationId) {
+        boolean wasAlreadyAwayFromHome = state.hasLeftHome();
+
+        state.getKiller().moveTo(targetLocationId);
+        state.markKillerVisited(targetLocationId);
+
+        boolean isAtHomeNow = targetLocationId.equals(state.getKillerHomeLocationId());
+        if (!isAtHomeNow) {
+            state.markLeftHome();
+        } else if (wasAlreadyAwayFromHome) {
+            state.finish(RoleType.KILLER, "Il killer è rientrato a casa senza essere scoperto (Shortcut Map).");
+        }
+        state.markKillerShortcutMapUsed();
+        afterKillerAction();
+        state.setPhase(Turn.AWAITING_POLICE_ACTION);
+    }
+
+    // Roadblock e Checkpoint durano un solo turno del Killer: si esauriscono sempre qui,
+    // che l'azione del Killer li abbia dovuti aggirare oppure no.
+    private void afterKillerAction() {
+        state.clearActiveRoadblock();
+        state.clearActiveCheckpoint();
+    }
+
+    private void checkMovementNotBlocked(String current, String target, String intermediate) {
+        String roadblock = state.getActiveRoadblockLocationId();
+        if (roadblock != null && (roadblock.equals(target) || roadblock.equals(intermediate))) {
+            throw new IllegalArgumentException(
+                    "Un Roadblock della Polizia blocca quel nodo per questo turno: scegli un altro percorso oppure usa la Shortcut Map.");
+        }
+        boolean checkpointBlocksDirect = intermediate == null && state.isCheckpointEdge(current, target);
+        boolean checkpointBlocksHop = intermediate != null
+                && (state.isCheckpointEdge(current, intermediate) || state.isCheckpointEdge(intermediate, target));
+        if (checkpointBlocksDirect || checkpointBlocksHop) {
+            throw new IllegalArgumentException(
+                    "Un Checkpoint della Polizia blocca quel collegamento per questo turno: scegli un altro percorso oppure usa la Shortcut Map.");
+        }
     }
 
     private void applyPoliceUseClue() {
@@ -185,6 +349,10 @@ public class GameEngine {
     }
 
     private void applyPoliceMove(String targetLocationId) {
+        if (targetLocationId.equals(state.getActiveTrapZoneLocationId())) {
+            // il Killer aveva armato una Trap Zone qui: la Polizia viene rallentata al prossimo turno
+            state.setPoliceStunnedNextTurn(true);
+        }
         state.getPolice().moveTo(targetLocationId);
         state.markPoliceVisited(targetLocationId);
     }
@@ -194,16 +362,34 @@ public class GameEngine {
         if (killerIsThere) {
             state.finish(RoleType.POLICE, "Il poliziotto ha arrestato il killer.");
         } else {
+            // L'arresto non è un tentativo casuale ma una decisione ad alta responsabilità:
+            // se sbagliato, il Killer guadagna e la Polizia perde punti.
             state.recordFailedArrest(targetLocationId);
+            int penalty = (int) Math.round(15 * state.getDifficulty().getArrestFailurePenaltyMultiplier());
+            state.adjustPoliceScore(-penalty);
+            state.grantKillerArrestFailureBonus();
+            if (state.getKillerTraits().contains(Trait.SANGUE_FREDDO)) {
+                state.grantKillerBonusSmokeBomb();
+            }
         }
     }
 
     private void endPoliceTurn() {
+        // la Trap Zone e la copertura Smoke Bomb durano al massimo un turno di Polizia:
+        // si esauriscono qui, indipendentemente dall'esito dell'azione appena compiuta.
+        state.clearActiveTrapZone();
+        state.clearKillerSmokeBombActive();
+
         if (state.isFinished()) {
             state.setPhase(Turn.GAME_OVER);
             return;
         }
         state.incrementRound();
+        if (state.isPoliceStunnedNextTurn()) {
+            // penalità della Trap Zone: il rallentamento costa alla Polizia un round extra dell'orologio di partita
+            state.incrementRound();
+            state.setPoliceStunnedNextTurn(false);
+        }
         if (state.getRoundsElapsed() >= state.getMaxRounds()) {
             state.finish(RoleType.KILLER, "Tempo scaduto: il killer sfugge alla cattura.");
             state.setPhase(Turn.GAME_OVER);
@@ -212,8 +398,8 @@ public class GameEngine {
         state.setPhase(Turn.AWAITING_KILLER_ACTION);
     }
 
-    // Logica di gioco automatica del ruolo non selezionato dal giocatore umano
-     // quando il turno del giocatore umano termina fa muovere il ruolo automatico
+    // ================= LOGICA AUTOMATICA DEL RUOLO NON UMANO =================
+
     private void resolveAutomaticPhases() {
         while (!state.isFinished() && phaseBelongsToAutomaticRole()) {
             switch (state.getPhase()) {
@@ -227,7 +413,7 @@ public class GameEngine {
             state.setPhase(Turn.GAME_OVER);
         }
     }
-//controllo se la fase appartiene al ruolo automatico
+
     private boolean phaseBelongsToAutomaticRole() {
         RoleType automaticRole = state.getHumanRole() == RoleType.KILLER ? RoleType.POLICE : RoleType.KILLER;
         return switch (state.getPhase()) {
@@ -237,7 +423,7 @@ public class GameEngine {
             case GAME_OVER -> false;
         };
     }
-// se il ruolo automatico deve giocare come killer setta nascondiglio e primo luogo dell'omicidio
+
     private void autoSetupKiller() {
         if (!state.isHomeChosen()) {
             String policeStart = state.getPolice().getCurrentLocationId();
@@ -250,7 +436,7 @@ public class GameEngine {
         String murderLocation = board.neighborsOf(state.getKillerHomeLocationId()).get(0).getId();
         applyChooseMurderLocation(murderLocation);
     }
-// movimento del killer automatico e strategie appliacte dal killer automatico
+
     private void autoPlayKillerTurn() {
         boolean stillHasFakeClues = state.getKillerFakeCluesRemaining() > 0;
         boolean isMidGame = state.getRoundsElapsed() == state.getMaxRounds() / 2;
@@ -270,7 +456,7 @@ public class GameEngine {
 
         applyKillerMove(target);
     }
-//movimento del poliziotto automatico e strategie usate dal poliziotto automatico
+
     private void autoPlayPoliceTurn() {
         String current = state.getPolice().getCurrentLocationId();
         Optional<Clue> activeLead = state.getFakeClues().stream()
@@ -321,7 +507,6 @@ public class GameEngine {
                 .map(Location::getId)
                 .orElse(fromId);
     }
-
 
     private void requirePhase(Turn expected) {
         if (state.getPhase() != expected) {

@@ -11,9 +11,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
+import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
 import it.unicam.cs.mpgc.rpg126599.model.Board;
 import it.unicam.cs.mpgc.rpg126599.model.BoardLoader;
-import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
@@ -27,26 +28,26 @@ public class RoleSelectController {
     private Label messageLabel;
 
     private final GameJsonStorage storage = new GameJsonStorage();
-// se utente sceglie killer carica mappa per quel ruolo e avvia la partita
+
+    // scegliendo un ruolo si avvia una nuova campagna Best of 3 in quel ruolo
     @FXML
     private void onChooseKiller() {
         Board board = BoardLoader.loadFromResource("/rounds/maps.json");
-        GameEngine engine = GameEngine.newGame(board, RoleType.KILLER);
-        openGameScreen(engine);
+        CampaignManager campaign = CampaignManager.start(board, RoleType.KILLER);
+        openCharacterDescription(campaign);
     }
-// se utente sceglie poliziotto carica mappa per quel ruolo e avvia la partita
+
     @FXML
     private void onChoosePolice() {
-      
         Board board = BoardLoader.loadFromResource("/rounds/maps.json");
-        GameEngine engine = GameEngine.newGame(board, RoleType.POLICE);
-        openGameScreen(engine);
+        CampaignManager campaign = CampaignManager.start(board, RoleType.POLICE);
+        openCharacterDescription(campaign);
     }
-// carica e apre partita salvata se esiste in memoria
+
+    // il caricamento di un salvataggio resta una partita singola, fuori dalla campagna
     @FXML
     private void onLoadGame() {
         try {
-            
             Board board = BoardLoader.loadFromResource("/rounds/maps.json");
             GameState savedState = storage.load(Path.of("Persistence.json"));
             GameEngine engine = GameEngine.resume(board, savedState);
@@ -55,7 +56,29 @@ public class RoleSelectController {
             messageLabel.setText("Nessun salvataggio valido trovato (Persistence.json).");
         }
     }
-// apre schermata di gioco
+
+ private void openCharacterDescription(CampaignManager campaign) {
+    try {
+        String fxmlPath = campaign.getHumanRole() == RoleType.KILLER
+                ? "/fxml/killer.fxml"
+                : "/fxml/police.fxml";
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent root = loader.load();
+
+        CharacterDescriptionController controller = loader.getController();
+        controller.init(campaign);
+
+        Stage stage = (Stage) killerButton.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.sizeToScene();
+        stage.setTitle("SHADOW PLAY");
+    } catch (IOException e) {
+        throw new IllegalStateException("Impossibile aprire la schermata del personaggio", e);
+    }
+}
+
     private void openGameScreen(GameEngine engine) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));

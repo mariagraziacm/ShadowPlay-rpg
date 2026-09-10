@@ -6,16 +6,15 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" stylesheets="@../style/killer.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.CharacterDescriptionController">
    <children>
       <ImageView fitHeight="500.0" fitWidth="900.0">
          <image>
             <Image url="@../../../../../../killer.png" />
          </image>
       </ImageView>
-      <Button layoutX="531.0" layoutY="437.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="150.0" text="Button" />
-      <Button layoutX="712.0" layoutY="437.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="141.0" text="Button" />
-      <TextArea layoutX="533.0" layoutY="64.0" prefHeight="358.0" prefWidth="318.0" />
+      <Button fx:id="backButton" layoutX="531.0" layoutY="437.0" mnemonicParsing="false" onAction="#onBack" prefHeight="42.0" prefWidth="150.0" text="Indietro" />
+      <Button fx:id="continueButton" layoutX="712.0" layoutY="437.0" mnemonicParsing="false" onAction="#onContinue" prefHeight="42.0" prefWidth="141.0" text="Continua" />
+      <TextArea fx:id="descriptionArea" layoutX="533.0" layoutY="64.0" prefHeight="358.0" prefWidth="318.0" wrapText="true" />
    </children>
 </AnchorPane>

@@ -22,6 +22,12 @@
                   <Button fx:id="fakeClueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onSelectFakeClue" prefHeight="28.0" text="Lascia indizio falso" />
                   <Button fx:id="moveButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onSelectMove" prefHeight="28.0" text="Sposta" />
                   <Button fx:id="useClueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onUseClue" prefHeight="28.0" text="Usa indizio" />
+                  <Button fx:id="smokeBombButton" onAction="#onUseSmokeBomb" text="Smoke Bomb" />
+                  <Button fx:id="trapKitButton" onAction="#onSelectTrapKit" text="Trap Kit" />
+                  <Button fx:id="shortcutMapButton" onAction="#onSelectShortcutMap" text="Shortcut Map" />
+                  <Button fx:id="roadblockButton" onAction="#onSelectRoadblock" text="Roadblock" />
+                  <Button fx:id="checkpointButton" onAction="#onSelectCheckpoint" text="Checkpoint Mobile" />
+                  <Button fx:id="scannerButton" onAction="#onUseScanner" text="Scanner" />
             <Region prefHeight="210.0" prefWidth="209.0" VBox.vgrow="ALWAYS" />
                   <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onSaveGame" prefHeight="30.0" prefWidth="254.0" styleClass="secondary-button" text="Salva partita" />
                   <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onReturnToMenu" prefHeight="30.0" prefWidth="254.0" styleClass="secondary-button" text="Torna al menu" />
