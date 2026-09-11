@@ -17,7 +17,7 @@ import java.util.List;
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
-// schermata di fine match: mostra l'immagine del vincitore (killer.png / police.png),
+// Schermata di fine match: mostra l'immagine del vincitore (killer.png / police.png),
 // gli XP accumulati e propone di proseguire la campagna oppure tornare al menu
 public class MatchResultController {
 
@@ -52,27 +52,25 @@ public class MatchResultController {
                 campaign.getKillerXp(), campaign.getPoliceXp()));
     }
 
-    // prova più percorsi possibili (classpath e filesystem) finché non trova l'immagine.
-    // stampa in console quale percorso ha funzionato, così puoi sistemare gli altri codici di conseguenza.
+    // Carica l'immagine corretta cercandola prima nel classpath e poi sul filesystem
     private Image loadWinnerImage(RoleType winner) {
         String fileName = winner == RoleType.KILLER ? "killer.png" : "police.png";
 
-        // 1) prova come risorsa nel classpath (radice di resources)
-        List<String> classpathCandidates = List.of("/" + fileName, "/app/src/main/resources/" + fileName);
-        for (String path : classpathCandidates) {
-            var stream = getClass().getResourceAsStream(path);
-            if (stream != null) {
-                System.out.println("Immagine trovata nel CLASSPATH: " + path);
-                return new Image(stream);
-            }
+        // 1. Prova dal Classpath (cartella /images/ dentro resources)
+        String resourcePath = "/images/" + fileName;
+        var stream = getClass().getResourceAsStream(resourcePath);
+        if (stream != null) {
+            System.out.println("Immagine trovata nel CLASSPATH: " + resourcePath);
+            return new Image(stream);
         }
 
-        // 2) prova come file reale sul disco, relativo alla working directory del processo
+        // 2. Fallback su FileSystem per ambiente di sviluppo (Gradle/Maven/IDE)
         List<String> fileCandidates = List.of(
-                "app/src/main/resources/" + fileName,
-                "src/main/resources/" + fileName,
-                fileName
+                "app/src/main/resources/images/" + fileName,
+                "src/main/resources/images/" + fileName,
+                "images/" + fileName
         );
+
         for (String path : fileCandidates) {
             File file = new File(path);
             if (file.exists()) {
@@ -81,7 +79,7 @@ public class MatchResultController {
             }
         }
 
-        System.out.println("ATTENZIONE: immagine " + fileName + " non trovata in nessuno dei percorsi candidati.");
+        System.err.println("ATTENZIONE: Immagine " + fileName + " non trovata nei percorsi previsti.");
         return null;
     }
 
