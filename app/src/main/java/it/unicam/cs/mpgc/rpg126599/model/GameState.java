@@ -41,6 +41,10 @@ public class GameState {
     private int campaignPoliceWins;
     private int campaignKillerXp;
     private int campaignPoliceXp;
+    private int killerXpThisMatch;
+    private int policeXpThisMatch;
+    private int lastXpDeltaForKiller;
+    private int lastXpDeltaForPolice;
 
     // ---- Tratti RPG ----
     private List<Trait> killerTraits = new ArrayList<>();
@@ -141,6 +145,40 @@ public class GameState {
         this.campaignPoliceXp = policeXp;
     }
 
+    public int getKillerXpThisMatch() {
+        return killerXpThisMatch;
+    }
+
+    public int getPoliceXpThisMatch() {
+        return policeXpThisMatch;
+    }
+
+    public void addKillerXp(int delta) {
+        killerXpThisMatch += delta;
+        lastXpDeltaForKiller = delta;
+    }
+
+    public void addPoliceXp(int delta) {
+        policeXpThisMatch += delta;
+        lastXpDeltaForPolice = delta;
+    }
+
+    public int getLastXpDelta(RoleType role) {
+        return role == RoleType.KILLER ? lastXpDeltaForKiller : lastXpDeltaForPolice;
+    }
+
+    public void clearLastXpDelta() {
+        lastXpDeltaForKiller = 0;
+        lastXpDeltaForPolice = 0;
+    }
+
+    public void resetMatchXp() {
+        killerXpThisMatch = 0;
+        policeXpThisMatch = 0;
+        lastXpDeltaForKiller = 0;
+        lastXpDeltaForPolice = 0;
+    }
+
     public void clearCampaignProgress() {
         this.campaignInProgress = false;
         this.campaignCurrentMatchNumber = 1;
@@ -148,6 +186,10 @@ public class GameState {
         this.campaignPoliceWins = 0;
         this.campaignKillerXp = 0;
         this.campaignPoliceXp = 0;
+        this.killerXpThisMatch = 0;
+        this.policeXpThisMatch = 0;
+        this.lastXpDeltaForKiller = 0;
+        this.lastXpDeltaForPolice = 0;
     }
 
     public Player getKiller() {
@@ -206,6 +248,25 @@ public class GameState {
 
     public void incrementRound() {
         roundsElapsed++;
+    }
+
+    private int killerMovesMade;
+    private int policeMovesMade;
+
+    public int getKillerMovesMade() {
+        return killerMovesMade;
+    }
+
+    public int getPoliceMovesMade() {
+        return policeMovesMade;
+    }
+
+    public void registerKillerMove() {
+        killerMovesMade++;
+    }
+
+    public void registerPoliceMove() {
+        policeMovesMade++;
     }
 
     public int getPoliceCluesRemaining() {

@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.controller;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,15 +9,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import java.io.IOException;
 import java.nio.file.Path;
 
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
-import it.unicam.cs.mpgc.rpg126599.model.RoleType;
-import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;
+import it.unicam.cs.mpgc.rpg126599.model.RoleType;
+import it.unicam.cs.mpgc.rpg126599.model.Trait;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
+import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 
 // gestisce schermata di gioco, interazioni con la mappa e bottoni, la schermata si aggiorna in base a turno, ruolo e scelte
 public class GameController {
@@ -59,6 +62,8 @@ public class GameController {
     private CampaignManager campaign;
     private boolean matchResultRecorded;
     private PendingAction pendingAction = PendingAction.NONE;
+    private String temporaryInfoMessage;
+    private PauseTransition temporaryMessageTimer;
 
     // retrocompatibilità: partita singola senza campagna (es. "Carica partita salvata")
     public void init(GameEngine engine) {
@@ -109,21 +114,38 @@ public class GameController {
 
     private void handleKillerNodeClick(String locationId) {
         switch (pendingAction) {
-            case MOVE -> engine.killerMove(locationId);
+            case MOVE -> {
+                engine.killerMove(locationId);
+                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.KILLER) + " XP", Duration.seconds(3.2));
+            }
             case FAKE_CLUE -> engine.killerLeaveFakeClue(locationId);
             case TRAP_KIT -> engine.killerPlaceTrap(locationId);
-            case SHORTCUT_MOVE -> engine.killerUseShortcutMap(locationId);
+            case SHORTCUT_MOVE -> {
+                engine.killerUseShortcutMap(locationId);
+                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.KILLER) + " XP", Duration.seconds(3.2));
+            }
             default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");
         }
     }
 
     private void handlePoliceNodeClick(String locationId) {
         switch (pendingAction) {
-            case MOVE -> engine.policeMoveTo(locationId);
+            case MOVE -> {
+                engine.policeMoveTo(locationId);
+                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.POLICE) + " XP", Duration.seconds(3.2));
+            }
             case ARREST -> engine.policeAttemptArrest(locationId);
             case ROADBLOCK -> engine.policePlaceRoadblock(locationId);
             case CHECKPOINT -> engine.policeUseCheckpoint(engine.getState().getPolice().getCurrentLocationId(), locationId);
-            case SCANNER -> engine.policeUseScanner(locationId);
+            case SCANNER -> {
+                engine.policeUseScanner(locationId);
+                int xpDelta = engine.getState().getLastXpDelta(RoleType.POLICE);
+                String scannerMessage = engine.getState().isLastScannerFoundKiller()
+                        ? "📡 Killer rilevato nell'area! +" + xpDelta + " XP"
+                        : "📡 Nessun killer rilevato nell'area. +" + xpDelta + " XP";
+                showTemporaryFeedback(scannerMessage, Duration.seconds(5.0));
+                scheduleScannerClear();
+            }
             default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");
         }
     }
@@ -311,6 +333,39 @@ public class GameController {
         mapController.clearSelection();
     }
 
+    private int calculateMoveXp(RoleType role) {
+        var state = engine.getState();
+        return state.getLastXpDelta(role);
+    }
+
+    private void showTemporaryFeedback(String message, Duration duration) {
+        if (temporaryMessageTimer != null) {
+            temporaryMessageTimer.stop();
+        }
+        temporaryInfoMessage = message;
+        temporaryMessageTimer = new PauseTransition(duration);
+        temporaryMessageTimer.setOnFinished(event -> {
+            temporaryInfoMessage = null;
+            engine.getState().clearLastXpDelta();
+            refreshView();
+        });
+        temporaryMessageTimer.play();
+    }
+
+    private void scheduleScannerClear() {
+        if (temporaryMessageTimer != null) {
+            temporaryMessageTimer.stop();
+        }
+        temporaryMessageTimer = new PauseTransition(Duration.seconds(5.0));
+        temporaryMessageTimer.setOnFinished(event -> {
+            engine.getState().setLastScannerResult(null, false);
+            temporaryInfoMessage = null;
+            engine.getState().clearLastXpDelta();
+            refreshView();
+        });
+        temporaryMessageTimer.play();
+    }
+
     private void refreshView() {
         var state = engine.getState();
 
@@ -456,6 +511,13 @@ public class GameController {
         if (state.isFinished()) {
             inventoryLabel.setVisible(false);
             inventoryLabel.setManaged(false);
+            return;
+        }
+
+        if (temporaryInfoMessage != null) {
+            inventoryLabel.setVisible(true);
+            inventoryLabel.setManaged(true);
+            inventoryLabel.setText(temporaryInfoMessage);
             return;
         }
 
