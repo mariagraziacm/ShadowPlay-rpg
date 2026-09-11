@@ -124,18 +124,21 @@ public class CampaignManager {
         return null;
     }
 
-    // registra l'esito del match, avanza la campagna e assegna gli XP:
-    // +100 XP a chi vince il match, +30 XP di consolazione a chi perde,
-    // +200 XP di bonus extra a chi vince l'intera serie Best of 3
+    // registra l'esito del match e accumula i punti realmente guadagnati in quella partita,
+    // senza sostituire i valori reali con premi fissi come +100 / +30.
     public void recordMatchResult(RoleType matchWinner) {
+        GameState state = currentEngine != null ? currentEngine.getState() : null;
+        int killerMatchXp = state != null ? state.getKillerXpThisMatch() : 0;
+        int policeMatchXp = state != null ? state.getPoliceXpThisMatch() : 0;
+
         if (matchWinner == RoleType.KILLER) {
             killerWins++;
-            killerXp += 100;
-            policeXp += 30;
+            killerXp += killerMatchXp;
+            policeXp += policeMatchXp;
         } else {
             policeWins++;
-            policeXp += 100;
-            killerXp += 30;
+            policeXp += policeMatchXp;
+            killerXp += killerMatchXp;
         }
         currentMatchNumber++;
 

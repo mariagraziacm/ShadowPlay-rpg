@@ -116,13 +116,13 @@ public class GameController {
         switch (pendingAction) {
             case MOVE -> {
                 engine.killerMove(locationId);
-                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.KILLER) + " XP", Duration.seconds(3.2));
+                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.KILLER) + " XP", Duration.seconds(4.5));
             }
             case FAKE_CLUE -> engine.killerLeaveFakeClue(locationId);
             case TRAP_KIT -> engine.killerPlaceTrap(locationId);
             case SHORTCUT_MOVE -> {
                 engine.killerUseShortcutMap(locationId);
-                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.KILLER) + " XP", Duration.seconds(3.2));
+                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.KILLER) + " XP", Duration.seconds(4.5));
             }
             default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");
         }
@@ -132,7 +132,7 @@ public class GameController {
         switch (pendingAction) {
             case MOVE -> {
                 engine.policeMoveTo(locationId);
-                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.POLICE) + " XP", Duration.seconds(3.2));
+                showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.POLICE) + " XP", Duration.seconds(4.5));
             }
             case ARREST -> engine.policeAttemptArrest(locationId);
             case ROADBLOCK -> engine.policePlaceRoadblock(locationId);
@@ -143,7 +143,7 @@ public class GameController {
                 String scannerMessage = engine.getState().isLastScannerFoundKiller()
                         ? "📡 Killer rilevato nell'area! +" + xpDelta + " XP"
                         : "📡 Nessun killer rilevato nell'area. +" + xpDelta + " XP";
-                showTemporaryFeedback(scannerMessage, Duration.seconds(5.0));
+                showTemporaryFeedback(scannerMessage, Duration.seconds(5.5));
                 scheduleScannerClear();
             }
             default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");

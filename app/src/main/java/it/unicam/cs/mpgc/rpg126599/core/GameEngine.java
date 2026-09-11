@@ -231,13 +231,21 @@ public void policeAttemptArrest(String targetLocationId) {
         state.useScanner();
 
         boolean found;
+        int distance;
         if (state.isKillerSmokeBombActive()) {
             found = false;
+            distance = 3;
             state.clearKillerSmokeBombActive();
         } else {
-            found = board.distance(centerLocationId, state.getKiller().getCurrentLocationId()) <= 2;
+            distance = board.distance(centerLocationId, state.getKiller().getCurrentLocationId());
+            found = distance <= 2;
         }
         state.setLastScannerResult(centerLocationId, found);
+
+        int scannerXp = found
+                ? 12 + Math.max(0, 2 - distance) * 7 + calculateTraitBonus(RoleType.POLICE) / 2
+                : 4 + Math.max(0, 2 - distance) * 4;
+        state.addPoliceXp(scannerXp);
 
         endPoliceTurn();
         resolveAutomaticPhases();
@@ -256,9 +264,31 @@ public void policeAttemptArrest(String targetLocationId) {
         state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
 
+    private int calculateTraitBonus(RoleType role) {
+        List<Trait> traits = role == RoleType.KILLER ? state.getKillerTraits() : state.getPoliceTraits();
+        return traits.stream()
+                .filter(trait -> trait.getRole() == role)
+                .mapToInt(Trait::getMatchXpBonus)
+                .sum();
+    }
+
+    private int calculateTacticalMoveXp(RoleType role, String targetLocationId) {
+        int traitBonus = calculateTraitBonus(role);
+        if (role == RoleType.KILLER) {
+            int distanceFromPolice = board.distance(targetLocationId, state.getPolice().getCurrentLocationId());
+            return 6 + Math.max(0, distanceFromPolice - 1) * 5 + traitBonus / 2;
+        }
+
+        int distanceToKiller = board.distance(targetLocationId, state.getKiller().getCurrentLocationId());
+        return 6 + Math.max(0, 4 - distanceToKiller) * 6 + traitBonus / 2;
+    }
+
     private void applyKillerMove(String targetLocationId) {
         boolean wasAlreadyAwayFromHome = state.hasLeftHome();
 
+        state.registerKillerMove();
+        int xpGain = calculateTacticalMoveXp(RoleType.KILLER, targetLocationId);
+        state.addKillerXp(xpGain);
         state.getKiller().moveTo(targetLocationId);
         state.markKillerVisited(targetLocationId);
 
@@ -275,6 +305,7 @@ public void policeAttemptArrest(String targetLocationId) {
     private void applyKillerFakeClue(String targetLocationId) {
         state.addFakeClue(targetLocationId);
         state.useKillerFakeClue();
+        state.addKillerXp(-4);
         afterKillerAction();
         state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
@@ -294,6 +325,8 @@ public void policeAttemptArrest(String targetLocationId) {
     private void applyKillerShortcutMap(String targetLocationId) {
         boolean wasAlreadyAwayFromHome = state.hasLeftHome();
 
+        state.registerKillerMove();
+        state.addKillerXp(calculateTacticalMoveXp(RoleType.KILLER, targetLocationId) + 8);
         state.getKiller().moveTo(targetLocationId);
         state.markKillerVisited(targetLocationId);
 
@@ -340,6 +373,7 @@ private void requireWithinDistance(String fromId, String toId, int maxDistance) 
         String eliminated = pickHomeCandidateToEliminate();
         state.eliminateHomeCandidate(eliminated);
         state.usePoliceClue();
+        state.addPoliceXp(-5);
     }
 
     private String pickHomeCandidateToEliminate() {
@@ -359,6 +393,8 @@ private void requireWithinDistance(String fromId, String toId, int maxDistance) 
             // il Killer aveva armato una Trap Zone qui: la Polizia viene rallentata al prossimo turno
             state.setPoliceStunnedNextTurn(true);
         }
+        state.registerPoliceMove();
+        state.addPoliceXp(calculateTacticalMoveXp(RoleType.POLICE, targetLocationId));
         state.getPolice().moveTo(targetLocationId);
         state.markPoliceVisited(targetLocationId);
     }
@@ -367,12 +403,15 @@ private void requireWithinDistance(String fromId, String toId, int maxDistance) 
         boolean killerIsThere = targetLocationId.equals(state.getKiller().getCurrentLocationId());
         if (killerIsThere) {
             state.finish(RoleType.POLICE, "Il poliziotto ha arrestato il killer.");
+            state.addPoliceXp(20 + calculateTraitBonus(RoleType.POLICE) / 2);
         } else {
             // L'arresto non è un tentativo casuale ma una decisione ad alta responsabilità:
             // se sbagliato, il Killer guadagna e la Polizia perde punti.
             state.recordFailedArrest(targetLocationId);
             int penalty = (int) Math.round(15 * state.getDifficulty().getArrestFailurePenaltyMultiplier());
             state.adjustPoliceScore(-penalty);
+            state.addPoliceXp(-penalty);
+            state.addKillerXp(12 + calculateTraitBonus(RoleType.KILLER) / 2);
             state.grantKillerArrestFailureBonus();
             if (state.getKillerTraits().contains(Trait.SANGUE_FREDDO)) {
                 state.grantKillerBonusSmokeBomb();
