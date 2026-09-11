@@ -6,10 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
@@ -20,7 +22,7 @@ import it.unicam.cs.mpgc.rpg126599.model.Turn;
 public class GameController {
 
     private enum PendingAction {
-        NONE, MOVE, FAKE_CLUE, ARREST
+        NONE, MOVE, FAKE_CLUE, ARREST, TRAP_KIT, SHORTCUT_MOVE, ROADBLOCK, CHECKPOINT, SCANNER
     }
 
     @FXML
@@ -28,6 +30,12 @@ public class GameController {
 
     @FXML
     private Label statusLabel;
+    @FXML
+    private Label inventoryLabel;
+    @FXML
+    private Label commandsHeaderLabel;
+    @FXML
+    private Label inventoryHeaderLabel;
     @FXML
     private Button useClueButton;
     @FXML
@@ -37,7 +45,8 @@ public class GameController {
     @FXML
     private Button arrestButton;
 
-    // Elementi aggiuntivi tratti e abilità
+    @FXML private HBox killerInventoryRow;
+    @FXML private HBox policeInventoryRow;
     @FXML private Button smokeBombButton;
     @FXML private Button trapKitButton;
     @FXML private Button shortcutMapButton;
@@ -45,27 +54,41 @@ public class GameController {
     @FXML private Button checkpointButton;
     @FXML private Button scannerButton;
 
-    private final GameJsonStorage storage = new GameJsonStorage(); 
+    private final GameJsonStorage storage = new GameJsonStorage();
     private GameEngine engine;
+    private CampaignManager campaign;
+    private boolean matchResultRecorded;
     private PendingAction pendingAction = PendingAction.NONE;
 
+    // retrocompatibilità: partita singola senza campagna (es. "Carica partita salvata")
     public void init(GameEngine engine) {
         this.engine = engine;
+        this.campaign = null;
+        this.matchResultRecorded = false;
+        mapController.setOnNodeClicked(this::onNodeClicked);
+        refreshView();
+    }
+
+    // avvio di un match all'interno della campagna Best of 3
+    public void init(CampaignManager campaign) {
+        this.campaign = campaign;
+        this.engine = campaign.getCurrentEngine();
+        this.matchResultRecorded = false;
         mapController.setOnNodeClicked(this::onNodeClicked);
         refreshView();
     }
 
     private void onNodeClicked(String locationId) {
         if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
             return;
         }
-        Turn phase = engine.getState().getPhase(); // controlla turno e ruolo
+        Turn phase = engine.getState().getPhase();
         RoleType humanRole = engine.getState().getHumanRole();
 
-        // comportamenti avviati al click sui nodi in base a turno e ruolo
         try {
             if (phase == Turn.AWAITING_HOME_CHOICE && humanRole == RoleType.KILLER) {
-                engine.chooseHome(locationId); 
+                engine.chooseHome(locationId);
             } else if (phase == Turn.AWAITING_MURDER_LOCATION_CHOICE && humanRole == RoleType.KILLER) {
                 engine.chooseMurderLocation(locationId);
             } else if (phase == Turn.AWAITING_KILLER_ACTION && humanRole == RoleType.KILLER) {
@@ -84,27 +107,33 @@ public class GameController {
         refreshView();
     }
 
-    // azioni per killer con click su un nodo
     private void handleKillerNodeClick(String locationId) {
         switch (pendingAction) {
             case MOVE -> engine.killerMove(locationId);
             case FAKE_CLUE -> engine.killerLeaveFakeClue(locationId);
-            default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Lascia indizio falso'.");
+            case TRAP_KIT -> engine.killerPlaceTrap(locationId);
+            case SHORTCUT_MOVE -> engine.killerUseShortcutMap(locationId);
+            default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");
         }
     }
 
-    // azioni per poliziotto con click su un nodo
     private void handlePoliceNodeClick(String locationId) {
         switch (pendingAction) {
             case MOVE -> engine.policeMoveTo(locationId);
             case ARREST -> engine.policeAttemptArrest(locationId);
-            default -> throw new IllegalStateException("Scegli prima 'Sposta' oppure 'Tenta l'arresto'.");
+            case ROADBLOCK -> engine.policePlaceRoadblock(locationId);
+            case CHECKPOINT -> engine.policeUseCheckpoint(engine.getState().getPolice().getCurrentLocationId(), locationId);
+            case SCANNER -> engine.policeUseScanner(locationId);
+            default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");
         }
     }
 
-    // poliziotto usa indizio
     @FXML
     private void onUseClue() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
         try {
             engine.policeUseClue();
         } catch (IllegalStateException e) {
@@ -116,6 +145,10 @@ public class GameController {
 
     @FXML
     private void onSelectMove() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
         pendingAction = PendingAction.MOVE;
         boolean isKiller = engine.getState().getHumanRole() == RoleType.KILLER;
         statusLabel.setText(isKiller
@@ -123,22 +156,114 @@ public class GameController {
                 : "Seleziona sulla mappa una casella collegata alla tua per spostarti");
     }
 
-    // killer lascia indizio falso
     @FXML
     private void onSelectFakeClue() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
         if (engine.getState().getKillerFakeCluesRemaining() <= 0) {
             statusLabel.setText("Non hai più indizi falsi disponibili.");
             return;
         }
         pendingAction = PendingAction.FAKE_CLUE;
-        statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso per ingannare il poliziotto");
+        statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso");
     }
 
-    // poliziotto tenta l'arresto
     @FXML
     private void onSelectArrest() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
         pendingAction = PendingAction.ARREST;
         statusLabel.setText("Seleziona la casella su cui tentare l'arresto");
+    }
+
+    @FXML
+    private void onUseSmokeBomb() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
+        try {
+            engine.killerUseSmokeBomb();
+        } catch (IllegalStateException e) {
+            statusLabel.setText(e.getMessage());
+            return;
+        }
+        resetPendingAction();
+        refreshView();
+    }
+
+    @FXML
+    private void onSelectTrapKit() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
+        if (engine.getState().getKillerTrapKitsRemaining() <= 0) {
+            statusLabel.setText("Non hai più Trap Kit disponibili.");
+            return;
+        }
+        pendingAction = PendingAction.TRAP_KIT;
+        statusLabel.setText("Seleziona la casella dove piazzare la Trap Zone");
+    }
+
+    @FXML
+    private void onSelectShortcutMap() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
+        if (engine.getState().isKillerShortcutMapUsed()) {
+            statusLabel.setText("Hai già usato la Shortcut Map in questo match.");
+            return;
+        }
+        pendingAction = PendingAction.SHORTCUT_MOVE;
+        statusLabel.setText("Shortcut Map: seleziona liberamente la destinazione, ignorando i vincoli di movimento");
+    }
+
+    @FXML
+    private void onSelectRoadblock() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
+        if (engine.getState().getPoliceRoadblocksRemaining() <= 0) {
+            statusLabel.setText("Non hai più Roadblock disponibili.");
+            return;
+        }
+        pendingAction = PendingAction.ROADBLOCK;
+        statusLabel.setText("Seleziona il nodo da bloccare per il prossimo turno del Killer");
+    }
+
+    @FXML
+    private void onSelectCheckpoint() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
+        if (engine.getState().getPoliceCheckpointTokensRemaining() <= 0) {
+            statusLabel.setText("Non hai più Checkpoint Token disponibili.");
+            return;
+        }
+        pendingAction = PendingAction.CHECKPOINT;
+        statusLabel.setText("Seleziona una casella collegata alla tua posizione per bloccarne il collegamento");
+    }
+
+    @FXML
+    private void onUseScanner() {
+        if (engine.getState().isFinished()) {
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+            return;
+        }
+        if (engine.getState().getPoliceScannerRemaining() <= 0) {
+            statusLabel.setText("Non hai più letture Scanner disponibili in questo match.");
+            return;
+        }
+        pendingAction = PendingAction.SCANNER;
+        statusLabel.setText("Seleziona il centro dell'area su cui eseguire la lettura Scanner");
     }
 
     @FXML
@@ -166,35 +291,19 @@ public class GameController {
         }
     }
 
-    // Metodi gestori per i tratti/abilità della mappa
-    @FXML
-    private void onUseSmokeBomb() {
-        System.out.println("Bomba fumogena usata!");
-    }
-
-    @FXML
-    private void onSelectTrapKit() {
-        System.out.println("Trap Kit selezionato!");
-    }
-
-    @FXML
-    private void onSelectShortcutMap() {
-        System.out.println("Shortcut Map selezionata!");
-    }
-
-    @FXML
-    private void onSelectRoadblock() {
-        System.out.println("Roadblock selezionato!");
-    }
-
-    @FXML
-    private void onSelectCheckpoint() {
-        System.out.println("Checkpoint Mobile selezionato!");
-    }
-
-    @FXML
-    private void onUseScanner() {
-        System.out.println("Scanner usato!");
+    private void showMatchResultScreen(RoleType winner, String endReason) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/matchresult.fxml"));
+            Parent root = loader.load();
+            MatchResultController controller = loader.getController();
+            controller.init(campaign, winner, endReason);
+            Stage stage = (Stage) statusLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.sizeToScene();
+            stage.setTitle("SHADOW PLAY");
+        } catch (IOException e) {
+            statusLabel.setText("Impossibile mostrare la schermata di fine match.");
+        }
     }
 
     private void resetPendingAction() {
@@ -203,10 +312,22 @@ public class GameController {
     }
 
     private void refreshView() {
+        var state = engine.getState();
+
+        // se siamo dentro una campagna e il match è appena finito: registra il risultato
+        // (con relativi XP) e passa subito alla schermata con l'immagine del vincitore
+        if (state.isFinished() && campaign != null && !matchResultRecorded) {
+            matchResultRecorded = true;
+            RoleType winner = state.getWinner();
+            String endReason = state.getEndReason();
+            campaign.recordMatchResult(winner);
+            showMatchResultScreen(winner, endReason);
+            return;
+        }
+
         mapController.clearAllStates();
         mapController.resetInteractable();
 
-        var state = engine.getState();
         state.getEliminatedHomeCandidates().forEach(mapController::markEliminated);
         state.getFailedArrestLocations().forEach(mapController::markSearched);
         for (Clue clue : state.getFakeClues()) {
@@ -224,7 +345,11 @@ public class GameController {
             state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
         }
 
-        // mostra nascondiglio e posizione killer solo se l'utente è il killer o se la partita è finita
+        // a partita finita (es. partita singola senza campagna): mappa completamente non cliccabile
+        if (state.isFinished()) {
+            engine.getBoard().all().forEach(loc -> mapController.setInteractable(loc.getId(), false));
+        }
+
         boolean revealKillerSecrets = state.getHumanRole() == RoleType.KILLER || state.isFinished();
         if (revealKillerSecrets && state.isHomeChosen()) {
             mapController.markHome(state.getKillerHomeLocationId());
@@ -232,26 +357,40 @@ public class GameController {
         if (revealKillerSecrets && state.getKiller().getCurrentLocationId() != null) {
             mapController.markKiller(state.getKiller().getCurrentLocationId());
         }
-        
-        // poliziotto sempre visibile a tutti 
+
         if (state.getPolice().getCurrentLocationId() != null) {
             mapController.markPolice(state.getPolice().getCurrentLocationId());
         }
 
         updateActionButtons();
         updateStatusLabel();
+        updateInventoryLabel();
     }
 
     private void updateActionButtons() {
-        Turn phase = engine.getState().getPhase();
-        RoleType humanRole = engine.getState().getHumanRole();
+        var state = engine.getState();
+
+        if (state.isFinished()) {
+            hideAllActionButtons();
+            return;
+        }
+
+        Turn phase = state.getPhase();
+        RoleType humanRole = state.getHumanRole();
 
         boolean isPoliceHumanTurn = phase == Turn.AWAITING_POLICE_ACTION && humanRole == RoleType.POLICE;
         boolean isKillerHumanTurn = phase == Turn.AWAITING_KILLER_ACTION && humanRole == RoleType.KILLER;
 
+        boolean anyCommandsAvailable = isPoliceHumanTurn || isKillerHumanTurn;
+        commandsHeaderLabel.setVisible(anyCommandsAvailable);
+        commandsHeaderLabel.setManaged(anyCommandsAvailable);
+        inventoryHeaderLabel.setVisible(anyCommandsAvailable);
+        inventoryHeaderLabel.setManaged(anyCommandsAvailable);
+
         useClueButton.setVisible(isPoliceHumanTurn);
         useClueButton.setManaged(isPoliceHumanTurn);
-        useClueButton.setDisable(engine.getState().getPoliceCluesRemaining() <= 0);
+        useClueButton.setDisable(state.getPoliceCluesRemaining() <= 0);
+        useClueButton.setText("Usa indizio (" + state.getPoliceCluesRemaining() + ")");
 
         arrestButton.setVisible(isPoliceHumanTurn);
         arrestButton.setManaged(isPoliceHumanTurn);
@@ -261,34 +400,101 @@ public class GameController {
 
         fakeClueButton.setVisible(isKillerHumanTurn);
         fakeClueButton.setManaged(isKillerHumanTurn);
-        fakeClueButton.setDisable(engine.getState().getKillerFakeCluesRemaining() <= 0);
+        fakeClueButton.setDisable(state.getKillerFakeCluesRemaining() <= 0);
+        fakeClueButton.setText("Indizio falso (" + state.getKillerFakeCluesRemaining() + ")");
+
+        killerInventoryRow.setVisible(isKillerHumanTurn);
+        killerInventoryRow.setManaged(isKillerHumanTurn);
+
+        smokeBombButton.setDisable(state.getKillerSmokeBombsRemaining() <= 0);
+        smokeBombButton.setText("💨 Smoke Bomb\n(" + state.getKillerSmokeBombsRemaining() + ")");
+
+        trapKitButton.setDisable(state.getKillerTrapKitsRemaining() <= 0);
+        trapKitButton.setText("🪤 Trap Kit\n(" + state.getKillerTrapKitsRemaining() + ")");
+
+        shortcutMapButton.setDisable(state.isKillerShortcutMapUsed());
+        shortcutMapButton.setText(state.isKillerShortcutMapUsed() ? "🗺️ Shortcut Map\n(usata)" : "🗺️ Shortcut Map\n(1)");
+
+        policeInventoryRow.setVisible(isPoliceHumanTurn);
+        policeInventoryRow.setManaged(isPoliceHumanTurn);
+
+        roadblockButton.setDisable(state.getPoliceRoadblocksRemaining() <= 0);
+        roadblockButton.setText("🚧 Roadblock\n(" + state.getPoliceRoadblocksRemaining() + ")");
+
+        checkpointButton.setDisable(state.getPoliceCheckpointTokensRemaining() <= 0);
+        checkpointButton.setText("⛔ Checkpoint\n(" + state.getPoliceCheckpointTokensRemaining() + ")");
+
+        scannerButton.setDisable(state.getPoliceScannerRemaining() <= 0);
+        scannerButton.setText("📡 Scanner\n(" + state.getPoliceScannerRemaining() + ")");
     }
 
-    // aggiorna label in base a turno, ruolo e scelte
-    private void updateStatusLabel() {
+    // a partita finita: nessun pulsante d'azione resta visibile/utilizzabile
+    private void hideAllActionButtons() {
+        commandsHeaderLabel.setVisible(false);
+        commandsHeaderLabel.setManaged(false);
+        inventoryHeaderLabel.setVisible(false);
+        inventoryHeaderLabel.setManaged(false);
+
+        useClueButton.setVisible(false);
+        useClueButton.setManaged(false);
+        arrestButton.setVisible(false);
+        arrestButton.setManaged(false);
+        moveButton.setVisible(false);
+        moveButton.setManaged(false);
+        fakeClueButton.setVisible(false);
+        fakeClueButton.setManaged(false);
+        killerInventoryRow.setVisible(false);
+        killerInventoryRow.setManaged(false);
+        policeInventoryRow.setVisible(false);
+        policeInventoryRow.setManaged(false);
+    }
+
+    // mostra info extra solo quando serve (es. esito dell'ultimo Scanner): niente doppioni con le tessere
+    private void updateInventoryLabel() {
         var state = engine.getState();
 
         if (state.isFinished()) {
+            inventoryLabel.setVisible(false);
+            inventoryLabel.setManaged(false);
+            return;
+        }
+
+        boolean showScannerInfo = state.getHumanRole() == RoleType.POLICE && state.getLastScannerCenterId() != null;
+        inventoryLabel.setVisible(showScannerInfo);
+        inventoryLabel.setManaged(showScannerInfo);
+        if (showScannerInfo) {
+            inventoryLabel.setText(state.isLastScannerFoundKiller()
+                    ? "📡 Ultimo Scanner: Killer rilevato nell'area!"
+                    : "📡 Ultimo Scanner: nessuna traccia del Killer");
+        }
+    }
+
+    private void updateStatusLabel() {
+        var state = engine.getState();
+
+        String campaignInfo = "";
+        if (campaign != null) {
+            campaignInfo = String.format("Match %d/3 (Killer %d - %d Poliziotto)\n",
+                    campaign.getCurrentMatchNumber(), campaign.getKillerWins(), campaign.getPoliceWins());
+        }
+
+        if (state.isFinished()) {
             String vincitore = state.getWinner() == RoleType.KILLER ? "il Killer" : "il Poliziotto";
-            statusLabel.setText("Partita finita: vince " + vincitore + ". " + state.getEndReason());
+            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.\n"
+                    + campaignInfo + "Vince " + vincitore + ". " + state.getEndReason());
             return;
         }
         if (state.getPhase() == Turn.AWAITING_HOME_CHOICE) {
-            statusLabel.setText("Scegli sulla mappa il tuo nascondiglio: il punto in cui dovrai rientrare per vincere.");
+            statusLabel.setText(campaignInfo + "Scegli sulla mappa il tuo nascondiglio: il punto in cui dovrai rientrare per vincere.\n\n(Nessun comando disponibile in questa fase: clicca direttamente su un nodo della mappa.)");
             return;
         }
         if (state.getPhase() == Turn.AWAITING_MURDER_LOCATION_CHOICE) {
-            statusLabel.setText("Scegli sulla mappa il luogo del primo omicidio: la tua posizione di partenza (ATTENZIONE: deve essere diversa dal nascondiglio)");
+            statusLabel.setText(campaignInfo + "Scegli sulla mappa il luogo del primo omicidio (diverso dal nascondiglio).\n\n(Nessun comando disponibile in questa fase: clicca direttamente su un nodo della mappa.)");
             return;
         }
 
         String ruolo = state.getHumanRole() == RoleType.KILLER ? "Killer" : "Poliziotto";
-
-        String indiziInfo = state.getHumanRole() == RoleType.KILLER
-                ? "indizi falsi rimasti: " + state.getKillerFakeCluesRemaining()
-                : "indizi rimasti: " + state.getPoliceCluesRemaining();
-
-        statusLabel.setText(String.format("Turno %d/%d — sei il %s — %s",
-                state.getRoundsElapsed() + 1, state.getMaxRounds(), ruolo, indiziInfo));
+        statusLabel.setText(String.format("%sTurno %d/%d — sei il %s",
+                campaignInfo, state.getRoundsElapsed() + 1, state.getMaxRounds(), ruolo));
     }
 }

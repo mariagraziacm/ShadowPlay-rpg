@@ -1,0 +1,58 @@
+/* Base e Tipografia */
+.root {
+    -fx-font-family: "Georgia", "Times New Roman", serif;
+    -fx-background-color: #eae0c1; 
+}
+
+/* Overlay scuro per i risultati in basso */
+.result-overlay {
+    -fx-background-color: linear-gradient(to top, rgba(36, 28, 20, 0.92), rgba(61, 49, 36, 0.85));
+    -fx-border-color: #8c765c transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, -5);
+}
+
+/* Titolo del risultato (Vittoria / Sconfitta) */
+.result-title {
+    -fx-text-fill: #f5eccd;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.8), 3, 0, 0, 2);
+}
+
+/* Testo XP guadagnati */
+.xp-text {
+    -fx-text-fill: #ffd76a;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.5), 2, 0, 0, 1);
+}
+
+/* Pulsante Continua */
+.button {
+    -fx-background-color: #3d3124;
+    -fx-text-fill: #f5eccd;
+    -fx-font-family: "Georgia", serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-color: #8c765c;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px 15px; 
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 6, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-background-color: #594939;
+    -fx-border-color: #b39b7d;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 8, 0, 0, 3);
+}
+
+.button:pressed {
+    -fx-background-color: #241c14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0), 0, 0, 0, 0);
+}

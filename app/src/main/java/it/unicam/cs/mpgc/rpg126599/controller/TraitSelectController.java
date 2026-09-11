@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
+import it.unicam.cs.mpgc.rpg126599.model.Trait;
 
 public class TraitSelectController {
 
@@ -24,32 +25,32 @@ public class TraitSelectController {
     @FXML private ToggleGroup traitGroup;
 
     private CampaignManager campaign;
+    private Trait traitForButton1;
+    private Trait traitForButton2;
 
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
 
-        // Disabilita il pulsante di conferma finché non viene selezionato un tratto
+       traitGroup.selectToggle(null); // reset di eventuale selezione residua
         confirmButton.setDisable(true);
-        traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            confirmButton.setDisable(newVal == null);
-        });
+        traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
+                confirmButton.setDisable(newVal == null));
 
-        // Utilizza getHumanRole() della classe CampaignManager
+        int level = campaign.getCurrentLevel();
+        titleLabel.setText(level == 1
+                ? "Scegli il tuo tratto iniziale"
+                : "Nuovo tratto sbloccato al livello 3: scegline uno");
+
         if (campaign.getHumanRole() == RoleType.KILLER) {
-            setupKillerTraits();
+            traitForButton1 = level == 1 ? Trait.MANIPOLATORE : Trait.SANGUE_FREDDO;
+            traitForButton2 = level == 1 ? Trait.CALCOLATORE : Trait.OMBRA_URBANA;
         } else {
-            setupPoliceTraits();
+            traitForButton1 = level == 1 ? Trait.DEDUTTIVO : Trait.METODICO;
+            traitForButton2 = level == 1 ? Trait.PRESSIONE_TATTICA : Trait.COMANDO_OPERATIVO;
         }
-    }
 
-    private void setupKillerTraits() {
-        traitButton1.setText("MANIPOLATORE\n\nEnfatizza il depistaggio: i tuoi indizi falsi sono più efficaci nel confondere la Polizia.");
-        traitButton2.setText("CALCOLATORE\n\nPremia il timing: agire nei momenti chiave della partita ti dà un vantaggio.");
-    }
-
-    private void setupPoliceTraits() {
-        traitButton1.setText("CONTINUITÀ INVESTIGATIVA\n\nPremia la continuità investigativa: i tuoi indizi restringono il campo con più efficacia.");
-        traitButton2.setText("PRESSIONE TATTICA\n\nPremia gli arresti corretti: la sicurezza nel colpire nel segno è la tua forza.");
+        traitButton1.setText(traitForButton1.getDisplayName() + "\n\n" + traitForButton1.getDescription());
+        traitButton2.setText(traitForButton2.getDisplayName() + "\n\n" + traitForButton2.getDescription());
     }
 
     @FXML
@@ -59,18 +60,22 @@ public class TraitSelectController {
             return;
         }
 
-        boolean isFirstTrait = (selected == traitButton1);
-        campaign.applyTraitSelection(isFirstTrait);
+        Trait chosenTrait = (selected == traitButton1) ? traitForButton1 : traitForButton2;
+        campaign.addHumanTrait(chosenTrait);
+        campaign.startCurrentMatch(); // <-- fondamentale: crea davvero l'engine del match
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
             Parent root = loader.load();
 
+            GameController controller = loader.getController();
+            controller.init(campaign); // <-- fondamentale: senza questa riga la mappa resta morta
+
             Stage stage = (Stage) confirmButton.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.sizeToScene();
-            stage.setTitle("SHADOW PLAY - Match");
+            stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile avviare la partita", e);
         }

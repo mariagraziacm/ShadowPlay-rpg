@@ -17,7 +17,7 @@ public class GameState {
     private boolean killerHasLeftHome;
 
     private int roundsElapsed;
-    private int maxRounds = 8;
+    private int maxRounds = 10;
 
     private int policeCluesRemaining = 3;
     private int killerFakeCluesRemaining = 2;

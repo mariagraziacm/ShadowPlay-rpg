@@ -19,6 +19,9 @@ public class CampaignManager {
     private int policeWins;
     private int currentMatchNumber = 1;
 
+    private int killerXp;
+    private int policeXp;
+
     private final List<Trait> humanTraits = new ArrayList<>();
     private GameEngine currentEngine;
 
@@ -53,6 +56,14 @@ public class CampaignManager {
 
     public int getCurrentLevel() {
         return currentMatchNumber;
+    }
+
+    public int getKillerXp() {
+        return killerXp;
+    }
+
+    public int getPoliceXp() {
+        return policeXp;
     }
 
     public boolean isSecondTraitUnlockPending() {
@@ -93,21 +104,27 @@ public class CampaignManager {
         return null;
     }
 
+    // registra l'esito del match, avanza la campagna e assegna gli XP:
+    // +100 XP a chi vince il match, +30 XP di consolazione a chi perde,
+    // +200 XP di bonus extra a chi vince l'intera serie Best of 3
     public void recordMatchResult(RoleType matchWinner) {
         if (matchWinner == RoleType.KILLER) {
             killerWins++;
+            killerXp += 100;
+            policeXp += 30;
         } else {
             policeWins++;
+            policeXp += 100;
+            killerXp += 30;
         }
         currentMatchNumber++;
+
+        if (isSeriesOver()) {
+            if (matchWinner == RoleType.KILLER) {
+                killerXp += 200;
+            } else {
+                policeXp += 200;
+            }
+        }
     }
-    public void applyTraitSelection(boolean isFirstTrait) {
-    // Esempio di gestione del tratto selezionato
-    if (isFirstTrait) {
-        System.out.println("Applicato il primo tratto alla campagna.");
-        // Logica per applicare il primo tratto
-    } else {
-        System.out.println("Applicato il secondo tratto alla campagna.");
-        // Logica per applicare il secondo tratto
-  
-          }  }  }
+}

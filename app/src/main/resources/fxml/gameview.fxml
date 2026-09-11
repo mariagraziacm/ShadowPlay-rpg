@@ -4,30 +4,47 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane stylesheets="@../style/game.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.GameController">
    <right>
-        <VBox minHeight="240.0" prefWidth="286.0" spacing="15.0" styleClass="game-control-bar">
+        <VBox minHeight="240.0" prefWidth="360.0" spacing="10.0" styleClass="game-control-bar">
             <padding>
                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
             <children>
-                <Label fx:id="statusLabel" prefHeight="74.0" prefWidth="275.0" styleClass="game-status" text="Puoi spostarti solo di 1 o 2 caselle." wrapText="true" />
+                <Label fx:id="statusLabel" prefWidth="330.0" styleClass="game-status" wrapText="true" />
+                <Label fx:id="inventoryLabel" prefWidth="330.0" styleClass="game-status" wrapText="true" visible="false" managed="false" />
+
+             <Label fx:id="commandsHeaderLabel" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="COMANDI" />
                 <Button fx:id="arrestButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onSelectArrest" prefHeight="28.0" text="Tenta l'arresto" />
                 <Button fx:id="fakeClueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onSelectFakeClue" prefHeight="28.0" text="Lascia indizio falso" />
                 <Button fx:id="moveButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onSelectMove" prefHeight="28.0" text="Sposta" />
                 <Button fx:id="useClueButton" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#onUseClue" prefHeight="28.0" text="Usa indizio" />
-                <Button fx:id="smokeBombButton" onAction="#onUseSmokeBomb" text="Smoke Bomb" />
-                <Button fx:id="trapKitButton" onAction="#onSelectTrapKit" text="Trap Kit" />
-                <Button fx:id="shortcutMapButton" onAction="#onSelectShortcutMap" text="Shortcut Map" />
-                <Button fx:id="roadblockButton" onAction="#onSelectRoadblock" text="Roadblock" />
-                <Button fx:id="checkpointButton" onAction="#onSelectCheckpoint" text="Checkpoint Mobile" />
-                <Button fx:id="scannerButton" onAction="#onUseScanner" text="Scanner" />
-                <Region prefHeight="100.0" prefWidth="209.0" VBox.vgrow="ALWAYS" />
-                <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onSaveGame" prefHeight="30.0" prefWidth="254.0" styleClass="secondary-button" text="Salva partita" />
-                <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onReturnToMenu" prefHeight="30.0" prefWidth="254.0" styleClass="secondary-button" text="Torna al menu" />
+
+<Label fx:id="inventoryHeaderLabel" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="INVENTARIO" />
+
+                <HBox fx:id="killerInventoryRow" spacing="8.0">
+                    <children>
+                        <Button fx:id="smokeBombButton" alignment="CENTER" contentDisplay="TOP" onAction="#onUseSmokeBomb" prefHeight="64.0" prefWidth="104.0" textAlignment="CENTER" wrapText="true" text="💨&#10;Smoke Bomb" />
+                        <Button fx:id="trapKitButton" alignment="CENTER" contentDisplay="TOP" onAction="#onSelectTrapKit" prefHeight="64.0" prefWidth="104.0" textAlignment="CENTER" wrapText="true" text="🪤&#10;Trap Kit" />
+                        <Button fx:id="shortcutMapButton" alignment="CENTER" contentDisplay="TOP" onAction="#onSelectShortcutMap" prefHeight="64.0" prefWidth="104.0" textAlignment="CENTER" wrapText="true" text="🗺️&#10;Shortcut Map" />
+                    </children>
+                </HBox>
+
+                <HBox fx:id="policeInventoryRow" spacing="8.0">
+                    <children>
+                        <Button fx:id="roadblockButton" alignment="CENTER" contentDisplay="TOP" onAction="#onSelectRoadblock" prefHeight="64.0" prefWidth="104.0" textAlignment="CENTER" wrapText="true" text="🚧&#10;Roadblock" />
+                        <Button fx:id="checkpointButton" alignment="CENTER" contentDisplay="TOP" onAction="#onSelectCheckpoint" prefHeight="64.0" prefWidth="104.0" textAlignment="CENTER" wrapText="true" text="⛔&#10;Checkpoint" />
+                        <Button fx:id="scannerButton" alignment="CENTER" contentDisplay="TOP" onAction="#onUseScanner" prefHeight="64.0" prefWidth="104.0" textAlignment="CENTER" wrapText="true" text="📡&#10;Scanner" />
+                    </children>
+                </HBox>
+
+                <Region prefHeight="20.0" VBox.vgrow="ALWAYS" />
+                <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onSaveGame" prefHeight="30.0" prefWidth="330.0" styleClass="secondary-button" text="Salva partita" />
+                <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onReturnToMenu" prefHeight="30.0" prefWidth="330.0" styleClass="secondary-button" text="Torna al menu" />
             </children>
             <BorderPane.margin>
                 <Insets bottom="20.0" right="20.0" top="20.0" />
