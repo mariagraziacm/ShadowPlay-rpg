@@ -32,16 +32,15 @@ public class CharacterDescriptionController {
         descriptionArea.setEditable(false);
 
         RoleType role = campaign.getHumanRole();
-
-        if (role == RoleType.KILLER) {
+if (role == RoleType.KILLER) {
             descriptionArea.setText(
                 "IL KILLER\n\n" +
-                "Aspetto Fisico: figura silenziosa e sfuggente, capace di confondersi " +
-                "tra la folla e sparire nell'ombra in pochi istanti, senza lasciare tracce evidenti.\n\n" +
-                "Profilo Mentale: lucido e manipolatore, pianifica ogni mossa in anticipo, " +
-                "resta calmo sotto pressione e sa trarre vantaggio dagli errori altrui.\n\n" +
-                "Abilità: depistaggio con indizi falsi, coperture rapide, capacità " +
-                "di creare tranelli sul territorio e di sfuggire ai controlli quando serve."
+                "Aspetto Fisico: presenza distinta e curata, portamento composto " +
+                "e sguardo acuto: l'immagine del cittadino modello che si mimetizza alla perfezione.\n\n" +
+                "Profilo Mentale: intelletto superiore, lucido narcisista e stratega " +
+                "impeccabile, anticipa le mosse altrui mantenendo un controllo totale.\n\n" +
+                "Abilità: depistaggio con falsi indizi, coperture e alibi di ferro, " +
+                "creazione di tranelli strategici ed evasione rapida dai controlli."
             );
         } else {
             descriptionArea.setText(

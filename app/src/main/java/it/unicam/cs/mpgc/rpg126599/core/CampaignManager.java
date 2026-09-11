@@ -34,6 +34,24 @@ public class CampaignManager {
         return new CampaignManager(board, humanRole);
     }
 
+    public static CampaignManager resume(Board board, GameState savedState) {
+        CampaignManager campaign = new CampaignManager(board, savedState.getHumanRole());
+        if (savedState.isCampaignInProgress()) {
+            campaign.currentMatchNumber = savedState.getCampaignCurrentMatchNumber();
+            campaign.killerWins = savedState.getCampaignKillerWins();
+            campaign.policeWins = savedState.getCampaignPoliceWins();
+            campaign.killerXp = savedState.getCampaignKillerXp();
+            campaign.policeXp = savedState.getCampaignPoliceXp();
+        }
+        if (savedState.getHumanRole() == RoleType.KILLER) {
+            campaign.humanTraits.addAll(savedState.getKillerTraits());
+        } else {
+            campaign.humanTraits.addAll(savedState.getPoliceTraits());
+        }
+        campaign.currentEngine = GameEngine.resume(board, savedState);
+        return campaign;
+    }
+
     public RoleType getHumanRole() {
         return humanRole;
     }
@@ -84,6 +102,8 @@ public class CampaignManager {
         Player police = new Player(RoleType.POLICE, "n20");
         GameState state = new GameState(killer, police, humanRole, difficulty);
 
+        state.setCampaignProgress(currentMatchNumber, killerWins, policeWins, killerXp, policeXp);
+
         if (humanRole == RoleType.KILLER) {
             state.setKillerTraits(new ArrayList<>(humanTraits));
         } else {
@@ -125,6 +145,10 @@ public class CampaignManager {
             } else {
                 policeXp += 200;
             }
+        }
+
+        if (currentEngine != null) {
+            currentEngine.getState().setCampaignProgress(currentMatchNumber, killerWins, policeWins, killerXp, policeXp);
         }
     }
 }

@@ -50,8 +50,13 @@ public class RoleSelectController {
         try {
             Board board = BoardLoader.loadFromResource("/rounds/maps.json");
             GameState savedState = storage.load(Path.of("Persistence.json"));
-            GameEngine engine = GameEngine.resume(board, savedState);
-            openGameScreen(engine);
+            if (savedState.isCampaignInProgress()) {
+                CampaignManager campaign = CampaignManager.resume(board, savedState);
+                openGameScreen(campaign);
+            } else {
+                GameEngine engine = GameEngine.resume(board, savedState);
+                openGameScreen(engine);
+            }
         } catch (IOException e) {
             messageLabel.setText("Nessun salvataggio valido trovato (Persistence.json).");
         }
@@ -86,6 +91,24 @@ public class RoleSelectController {
 
             GameController gameController = loader.getController();
             gameController.init(engine);
+
+            Stage stage = (Stage) killerButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.sizeToScene();
+            stage.setTitle("SHADOWPLAY");
+        } catch (IOException e) {
+            throw new IllegalStateException("Impossibile aprire la schermata di gioco", e);
+        }
+    }
+
+    private void openGameScreen(CampaignManager campaign) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
+            Parent root = loader.load();
+
+            GameController gameController = loader.getController();
+            gameController.init(campaign);
 
             Stage stage = (Stage) killerButton.getScene().getWindow();
             Scene scene = new Scene(root);

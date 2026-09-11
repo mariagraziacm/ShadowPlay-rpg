@@ -41,7 +41,11 @@ public class MatchResultController {
 
         if (campaign.isSeriesOver()) {
             RoleType seriesWinner = campaign.getSeriesWinner();
-            resultLabel.setText(resultLabel.getText() + "\n\nCAMPAGNA CONCLUSA: vince "
+            resultLabel.setText((seriesWinner == RoleType.KILLER
+                    ? "IL KILLER HA VINTO LA PARTITA"
+                    : "IL POLIZIOTTO HA VINTO LA PARTITA")
+                    + "\n" + endReason
+                    + "\n\nCAMPAGNA CONCLUSA: ha vinto "
                     + (seriesWinner == RoleType.KILLER ? "il Killer" : "il Poliziotto") + "!");
             continueButton.setText("Torna al menu");
         } else {

@@ -35,6 +35,12 @@ public class GameState {
 
     // ---- Campagna Best of 3 / bilanciamento ----
     private MatchDifficulty difficulty = MatchDifficulty.MATCH_1;
+    private boolean campaignInProgress;
+    private int campaignCurrentMatchNumber = 1;
+    private int campaignKillerWins;
+    private int campaignPoliceWins;
+    private int campaignKillerXp;
+    private int campaignPoliceXp;
 
     // ---- Tratti RPG ----
     private List<Trait> killerTraits = new ArrayList<>();
@@ -99,6 +105,49 @@ public class GameState {
 
     public MatchDifficulty getDifficulty() {
         return difficulty;
+    }
+
+    public boolean isCampaignInProgress() {
+        return campaignInProgress;
+    }
+
+    public int getCampaignCurrentMatchNumber() {
+        return campaignCurrentMatchNumber;
+    }
+
+    public int getCampaignKillerWins() {
+        return campaignKillerWins;
+    }
+
+    public int getCampaignPoliceWins() {
+        return campaignPoliceWins;
+    }
+
+    public int getCampaignKillerXp() {
+        return campaignKillerXp;
+    }
+
+    public int getCampaignPoliceXp() {
+        return campaignPoliceXp;
+    }
+
+    public void setCampaignProgress(int currentMatchNumber, int killerWins, int policeWins,
+                                    int killerXp, int policeXp) {
+        this.campaignInProgress = true;
+        this.campaignCurrentMatchNumber = currentMatchNumber;
+        this.campaignKillerWins = killerWins;
+        this.campaignPoliceWins = policeWins;
+        this.campaignKillerXp = killerXp;
+        this.campaignPoliceXp = policeXp;
+    }
+
+    public void clearCampaignProgress() {
+        this.campaignInProgress = false;
+        this.campaignCurrentMatchNumber = 1;
+        this.campaignKillerWins = 0;
+        this.campaignPoliceWins = 0;
+        this.campaignKillerXp = 0;
+        this.campaignPoliceXp = 0;
     }
 
     public Player getKiller() {
