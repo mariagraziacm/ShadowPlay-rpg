@@ -45,10 +45,10 @@ if (role == RoleType.KILLER) {
         } else {
             descriptionArea.setText(
                 "IL POLIZIOTTO\n\n" +
-                "Aspetto Fisico: portamento metodico e attento, occhio allenato " +
-                "a cogliere ogni dettaglio fuori posto sulla scena.\n\n" +
-                "Profilo Mentale: analitico e paziente, costruisce le proprie ipotesi " +
-                "passo dopo passo: per lui ogni arresto è una decisione ad alta responsabilità.\n\n" +
+                "Aspetto Fisico: postura eccentrica, sguardo fisso e occhio cinico, " +
+                "nota immediatamente ogni minimo dettaglio fuori posto sulla scena.\n\n" +
+                "Profilo Mentale: mente logica e spietatamente deduttiva, analizza " +
+                "ogni indizio senza farsi ingannare e anticipa le mosse della preda.\n\n" +
                 "Abilità: analisi degli indizi, controllo del territorio tramite " +
                 "blocchi stradali e checkpoint mobili, letture rapide dell'area con lo Scanner."
             );
