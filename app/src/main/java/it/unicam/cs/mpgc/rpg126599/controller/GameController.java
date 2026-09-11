@@ -192,15 +192,15 @@ public class GameController {
         statusLabel.setText("Seleziona una casella (diversa dalla tua) dove lasciare l'indizio falso");
     }
 
-    @FXML
-    private void onSelectArrest() {
-        if (engine.getState().isFinished()) {
-            statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
-            return;
-        }
-        pendingAction = PendingAction.ARREST;
-        statusLabel.setText("Seleziona la casella su cui tentare l'arresto");
+@FXML
+private void onSelectArrest() {
+    if (engine.getState().isFinished()) {
+        statusLabel.setText("AZIONE NON ESEGUIBILE — IL GIOCO È FINITO.");
+        return;
     }
+    pendingAction = PendingAction.ARREST;
+    statusLabel.setText("Seleziona la casella su cui tentare l'arresto (entro 3 caselle dalla tua posizione)");
+}
 
     @FXML
     private void onUseSmokeBomb() {

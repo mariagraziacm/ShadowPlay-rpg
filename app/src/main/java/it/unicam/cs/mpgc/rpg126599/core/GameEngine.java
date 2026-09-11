@@ -179,16 +179,16 @@ public class GameEngine {
         resolveAutomaticPhases();
     }
 
-    public void policeAttemptArrest(String targetLocationId) {
-        requirePhase(Turn.AWAITING_POLICE_ACTION);
-        requireHumanRole(RoleType.POLICE);
-        requireNeighbor(state.getPolice().getCurrentLocationId(), targetLocationId);
-        requireNotAlreadySearched(targetLocationId);
+public void policeAttemptArrest(String targetLocationId) {
+    requirePhase(Turn.AWAITING_POLICE_ACTION);
+    requireHumanRole(RoleType.POLICE);
+    requireWithinDistance(state.getPolice().getCurrentLocationId(), targetLocationId, 3);
+    requireNotAlreadySearched(targetLocationId);
 
-        applyPoliceArrestAttempt(targetLocationId);
-        endPoliceTurn();
-        resolveAutomaticPhases();
-    }
+    applyPoliceArrestAttempt(targetLocationId);
+    endPoliceTurn();
+    resolveAutomaticPhases();
+}
 
     // Roadblock: blocca un intero nodo per il prossimo turno del Killer
     public void policePlaceRoadblock(String targetLocationId) {
@@ -329,7 +329,13 @@ public class GameEngine {
                     "Un Checkpoint della Polizia blocca quel collegamento per questo turno: scegli un altro percorso oppure usa la Shortcut Map.");
         }
     }
-
+private void requireWithinDistance(String fromId, String toId, int maxDistance) {
+    requireExistingLocation(toId);
+    int d = board.distance(fromId, toId);
+    if (d == Integer.MAX_VALUE || d > maxDistance) {
+        throw new IllegalArgumentException("Puoi tentare l'arresto solo entro " + maxDistance + " caselle di distanza.");
+    }
+}
     private void applyPoliceUseClue() {
         String eliminated = pickHomeCandidateToEliminate();
         state.eliminateHomeCandidate(eliminated);
