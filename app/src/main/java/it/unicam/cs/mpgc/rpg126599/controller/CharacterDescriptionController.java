@@ -32,7 +32,7 @@ public class CharacterDescriptionController {
         descriptionArea.setEditable(false);
 
         RoleType role = campaign.getHumanRole();
-if (role == RoleType.KILLER) {
+        if (role == RoleType.KILLER) {
             descriptionArea.setText(
                 "IL KILLER\n\n" +
                 "Aspetto Fisico: presenza distinta e curata, portamento composto " +
@@ -40,7 +40,9 @@ if (role == RoleType.KILLER) {
                 "Profilo Mentale: intelletto superiore, lucido narcisista e stratega " +
                 "impeccabile, anticipa le mosse altrui mantenendo un controllo totale.\n\n" +
                 "Abilità: depistaggio con falsi indizi, coperture e alibi di ferro, " +
-                "creazione di tranelli strategici ed evasione rapida dai controlli."
+                "creazione di tranelli strategici ed evasione rapida dai controlli.\n\n" +
+                "Inventario: Indizio Falso, Smoke Bomb, Trap Kit e Shortcut Map.\n\n" +
+                "Tratti iniziali: Manipolatore o Calcolatore; al livello 3 sblocca Sangue Freddo o Ombra Urbana."
             );
         } else {
             descriptionArea.setText(
@@ -50,7 +52,9 @@ if (role == RoleType.KILLER) {
                 "Profilo Mentale: mente logica e spietatamente deduttiva, analizza " +
                 "ogni indizio senza farsi ingannare e anticipa le mosse della preda.\n\n" +
                 "Abilità: analisi degli indizi, controllo del territorio tramite " +
-                "blocchi stradali e checkpoint mobili, letture rapide dell'area con lo Scanner."
+                "blocchi stradali e checkpoint mobili, letture rapide dell'area con lo Scanner.\n\n" +
+                "Inventario: Indizio, Roadblock, Checkpoint e Scanner.\n\n" +
+                "Tratti iniziali: Deduttivo o Pressione Tattica; al livello 3 sblocca Metodico o Comando Operativo."
             );
         }
     }

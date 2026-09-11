@@ -7,7 +7,7 @@ public enum MatchDifficulty {
 
     // killerFakeClues, killerSmokeBombs, killerTrapKits, policeClues, policeRoadblocks, policeCheckpoints, penalitàArrestoSbagliato
     MATCH_1(2, 1, 1, 2, 1, 1, 1.0),
-    MATCH_2(1, 1, 1, 3, 1, 0, 1.25),
+    MATCH_2(1, 1, 1, 3, 1, 1, 1.25),
     MATCH_3(1, 0, 1, 2, 2, 0, 1.6);
 
     private final int killerFakeClues;
