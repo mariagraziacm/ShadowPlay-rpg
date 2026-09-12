@@ -1,15 +1,11 @@
-/* ==========================================
-   CONFIGURAZIONE GENERALE E ROOT
-   ========================================== */
+
 .root { 
     -fx-background-image: url("/images/shadowplaystart.png"); 
     -fx-background-size: cover; 
     -fx-background-position: center center; 
 } 
 
-/* ==========================================
-   PULSANTI GENERICI (BUTTONS)
-   ========================================== */
+
 .button { 
     -fx-background-color: #3d3124; 
     -fx-text-fill: #f5eccd; 
@@ -37,20 +33,18 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0), 0, 0, 0, 0); 
 } 
 
-/* Personalizzazione specifica per il pulsante "Indietro" */
 #backButton {
-    -fx-background-color: #2b221a;
-    -fx-border-color: #594939;
+    -fx-background-color: #3d3124;
+    -fx-border-color: #a38b6d;
 }
 
 #backButton:hover {
-    -fx-background-color: #3d3124;
-    -fx-border-color: #8c765c;
+    -fx-background-color: #614e3b;
+    -fx-border-color: #c4a988;
 }
 
-/* Personalizzazione specifica per il pulsante "Continua" */
 #continueButton {
-    -fx-background-color: #4a3b2c;
+    -fx-background-color: #3d3124;
     -fx-border-color: #a38b6d;
 }
 
@@ -59,10 +53,6 @@
     -fx-border-color: #c4a988;
 }
 
-/* ==========================================
-   AREA TESTO DESCRIZIONE (#descriptionArea)
-   Stile foglio pergamena antico
-   ========================================== */
 #descriptionArea, .text-area {
     -fx-font-family: "Georgia", "Times New Roman", serif;
     -fx-font-size: 14px;
@@ -76,7 +66,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.4), 8, 0, 0, 4);
 }
 
-/* Sfondo interno pergamena semi-trasparente */
 #descriptionArea .content, .text-area .content {
     -fx-background-color: rgba(245, 236, 205, 0.88);
     -fx-background-radius: 4;
@@ -87,7 +76,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.6), 12, 0, 0, 6);
 }
 
-/* Scrollbar integrata nello stile */
 #descriptionArea .scroll-bar:vertical, .text-area .scroll-bar:vertical {
     -fx-background-color: transparent;
 }

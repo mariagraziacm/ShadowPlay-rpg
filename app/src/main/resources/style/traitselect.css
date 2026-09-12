@@ -1,10 +1,9 @@
-/* Stile radice e sfondo principale per la vista di selezione tratti */
+
 .root {
     -fx-font-family: "Georgia", "Times New Roman", serif;
     -fx-background-color: #eae0c1;
 }
 
-/* Titolo ("Scegli il tuo tratto") */
 .subtitle {
     -fx-font-family: "Georgia", serif;
     -fx-font-size: 24px;
@@ -14,7 +13,7 @@
     -fx-padding: 0 0 10px 0;
 }
 
-/* Contenitore ScrollPane e trasparenza per la vista interna */
+
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-background: transparent;
@@ -30,7 +29,7 @@
     -fx-background-color: transparent;
 }
 
-/* Barra di scorrimento personalizzata per il ScrollPane */
+
 .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-pref-width: 12px;
@@ -45,7 +44,7 @@
     -fx-background-color: #594939;
 }
 
-/* Pulsante principale ("Conferma e inizia il match") */
+
 .button {
     -fx-background-color: #3d3124;
     -fx-text-fill: #f5eccd;
@@ -82,7 +81,7 @@
     -fx-cursor: default;
     -fx-effect: null;
 }
-/* Stile base per le schede dei tratti (ToggleButton) */
+
 .trait-card-button {
     -fx-background-color: #f7f1e1;
     -fx-text-fill: #3d3124;
@@ -101,14 +100,14 @@
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.15), 6, 0, 0, 2);
 }
 
-/* Stato Hover */
+
 .trait-card-button:hover {
     -fx-background-color: #fffaf0;
     -fx-border-color: #594939;
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.3), 8, 0, 0, 3);
 }
 
-/* Stato Selezionato (Selected / Pressed) */
+
 .trait-card-button:selected {
     -fx-background-color: #ebdcb2;
     -fx-border-color: #3d3124;
@@ -117,7 +116,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(61, 49, 36, 0.4), 10, 0, 0, 4);
 }
 
-/* Hover quando il pulsante è già selezionato */
+
 .trait-card-button:selected:hover {
     -fx-background-color: #e5d3a1;
 }

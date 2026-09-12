@@ -1,15 +1,11 @@
-/* ==========================================
-   CONFIGURAZIONE GENERALE E ROOT
-   ========================================== */
+
 .root { 
     -fx-background-image: url("/images/shadowplaystart.png"); 
     -fx-background-size: cover; 
     -fx-background-position: center center; 
 } 
 
-/* ==========================================
-   PULSANTI (BUTTONS)
-   ========================================== */
+
 .button { 
     -fx-background-color: #3d3124; 
     -fx-text-fill: #f5eccd; 
@@ -37,10 +33,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0), 0, 0, 0, 0); 
 } 
 
-/* ==========================================
-   AREA DI TESTO (TEXT AREA)
-   Stile pergamena / documento antico
-   ========================================== */
+
 .text-area {
     -fx-font-family: "Georgia", "Times New Roman", serif;
     -fx-font-size: 14px;
@@ -49,9 +42,9 @@
     -fx-highlight-text-fill: #ffffff;
 }
 
-/* Sfondo e bordo del contenitore principale della TextArea */
+
 .text-area .content {
-    -fx-background-color: rgba(245, 236, 205, 0.85); /* Tonalità ocra chiaro semi-trasparente */
+    -fx-background-color: rgba(245, 236, 205, 0.85); 
     -fx-background-radius: 4;
 }
 
@@ -63,13 +56,13 @@
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.3), 8, 0, 0, 4);
 }
 
-/* Stato di focus quando si clicca dentro la TextArea */
+
 .text-area:focused {
     -fx-border-color: #b39b7d;
     -fx-effect: dropshadow(three-pass-box, rgba(40, 30, 20, 0.5), 12, 0, 0, 6);
 }
 
-/* Personalizzazione della Scrollbar all'interno della TextArea */
+
 .text-area .scroll-bar:vertical {
     -fx-background-color: transparent;
 }
@@ -83,9 +76,6 @@
     -fx-background-color: #594939;
 }
 
-/* ==========================================
-   TITOLI E SOTTOTITOLI
-   ========================================== */
 .title { 
     -fx-font-family: "Georgia", "Times New Roman", serif; 
     -fx-font-size: 56px;  
