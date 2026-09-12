@@ -17,7 +17,7 @@ import java.util.List;
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
-// Schermata di fine match: mostra l'immagine del vincitore (killer.png / police.png),
+// Schermata di fine match: mostra l'immagine del vincitore 
 // gli XP accumulati e propone di proseguire la campagna oppure tornare al menu
 public class MatchResultController {
 

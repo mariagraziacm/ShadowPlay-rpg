@@ -31,7 +31,7 @@ public class TraitSelectController {
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
 
-       traitGroup.selectToggle(null); // reset di eventuale selezione residua
+       traitGroup.selectToggle(null); 
         confirmButton.setDisable(true);
         traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
                 confirmButton.setDisable(newVal == null));
@@ -62,14 +62,14 @@ public class TraitSelectController {
 
         Trait chosenTrait = (selected == traitButton1) ? traitForButton1 : traitForButton2;
         campaign.addHumanTrait(chosenTrait);
-        campaign.startCurrentMatch(); // <-- fondamentale: crea davvero l'engine del match
+        campaign.startCurrentMatch();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
             Parent root = loader.load();
 
             GameController controller = loader.getController();
-            controller.init(campaign); // <-- fondamentale: senza questa riga la mappa resta morta
+            controller.init(campaign); 
 
             Stage stage = (Stage) confirmButton.getScene().getWindow();
             Scene scene = new Scene(root);

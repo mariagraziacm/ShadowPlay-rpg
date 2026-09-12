@@ -64,7 +64,7 @@ public class GameController {
     private String temporaryInfoMessage;
     private PauseTransition temporaryMessageTimer;
 
-    // retrocompatibilità: partita singola senza campagna (es. "Carica partita salvata")
+    // "Carica partita salvata"
     public void init(GameEngine engine) {
         this.engine = engine;
         this.campaign = null;
@@ -73,7 +73,7 @@ public class GameController {
         refreshView();
     }
 
-    // avvio di un match all'interno della campagna Best of 3
+    // avvio di un match all'interno della campagna 
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
         this.engine = campaign.getCurrentEngine();
@@ -368,7 +368,7 @@ private void onSelectArrest() {
     private void refreshView() {
         var state = engine.getState();
 
-        // se siamo dentro una campagna e il match è appena finito: registra il risultato
+        // dentro una campagna, il match è appena finito: registra il risultato
         // (con relativi XP) e passa subito alla schermata con l'immagine del vincitore
         if (state.isFinished() && campaign != null && !matchResultRecorded) {
             matchResultRecorded = true;
@@ -399,7 +399,7 @@ private void onSelectArrest() {
             state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
         }
 
-        // a partita finita (es. partita singola senza campagna): mappa completamente non cliccabile
+        // a partita finita 
         if (state.isFinished()) {
             engine.getBoard().all().forEach(loc -> mapController.setInteractable(loc.getId(), false));
         }
@@ -482,7 +482,7 @@ private void onSelectArrest() {
         scannerButton.setText("📡 Scanner\n(" + state.getPoliceScannerRemaining() + ")");
     }
 
-    // a partita finita: nessun pulsante d'azione resta visibile/utilizzabile
+    // a partita finita: disattiva tutti i pulsanti
     private void hideAllActionButtons() {
         commandsHeaderLabel.setVisible(false);
         commandsHeaderLabel.setManaged(false);
@@ -503,7 +503,7 @@ private void onSelectArrest() {
         policeInventoryRow.setManaged(false);
     }
 
-    // mostra info extra solo quando serve (es. esito dell'ultimo Scanner): niente doppioni con le tessere
+
     private void updateInventoryLabel() {
         var state = engine.getState();
 

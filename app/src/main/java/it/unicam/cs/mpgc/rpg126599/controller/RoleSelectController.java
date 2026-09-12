@@ -29,7 +29,7 @@ public class RoleSelectController {
 
     private final GameJsonStorage storage = new GameJsonStorage();
 
-    // scegliendo un ruolo si avvia una nuova campagna Best of 3 in quel ruolo
+    // scegliendo un ruolo si avvia una nuova campagna 
     @FXML
     private void onChooseKiller() {
         Board board = BoardLoader.loadFromResource("/rounds/maps.json");

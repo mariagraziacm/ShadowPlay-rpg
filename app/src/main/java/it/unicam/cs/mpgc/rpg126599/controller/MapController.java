@@ -75,7 +75,7 @@ public class MapController {
             circle.pseudoClassStateChanged(HOME, false);
         });
     }
-// metodi per colorare i nodi della mappa in base a ruoli e stati
+// colorare i nodi della mappa in base a ruoli e stati
     public void markPolice(String locationId) {
         setState(locationId, POLICE);
     }
@@ -118,7 +118,7 @@ public class MapController {
     public void clearSelection() {
         nodesById.values().forEach(circle -> circle.pseudoClassStateChanged(SELECTED, false));
     }
-// setta alcuni nodi come non cliccabili in base a condizioni specifiche
+// setta alcuni nodi come non cliccabili in base a condizioni 
     public void setInteractable(String locationId, boolean interactable) {
         Circle circle = nodesById.get(locationId);
         if (circle != null) {
