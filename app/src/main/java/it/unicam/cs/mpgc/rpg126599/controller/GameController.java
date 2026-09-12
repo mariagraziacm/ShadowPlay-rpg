@@ -17,7 +17,6 @@ import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.core.GameEngine;
 import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
-import it.unicam.cs.mpgc.rpg126599.model.Trait;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 

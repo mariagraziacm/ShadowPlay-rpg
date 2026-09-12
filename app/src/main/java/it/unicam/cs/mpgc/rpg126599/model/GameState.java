@@ -1,83 +1,28 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+// Prima era una God Class da ~530 righe con oltre 30 campi che mescolava:
+// stato del turno, inventari di Killer e Polizia, effetti tattici attivi,
+// progressione della campagna e contabilità Xp.
+//
+// Ora GameState è una facciata: mantiene l'identica API pubblica (nessun'altra
+// classe del progetto deve cambiare), ma la responsabilità reale è distribuita
+// su oggetti dedicati e testabili singolarmente: TurnState, KillerInventory,
+// PoliceInventory, TacticalEffects, CampaignProgress, XpLedger.
 public class GameState {
 
     private Player killer;
     private Player police;
     private RoleType humanRole;
-    private Turn phase = Turn.AWAITING_HOME_CHOICE;
 
-    private String killerHomeLocationId;
-    private boolean homeChosen;
-    private boolean killerHasLeftHome;
-
-    private int roundsElapsed;
-    private int maxRounds = 10;
-
-    private int policeCluesRemaining = 3;
-    private int killerFakeCluesRemaining = 2;
-
-    private List<String> eliminatedHomeCandidates = new ArrayList<>();
-    private List<String> failedArrestLocations = new ArrayList<>();
-    private List<Clue> fakeClues = new ArrayList<>();
-
-    private Set<String> visitedByKiller = new LinkedHashSet<>();
-    private Set<String> visitedByPolice = new LinkedHashSet<>();
-
-    private boolean finished;
-    private RoleType winner;
-    private String endReason;
-
-    // ---- Campagna Best of 3 / bilanciamento ----
-    private MatchDifficulty difficulty = MatchDifficulty.MATCH_1;
-    private boolean campaignInProgress;
-    private int campaignCurrentMatchNumber = 1;
-    private int campaignKillerWins;
-    private int campaignPoliceWins;
-    private int campaignKillerXp;
-    private int campaignPoliceXp;
-    private int killerXpThisMatch;
-    private int policeXpThisMatch;
-    private int lastXpDeltaForKiller;
-    private int lastXpDeltaForPolice;
-
-    // ---- Tratti RPG ----
-    private List<Trait> killerTraits = new ArrayList<>();
-    private List<Trait> policeTraits = new ArrayList<>();
-
-    // ---- Inventario Killer aggiuntivo ----
-    private int killerSmokeBombsRemaining;
-    private int killerTrapKitsRemaining;
-    private boolean killerShortcutMapUsed;
-    private boolean killerSmokeBombActive;
-
-    // ---- Inventario Poliziotto aggiuntivo ----
-    private int policeRoadblocksRemaining;
-    private int policeCheckpointTokensRemaining;
-    private int policeScannerRemaining;
-
-    // ---- Trap Zone attiva (Killer) ----
-    private String activeTrapZoneLocationId;
-    private boolean policeStunnedNextTurn;
-
-    // ---- Roadblock attivo (Poliziotto) ----
-    private String activeRoadblockLocationId;
-
-    // ---- Checkpoint Token attivo: blocca un singolo collegamento (Poliziotto) ----
-    private String activeCheckpointFromId;
-    private String activeCheckpointToId;
-
-    // ---- Ultimo esito Scanner (per la UI) ----
-    private String lastScannerCenterId;
-    private boolean lastScannerFoundKiller;
-
-    // ---- Punteggio informativo: cala se la Polizia sbaglia un arresto ----
-    private int policeScore = 100;
+    private final TurnState turn = new TurnState();
+    private final KillerInventory killerInventory = new KillerInventory();
+    private final PoliceInventory policeInventory = new PoliceInventory();
+    private final TacticalEffects effects = new TacticalEffects();
+    private final CampaignProgress campaign = new CampaignProgress();
+    private final XpLedger xp = new XpLedger();
 
     public GameState() {
     }
@@ -86,7 +31,7 @@ public class GameState {
         this.killer = killer;
         this.police = police;
         this.humanRole = humanRole;
-        this.visitedByPolice.add(police.getCurrentLocationId());
+        this.turn.markPoliceVisited(police.getCurrentLocationId());
     }
 
     public GameState(Player killer, Player police, RoleType humanRole, MatchDifficulty difficulty) {
@@ -96,101 +41,82 @@ public class GameState {
 
     // applica il bilanciamento di un match della campagna, azzerando gli oggetti "una tantum"
     public void applyDifficulty(MatchDifficulty difficulty) {
-        this.difficulty = difficulty;
-        this.killerFakeCluesRemaining = difficulty.getKillerFakeClues();
-        this.killerSmokeBombsRemaining = difficulty.getKillerSmokeBombs();
-        this.killerTrapKitsRemaining = difficulty.getKillerTrapKits();
-        this.killerShortcutMapUsed = false;
-        this.policeCluesRemaining = difficulty.getPoliceClues();
-        this.policeRoadblocksRemaining = difficulty.getPoliceRoadblocks();
-        this.policeCheckpointTokensRemaining = difficulty.getPoliceCheckpoints();
-        this.policeScannerRemaining = 1;
+        campaign.setDifficulty(difficulty);
+        killerInventory.reset(difficulty);
+        policeInventory.reset(difficulty);
     }
 
     public MatchDifficulty getDifficulty() {
-        return difficulty;
+        return campaign.getDifficulty();
     }
 
+    // ---------------- Campagna ----------------
+
     public boolean isCampaignInProgress() {
-        return campaignInProgress;
+        return campaign.isInProgress();
     }
 
     public int getCampaignCurrentMatchNumber() {
-        return campaignCurrentMatchNumber;
+        return campaign.getCurrentMatchNumber();
     }
 
     public int getCampaignKillerWins() {
-        return campaignKillerWins;
+        return campaign.getKillerWins();
     }
 
     public int getCampaignPoliceWins() {
-        return campaignPoliceWins;
+        return campaign.getPoliceWins();
     }
 
     public int getCampaignKillerXp() {
-        return campaignKillerXp;
+        return campaign.getKillerXp();
     }
 
     public int getCampaignPoliceXp() {
-        return campaignPoliceXp;
+        return campaign.getPoliceXp();
     }
 
     public void setCampaignProgress(int currentMatchNumber, int killerWins, int policeWins,
-                                    int killerXp, int policeXp) {
-        this.campaignInProgress = true;
-        this.campaignCurrentMatchNumber = currentMatchNumber;
-        this.campaignKillerWins = killerWins;
-        this.campaignPoliceWins = policeWins;
-        this.campaignKillerXp = killerXp;
-        this.campaignPoliceXp = policeXp;
-    }
-
-    public int getKillerXpThisMatch() {
-        return killerXpThisMatch;
-    }
-
-    public int getPoliceXpThisMatch() {
-        return policeXpThisMatch;
-    }
-
-    public void addKillerXp(int delta) {
-        killerXpThisMatch += delta;
-        lastXpDeltaForKiller = delta;
-    }
-
-    public void addPoliceXp(int delta) {
-        policeXpThisMatch += delta;
-        lastXpDeltaForPolice = delta;
-    }
-
-    public int getLastXpDelta(RoleType role) {
-        return role == RoleType.KILLER ? lastXpDeltaForKiller : lastXpDeltaForPolice;
-    }
-
-    public void clearLastXpDelta() {
-        lastXpDeltaForKiller = 0;
-        lastXpDeltaForPolice = 0;
-    }
-
-    public void resetMatchXp() {
-        killerXpThisMatch = 0;
-        policeXpThisMatch = 0;
-        lastXpDeltaForKiller = 0;
-        lastXpDeltaForPolice = 0;
+                                     int killerXp, int policeXp) {
+        campaign.setProgress(currentMatchNumber, killerWins, policeWins, killerXp, policeXp);
     }
 
     public void clearCampaignProgress() {
-        this.campaignInProgress = false;
-        this.campaignCurrentMatchNumber = 1;
-        this.campaignKillerWins = 0;
-        this.campaignPoliceWins = 0;
-        this.campaignKillerXp = 0;
-        this.campaignPoliceXp = 0;
-        this.killerXpThisMatch = 0;
-        this.policeXpThisMatch = 0;
-        this.lastXpDeltaForKiller = 0;
-        this.lastXpDeltaForPolice = 0;
+        campaign.clear();
+        xp.reset();
     }
+
+    // ---------------- Xp del match ----------------
+
+    public int getKillerXpThisMatch() {
+        return xp.getKillerXpThisMatch();
+    }
+
+    public int getPoliceXpThisMatch() {
+        return xp.getPoliceXpThisMatch();
+    }
+
+    public void addKillerXp(int delta) {
+        xp.addKillerXp(delta);
+    }
+
+    public void addPoliceXp(int delta) {
+        xp.addPoliceXp(delta);
+    }
+
+    public int getLastXpDelta(RoleType role) {
+        return xp.getLastDelta(role);
+    }
+
+    public void clearLastXpDelta() {
+        xp.clearLastDelta();
+    }
+
+    public void resetMatchXp() {
+        xp.reset();
+    }
+
+    // ---------------- Giocatori e ruolo ----------------
 
     public Player getKiller() {
         return killer;
@@ -204,331 +130,312 @@ public class GameState {
         return humanRole;
     }
 
+    public Player playerOf(RoleType role) {
+        return role == RoleType.KILLER ? killer : police;
+    }
+
+    // ---------------- Turno e fase ----------------
+
     public Turn getPhase() {
-        return phase;
+        return turn.getPhase();
     }
 
     public void setPhase(Turn phase) {
-        this.phase = phase;
+        turn.setPhase(phase);
     }
 
     public boolean isHomeChosen() {
-        return homeChosen;
+        return turn.isHomeChosen();
     }
 
     public String getKillerHomeLocationId() {
-        return killerHomeLocationId;
+        return turn.getKillerHomeLocationId();
     }
 
     public void chooseHome(String locationId) {
-        this.killerHomeLocationId = locationId;
-        this.homeChosen = true;
+        turn.chooseHome(locationId);
     }
 
     public void setKillerStartLocation(String locationId) {
         this.killer.moveTo(locationId);
-        this.visitedByKiller.add(locationId);
+        turn.markKillerVisited(locationId);
     }
 
     public boolean hasLeftHome() {
-        return killerHasLeftHome;
+        return turn.hasLeftHome();
     }
 
     public void markLeftHome() {
-        this.killerHasLeftHome = true;
+        turn.markLeftHome();
     }
 
     public int getRoundsElapsed() {
-        return roundsElapsed;
+        return turn.getRoundsElapsed();
     }
 
     public int getMaxRounds() {
-        return maxRounds;
+        return turn.getMaxRounds();
     }
 
     public void incrementRound() {
-        roundsElapsed++;
+        turn.incrementRound();
     }
 
-    private int killerMovesMade;
-    private int policeMovesMade;
-
     public int getKillerMovesMade() {
-        return killerMovesMade;
+        return turn.getKillerMovesMade();
     }
 
     public int getPoliceMovesMade() {
-        return policeMovesMade;
+        return turn.getPoliceMovesMade();
     }
 
     public void registerKillerMove() {
-        killerMovesMade++;
+        turn.registerKillerMove();
     }
 
     public void registerPoliceMove() {
-        policeMovesMade++;
-    }
-
-    public int getPoliceCluesRemaining() {
-        return policeCluesRemaining;
-    }
-
-    public void usePoliceClue() {
-        policeCluesRemaining--;
-    }
-
-    public int getKillerFakeCluesRemaining() {
-        return killerFakeCluesRemaining;
-    }
-
-    public void useKillerFakeClue() {
-        killerFakeCluesRemaining--;
+        turn.registerPoliceMove();
     }
 
     public List<String> getEliminatedHomeCandidates() {
-        return eliminatedHomeCandidates;
+        return turn.getEliminatedHomeCandidates();
     }
 
     public void eliminateHomeCandidate(String locationId) {
-        eliminatedHomeCandidates.add(locationId);
+        turn.eliminateHomeCandidate(locationId);
     }
 
     public List<String> getFailedArrestLocations() {
-        return failedArrestLocations;
+        return turn.getFailedArrestLocations();
     }
 
     public void recordFailedArrest(String locationId) {
-        failedArrestLocations.add(locationId);
+        turn.recordFailedArrest(locationId);
     }
 
     public boolean isAlreadySearched(String locationId) {
-        return failedArrestLocations.contains(locationId);
+        return turn.isAlreadySearched(locationId);
     }
 
     public List<Clue> getFakeClues() {
-        return fakeClues;
+        return turn.getFakeClues();
     }
 
     public void addFakeClue(String locationId) {
-        fakeClues.add(new Clue(locationId, roundsElapsed));
+        turn.addFakeClue(locationId);
     }
 
     public Set<String> getVisitedByKiller() {
-        return visitedByKiller;
+        return turn.getVisitedByKiller();
     }
 
     public Set<String> getVisitedByPolice() {
-        return visitedByPolice;
+        return turn.getVisitedByPolice();
     }
 
     public void markKillerVisited(String locationId) {
-        visitedByKiller.add(locationId);
+        turn.markKillerVisited(locationId);
     }
 
     public void markPoliceVisited(String locationId) {
-        visitedByPolice.add(locationId);
+        turn.markPoliceVisited(locationId);
     }
 
     public boolean isFinished() {
-        return finished;
+        return turn.isFinished();
     }
 
     public RoleType getWinner() {
-        return winner;
+        return turn.getWinner();
     }
 
     public String getEndReason() {
-        return endReason;
+        return turn.getEndReason();
     }
 
     public void finish(RoleType winnerRole, String reason) {
-        this.finished = true;
-        this.winner = winnerRole;
-        this.endReason = reason;
-    }
-
-    public Player playerOf(RoleType role) {
-        return role == RoleType.KILLER ? killer : police;
+        turn.finish(winnerRole, reason);
     }
 
     // ---------------- Tratti ----------------
 
     public List<Trait> getKillerTraits() {
-        return killerTraits;
+        return campaign.getKillerTraits();
     }
 
     public void setKillerTraits(List<Trait> traits) {
-        this.killerTraits = traits;
+        campaign.setKillerTraits(traits);
     }
 
     public List<Trait> getPoliceTraits() {
-        return policeTraits;
+        return campaign.getPoliceTraits();
     }
 
     public void setPoliceTraits(List<Trait> traits) {
-        this.policeTraits = traits;
+        campaign.setPoliceTraits(traits);
     }
 
-    // ---------------- Inventario Killer aggiuntivo ----------------
+    // ---------------- Inventario Killer ----------------
 
     public int getKillerSmokeBombsRemaining() {
-        return killerSmokeBombsRemaining;
+        return killerInventory.getSmokeBombsRemaining();
     }
 
     public void useKillerSmokeBomb() {
-        killerSmokeBombsRemaining--;
+        killerInventory.useSmokeBomb();
     }
 
-    // bonus concesso dal tratto Sangue Freddo quando la Polizia sbaglia un arresto
     public void grantKillerBonusSmokeBomb() {
-        killerSmokeBombsRemaining++;
+        killerInventory.grantBonusSmokeBomb();
+    }
+
+    public int getKillerFakeCluesRemaining() {
+        return killerInventory.getFakeCluesRemaining();
+    }
+
+    public void useKillerFakeClue() {
+        killerInventory.useFakeClue();
+    }
+
+    public void grantKillerArrestFailureBonus() {
+        killerInventory.grantFakeClueBonus();
     }
 
     public int getKillerTrapKitsRemaining() {
-        return killerTrapKitsRemaining;
+        return killerInventory.getTrapKitsRemaining();
     }
 
     public void useKillerTrapKit() {
-        killerTrapKitsRemaining--;
+        killerInventory.useTrapKit();
     }
 
     public boolean isKillerShortcutMapUsed() {
-        return killerShortcutMapUsed;
+        return killerInventory.isShortcutMapUsed();
     }
 
     public void markKillerShortcutMapUsed() {
-        killerShortcutMapUsed = true;
+        killerInventory.markShortcutMapUsed();
     }
 
     public boolean isKillerSmokeBombActive() {
-        return killerSmokeBombActive;
+        return killerInventory.isSmokeBombActive();
     }
 
     public void activateKillerSmokeBomb() {
-        killerSmokeBombActive = true;
+        killerInventory.activateSmokeBomb();
     }
 
     public void clearKillerSmokeBombActive() {
-        killerSmokeBombActive = false;
+        killerInventory.clearSmokeBombActive();
     }
 
-    // guadagno base del Killer quando la Polizia sbaglia un arresto
-    public void grantKillerArrestFailureBonus() {
-        killerFakeCluesRemaining++;
+    // ---------------- Inventario Poliziotto ----------------
+
+    public int getPoliceCluesRemaining() {
+        return policeInventory.getCluesRemaining();
     }
 
-    // ---------------- Inventario Poliziotto aggiuntivo ----------------
+    public void usePoliceClue() {
+        policeInventory.useClue();
+    }
 
     public int getPoliceRoadblocksRemaining() {
-        return policeRoadblocksRemaining;
+        return policeInventory.getRoadblocksRemaining();
     }
 
     public void useRoadblock() {
-        policeRoadblocksRemaining--;
+        policeInventory.useRoadblock();
     }
 
     public int getPoliceCheckpointTokensRemaining() {
-        return policeCheckpointTokensRemaining;
+        return policeInventory.getCheckpointTokensRemaining();
     }
 
     public void useCheckpointToken() {
-        policeCheckpointTokensRemaining--;
+        policeInventory.useCheckpointToken();
     }
 
     public int getPoliceScannerRemaining() {
-        return policeScannerRemaining;
+        return policeInventory.getScannerRemaining();
     }
 
     public void useScanner() {
-        policeScannerRemaining--;
+        policeInventory.useScanner();
     }
 
-    // ---------------- Trap Zone (Killer) ----------------
+    // ---------------- Effetti tattici ----------------
 
     public String getActiveTrapZoneLocationId() {
-        return activeTrapZoneLocationId;
+        return effects.getActiveTrapZoneLocationId();
     }
 
     public void setActiveTrapZone(String locationId) {
-        this.activeTrapZoneLocationId = locationId;
+        effects.setActiveTrapZone(locationId);
     }
 
     public void clearActiveTrapZone() {
-        this.activeTrapZoneLocationId = null;
+        effects.clearActiveTrapZone();
     }
 
     public boolean isPoliceStunnedNextTurn() {
-        return policeStunnedNextTurn;
+        return effects.isPoliceStunnedNextTurn();
     }
 
     public void setPoliceStunnedNextTurn(boolean value) {
-        this.policeStunnedNextTurn = value;
+        effects.setPoliceStunnedNextTurn(value);
     }
 
-    // ---------------- Roadblock (Poliziotto) ----------------
-
     public String getActiveRoadblockLocationId() {
-        return activeRoadblockLocationId;
+        return effects.getActiveRoadblockLocationId();
     }
 
     public void setActiveRoadblock(String locationId) {
-        this.activeRoadblockLocationId = locationId;
+        effects.setActiveRoadblock(locationId);
     }
 
     public void clearActiveRoadblock() {
-        this.activeRoadblockLocationId = null;
+        effects.clearActiveRoadblock();
     }
 
-    // ---------------- Checkpoint Token / Checkpoint Mobile (Poliziotto) ----------------
-
     public String getActiveCheckpointFromId() {
-        return activeCheckpointFromId;
+        return effects.getActiveCheckpointFromId();
     }
 
     public String getActiveCheckpointToId() {
-        return activeCheckpointToId;
+        return effects.getActiveCheckpointToId();
     }
 
     public void setActiveCheckpoint(String fromId, String toId) {
-        this.activeCheckpointFromId = fromId;
-        this.activeCheckpointToId = toId;
+        effects.setActiveCheckpoint(fromId, toId);
     }
 
     public void clearActiveCheckpoint() {
-        this.activeCheckpointFromId = null;
-        this.activeCheckpointToId = null;
+        effects.clearActiveCheckpoint();
     }
 
     public boolean isCheckpointEdge(String a, String b) {
-        if (activeCheckpointFromId == null || activeCheckpointToId == null) {
-            return false;
-        }
-        return (activeCheckpointFromId.equals(a) && activeCheckpointToId.equals(b))
-                || (activeCheckpointFromId.equals(b) && activeCheckpointToId.equals(a));
+        return effects.isCheckpointEdge(a, b);
     }
 
-    // ---------------- Scanner ----------------
-
     public void setLastScannerResult(String centerId, boolean found) {
-        this.lastScannerCenterId = centerId;
-        this.lastScannerFoundKiller = found;
+        effects.setLastScannerResult(centerId, found);
     }
 
     public String getLastScannerCenterId() {
-        return lastScannerCenterId;
+        return effects.getLastScannerCenterId();
     }
 
     public boolean isLastScannerFoundKiller() {
-        return lastScannerFoundKiller;
+        return effects.isLastScannerFoundKiller();
     }
 
     // ---------------- Punteggio ----------------
 
     public int getPoliceScore() {
-        return policeScore;
+        return xp.getPoliceScore();
     }
 
     public void adjustPoliceScore(int delta) {
-        policeScore += delta;
+        xp.adjustPoliceScore(delta);
     }
 }
