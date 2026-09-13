@@ -5,27 +5,25 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
-            prefHeight="560.0" prefWidth="900.0" 
-            stylesheets="@../style/matchresult.css" 
-            xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="it.unicam.cs.mpgc.rpg126599.controller.MatchResultController">
+<AnchorPane fx:id="rootPane" prefHeight="560.0" prefWidth="900.0" stylesheets="@../style/matchresult.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.MatchResultController">
    <children>
-      <!-- L'immagine dello sfondo viene popolata dinamicamente dal controller -->
-      <ImageView fx:id="backgroundImage" fitHeight="560.0" fitWidth="900.0" preserveRatio="false" />
+      <ImageView fx:id="backgroundImage" preserveRatio="false" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
       
-      <VBox alignment="BOTTOM_CENTER" prefHeight="220.0" spacing="14.0" 
-            styleClass="result-overlay" 
-            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <VBox alignment="BOTTOM_CENTER" spacing="14.0" styleClass="result-overlay" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <padding>
-            <Insets bottom="30.0" left="40.0" right="40.0" top="20.0" />
+            <Insets bottom="48.0" left="40.0" right="40.0" top="20.0" />
          </padding>
          <children>
             <Label fx:id="resultLabel" styleClass="result-title" textAlignment="CENTER" wrapText="true" />
             <Label fx:id="xpLabel" styleClass="xp-text" />
-            <Button fx:id="continueButton" onAction="#onContinue" prefHeight="40.0" prefWidth="220.0" text="Continua" />
+            <HBox alignment="CENTER">
+               <children>
+                  <Button fx:id="continueButton" onAction="#onContinue" prefHeight="40.0" prefWidth="220.0" text="Continua" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

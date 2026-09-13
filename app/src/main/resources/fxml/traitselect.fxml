@@ -6,18 +6,18 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="561.0" prefWidth="724.0" stylesheets="@../style/traitselect.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.TraitSelectController">
+<AnchorPane fx:id="rootPane" prefHeight="561.0" prefWidth="724.0" stylesheets="@../style/traitselect.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.TraitSelectController">
    <children>
-      <Label fx:id="titleLabel" layoutX="242.0" layoutY="40.0" styleClass="subtitle" text="Scegli il tuo tratto" wrapText="true" />
+      <Label fx:id="titleLabel" styleClass="subtitle" text="Scegli il tuo tratto" wrapText="true" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="36.0" />
       
       <fx:define>
          <ToggleGroup fx:id="traitGroup" />
       </fx:define>
 
-      <ToggleButton fx:id="traitButton1" layoutX="41.0" layoutY="120.0" prefHeight="299.0" prefWidth="303.0" styleClass="trait-card-button" text="Tratto 1" toggleGroup="$traitGroup" />
+      <ToggleButton fx:id="traitButton1" prefHeight="299.0" prefWidth="300.0" styleClass="trait-card-button" text="Tratto 1" toggleGroup="$traitGroup" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="120.0" AnchorPane.bottomAnchor="100.0" />
       
-      <ToggleButton fx:id="traitButton2" layoutX="380.0" layoutY="120.0" prefHeight="299.0" prefWidth="303.0" styleClass="trait-card-button" text="Tratto 2" toggleGroup="$traitGroup" />
+      <ToggleButton fx:id="traitButton2" prefHeight="299.0" prefWidth="300.0" styleClass="trait-card-button" text="Tratto 2" toggleGroup="$traitGroup" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0" AnchorPane.bottomAnchor="100.0" />
 
-      <Button fx:id="confirmButton" layoutX="232.0" layoutY="465.0" onAction="#onConfirm" prefHeight="42.0" prefWidth="260.0" text="Conferma e inizia il match" />
+      <Button fx:id="confirmButton" onAction="#onConfirm" prefHeight="42.0" prefWidth="260.0" text="Conferma e inizia il match" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" AnchorPane.bottomAnchor="28.0" />
    </children>
 </AnchorPane>
