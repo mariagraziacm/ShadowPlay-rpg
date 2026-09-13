@@ -3,9 +3,7 @@ package it.unicam.cs.mpgc.rpg126599.model;
 import java.util.ArrayList;
 import java.util.List;
 
-// Responsabilità unica: lo stato della campagna Best of 3 (vittorie, Xp accumulata,
-// bilanciamento del match corrente, tratti sbloccati). Prima era mischiata dentro GameState
-// insieme a turno, inventari ed effetti tattici.
+// stato della campagna
 public class CampaignProgress {
 
     private MatchDifficulty difficulty = MatchDifficulty.MATCH_1;

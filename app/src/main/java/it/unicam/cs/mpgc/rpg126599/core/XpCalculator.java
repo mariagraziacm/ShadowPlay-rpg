@@ -7,9 +7,8 @@ import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Trait;
 
-// Responsabilità unica: tutte le formule di ricompensa/penalità Xp del match.
-// Prima erano metodi privati di GameEngine con numeri "magici" ripetuti in più punti;
-// qui sono raccolte e nominate, così il bilanciamento si tocca in un solo posto.
+// formule di ricompensa/penalità Xp del match.
+
 public class XpCalculator {
 
     private static final int BASE_MOVE_XP = 6;

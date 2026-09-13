@@ -11,12 +11,6 @@ import it.unicam.cs.mpgc.rpg126599.model.Player;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
-// Prima era una God Class da ~570 righe che faceva contemporaneamente da:
-// validatore delle azioni, motore delle regole, calcolatore di Xp e IA del ruolo
-// non umano. Ora è una facciata sottile: valida le precondizioni (ActionValidator),
-// delega l'esecuzione delle regole (MatchActions) e l'avanzamento del turno
-// (TurnPhaseManager, che a sua volta usa KillerAI/PoliceAI). L'API pubblica
-// resta identica: GameController e CampaignManager non cambiano.
 public class GameEngine {
 
     private final Board board;
@@ -35,7 +29,6 @@ public class GameEngine {
         this.turnPhaseManager = new TurnPhaseManager(board, state, actions, random);
     }
 
-    // partita singola "storica" (retrocompatibile): usa comunque il bilanciamento del match 1
     public static GameEngine newGame(Board board, RoleType humanRole) {
         Player killer = new Player(RoleType.KILLER, null);
         Player police = new Player(RoleType.POLICE, "n20");
@@ -45,7 +38,6 @@ public class GameEngine {
         return engine;
     }
 
-    // avvia un match già preparato dal CampaignManager (bilanciamento e tratti già impostati)
     public static GameEngine newCampaignMatch(Board board, GameState state) {
         GameEngine engine = new GameEngine(board, state);
         engine.turnPhaseManager.resolveAutomaticPhases();
@@ -61,7 +53,7 @@ public class GameEngine {
     public GameState getState() { return state; }
     public Board getBoard() { return board; }
 
-    // ================= AZIONI DEL GIOCATORE UMANO =================
+    
 
     public void chooseHome(String locationId) {
         validator.requirePhase(Turn.AWAITING_HOME_CHOICE);
@@ -124,7 +116,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Smoke Bomb: copertura per un turno, neutralizza il prossimo Scanner della Polizia
+    // Smoke Bomb: annulla il prossimo Scanner della Polizia
     public void killerUseSmokeBomb() {
         validator.requirePhase(Turn.AWAITING_KILLER_ACTION);
         validator.requireHumanRole(RoleType.KILLER);
@@ -136,7 +128,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Trap Kit: piazza una Trap Zone che rallenta la Polizia se ci entra nel turno immediatamente successivo
+    // Trap Kit: piazza una Trappola che rallenta la Polizia se ci entra nel turno immediatamente successivo
     public void killerPlaceTrap(String targetLocationId) {
         validator.requirePhase(Turn.AWAITING_KILLER_ACTION);
         validator.requireHumanRole(RoleType.KILLER);
@@ -152,7 +144,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Shortcut Map: una sola volta a match, ignora distanza massima, Roadblock e Checkpoint
+    // shortcut Map: ignora distanza massima, Roadblock e Checkpoint
     public void killerUseShortcutMap(String targetLocationId) {
         validator.requirePhase(Turn.AWAITING_KILLER_ACTION);
         validator.requireHumanRole(RoleType.KILLER);
@@ -198,7 +190,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Roadblock: blocca un intero nodo per il prossimo turno del Killer
+    // roaadblock: blocca un intero nodo per il prossimo turno del Killer
     public void policePlaceRoadblock(String targetLocationId) {
         validator.requirePhase(Turn.AWAITING_POLICE_ACTION);
         validator.requireHumanRole(RoleType.POLICE);
@@ -211,7 +203,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Checkpoint Token (Checkpoint Mobile): blocca un singolo collegamento adiacente alla propria posizione
+    // Checkpoint: blocca un singolo collegamento vicino alla propria posizione
     public void policeUseCheckpoint(String fromId, String toId) {
         validator.requirePhase(Turn.AWAITING_POLICE_ACTION);
         validator.requireHumanRole(RoleType.POLICE);
@@ -224,7 +216,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Scanner: lettura rapida dell'area, rivela se il Killer è entro 2 caselle dal punto scelto
+    // scanner: rivela se il Killer è entro 2 caselle dal punto scelto
     public void policeUseScanner(String centerLocationId) {
         validator.requirePhase(Turn.AWAITING_POLICE_ACTION);
         validator.requireHumanRole(RoleType.POLICE);

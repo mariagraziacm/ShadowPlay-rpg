@@ -7,9 +7,8 @@ import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
-// Responsabilità unica: verificare le precondizioni di un'azione e lanciare
-// un'eccezione descrittiva se non sono rispettate. Prima erano metodi privati
-// sparsi dentro GameEngine, mescolati con l'esecuzione delle regole.
+//verifica le precondizioni di un'azione e lanciare eccezioni
+
 public class ActionValidator {
 
     private final Board board;
@@ -64,8 +63,8 @@ public class ActionValidator {
         }
     }
 
-    // il Roadblock blocca l'intero nodo, il Checkpoint blocca un singolo collegamento:
-    // entrambi valgono anche per lo spostamento "a salto" di due caselle.
+    // roadblock blocca l'intero nodo, checkpoint blocca un singolo collegamento
+    
     public void checkMovementNotBlocked(String current, String target, String intermediate) {
         String roadblock = state.getActiveRoadblockLocationId();
         if (roadblock != null && (roadblock.equals(target) || roadblock.equals(intermediate))) {
@@ -81,8 +80,7 @@ public class ActionValidator {
         }
     }
 
-    // il Killer non può rientrare nel proprio nascondiglio finché il Poliziotto
-    // vi si trova sopra: deve aspettare che se ne allontani, o rischiare altrove
+    // il Killer non può rientrare nel proprio nascondiglio finché il Poliziotto vi si trova sopra
     public void requireHomeNotGuardedByPolice(String targetLocationId) {
         if (targetLocationId.equals(state.getKillerHomeLocationId())
                 && targetLocationId.equals(state.getPolice().getCurrentLocationId())) {
@@ -91,8 +89,8 @@ public class ActionValidator {
         }
     }
 
-    // il luogo del primo omicidio deve trovarsi ad almeno minDistance caselle dal nascondiglio,
-    // così il Killer non può "svelarsi" scegliendo un punto di partenza troppo rivelatore
+    // luogo del primo omicidio deve trovarsi ad almeno a un tot di  caselle di distanza dal nascondiglio,
+    
     public void requireMurderLocationFarEnoughFromHome(String locationId, int minDistance) {
         int distanceFromHome = board.distance(state.getKillerHomeLocationId(), locationId);
         if (distanceFromHome < minDistance) {

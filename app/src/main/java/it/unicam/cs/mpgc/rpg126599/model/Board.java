@@ -34,9 +34,7 @@ public class Board {
     }
 
 // algoritmo per calcolare distanze tra i nodi della mappa (utilizzata BFS)
-    // ho fatto questa scelta perché mi serviva un modo valido per gestire e verificare gli spostamenti del killer che può spostarsi anche di due caselle alla volta, 
-    // quindi avevo bisogno di sapere la distanza minima tra due nodi 
- 
+    
     private void precomputeDistances() {
         for (String fromId : locations.keySet()) {
             allPairsDistances.put(fromId, computeBfsDistancesFrom(fromId));

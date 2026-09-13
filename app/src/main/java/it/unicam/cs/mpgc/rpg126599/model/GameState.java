@@ -3,14 +3,7 @@ package it.unicam.cs.mpgc.rpg126599.model;
 import java.util.List;
 import java.util.Set;
 
-// Prima era una God Class da ~530 righe con oltre 30 campi che mescolava:
-// stato del turno, inventari di Killer e Polizia, effetti tattici attivi,
-// progressione della campagna e contabilità Xp.
-//
-// Ora GameState è una facciata: mantiene l'identica API pubblica (nessun'altra
-// classe del progetto deve cambiare), ma la responsabilità reale è distribuita
-// su oggetti dedicati e testabili singolarmente: TurnState, KillerInventory,
-// PoliceInventory, TacticalEffects, CampaignProgress, XpLedger.
+
 public class GameState {
 
     private Player killer;
@@ -50,7 +43,6 @@ public class GameState {
         return campaign.getDifficulty();
     }
 
-    // ---------------- Campagna ----------------
 
     public boolean isCampaignInProgress() {
         return campaign.isInProgress();
@@ -86,7 +78,7 @@ public class GameState {
         xp.reset();
     }
 
-    // ---------------- Xp del match ----------------
+    
 
     public int getKillerXpThisMatch() {
         return xp.getKillerXpThisMatch();
@@ -116,7 +108,7 @@ public class GameState {
         xp.reset();
     }
 
-    // ---------------- Giocatori e ruolo ----------------
+    
 
     public Player getKiller() {
         return killer;
@@ -134,7 +126,6 @@ public class GameState {
         return role == RoleType.KILLER ? killer : police;
     }
 
-    // ---------------- Turno e fase ----------------
 
     public Turn getPhase() {
         return turn.getPhase();
@@ -257,7 +248,6 @@ public class GameState {
         turn.finish(winnerRole, reason);
     }
 
-    // ---------------- Tratti ----------------
 
     public List<Trait> getKillerTraits() {
         return campaign.getKillerTraits();
@@ -275,7 +265,7 @@ public class GameState {
         campaign.setPoliceTraits(traits);
     }
 
-    // ---------------- Inventario Killer ----------------
+   
 
     public int getKillerSmokeBombsRemaining() {
         return killerInventory.getSmokeBombsRemaining();
@@ -363,7 +353,7 @@ public class GameState {
         policeInventory.useScanner();
     }
 
-    // ---------------- Effetti tattici ----------------
+    
 
     public String getActiveTrapZoneLocationId() {
         return effects.getActiveTrapZoneLocationId();
@@ -429,8 +419,7 @@ public class GameState {
         return effects.isLastScannerFoundKiller();
     }
 
-    // ---------------- Punteggio ----------------
-
+   
     public int getPoliceScore() {
         return xp.getPoliceScore();
     }

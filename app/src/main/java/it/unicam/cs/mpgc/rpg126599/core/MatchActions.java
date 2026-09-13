@@ -11,12 +11,8 @@ import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Trait;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
-// Responsabilità unica: applicare l'effetto di ogni azione di gioco sullo stato
-// (muovere i giocatori, consumare oggetti, assegnare Xp, chiudere il turno del Killer).
-// Prima erano i metodi "apply*" privati di GameEngine: qui diventano l'unico punto
-// della codebase che muta davvero GameState durante lo svolgimento di un'azione.
-// Sia le azioni umane (guidate da GameEngine) sia quelle automatiche (guidate da
-// KillerAI/PoliceAI) passano da qui, così la logica non è mai duplicata.
+// applica l'effetto di ogni azione di gioco sullo stato
+
 public class MatchActions {
 
     private final Board board;
@@ -99,8 +95,6 @@ public class MatchActions {
         state.setPhase(Turn.AWAITING_POLICE_ACTION);
     }
 
-    // Roadblock e Checkpoint durano un solo turno del Killer: si esauriscono sempre qui,
-    // che l'azione del Killer li abbia dovuti aggirare oppure no.
     private void afterKillerAction() {
         state.clearActiveRoadblock();
         state.clearActiveCheckpoint();
@@ -127,7 +121,7 @@ public class MatchActions {
 
     public void applyPoliceMove(String targetLocationId) {
         if (targetLocationId.equals(state.getActiveTrapZoneLocationId())) {
-            // il Killer aveva armato una Trap Zone qui: la Polizia viene rallentata al prossimo turno
+            
             state.setPoliceStunnedNextTurn(true);
         }
         state.registerPoliceMove();
@@ -142,8 +136,7 @@ public class MatchActions {
             state.finish(RoleType.POLICE, "Il poliziotto ha arrestato il killer.");
             state.addPoliceXp(xp.arrestSuccessXp(state));
         } else {
-            // L'arresto non è un tentativo casuale ma una decisione ad alta responsabilità:
-            // se sbagliato, il Killer guadagna e la Polizia perde punti.
+            // aarresto se sbagliato, il Killer guadagna e la Polizia perde punti.
             state.recordFailedArrest(targetLocationId);
             int penalty = xp.arrestFailurePolicePenalty(state);
             state.adjustPoliceScore(-penalty);

@@ -7,9 +7,7 @@ import java.util.Set;
 import it.unicam.cs.mpgc.rpg126599.model.Board;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 
-// Responsabilità unica: scegliere un vicino "buono" secondo un criterio di distanza.
-// Prima erano due metodi privati di GameEngine, usati sia dalla logica automatica
-// del Killer che da quella della Polizia: qui diventano un servizio condiviso.
+
 public class NavigationHelper {
 
     private final Board board;

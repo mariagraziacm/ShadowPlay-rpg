@@ -7,9 +7,8 @@ import it.unicam.cs.mpgc.rpg126599.model.GameRules;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 
-// Responsabilità unica: decidere le mosse del Killer quando è il ruolo automatico.
-// Prima erano i metodi privati autoSetupKiller/autoPlayKillerTurn di GameEngine,
-// mescolati con la validazione delle azioni umane e il calcolo dell'Xp.
+//  decidere le mosse del Killer quando è il ruolo automatico
+
 public class KillerAI {
 
     private final Board board;
@@ -34,9 +33,7 @@ public class KillerAI {
             actions.applyChooseHome(home);
         }
         String home = state.getKillerHomeLocationId();
-        // rispetta la stessa regola richiesta al giocatore umano: il luogo dell'omicidio
-        // deve stare ad almeno MIN_MURDER_LOCATION_DISTANCE_FROM_HOME caselle da casa.
-        // Tra i nodi validi si sceglie il più vicino, per non allontanare l'IA più del necessario.
+        
         String murderLocation = board.all().stream()
                 .filter(location -> board.distance(home, location.getId()) >= GameRules.MIN_MURDER_LOCATION_DISTANCE_FROM_HOME)
                 .min(Comparator.comparingInt(location -> board.distance(home, location.getId())))

@@ -5,10 +5,7 @@ import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
-// Responsabilità unica: far avanzare l'"orologio" della partita (chiusura del turno
-// di Polizia, controllo del limite di round) e capire quando tocca al ruolo automatico
-// agire da solo. Prima erano i metodi privati endPoliceTurn/resolveAutomaticPhases/
-// phaseBelongsToAutomaticRole di GameEngine, mescolati con validazione e regole di gioco.
+
 public class TurnPhaseManager {
 
     private final GameState state;
@@ -22,8 +19,7 @@ public class TurnPhaseManager {
         this.policeAI = new PoliceAI(board, state, actions, nav, random);
     }
 
-    // la Trap Zone e la copertura Smoke Bomb durano al massimo un turno di Polizia:
-    // si esauriscono qui, indipendentemente dall'esito dell'azione appena compiuta.
+    
     public void endPoliceTurn() {
         state.clearActiveTrapZone();
         state.clearKillerSmokeBombActive();
@@ -34,7 +30,7 @@ public class TurnPhaseManager {
         }
         state.incrementRound();
         if (state.isPoliceStunnedNextTurn()) {
-            // penalità della Trap Zone: il rallentamento costa alla Polizia un round extra dell'orologio di partita
+           
             state.incrementRound();
             state.setPoliceStunnedNextTurn(false);
         }

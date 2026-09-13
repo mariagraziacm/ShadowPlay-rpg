@@ -9,8 +9,7 @@ import it.unicam.cs.mpgc.rpg126599.model.Clue;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 
-// Responsabilità unica: decidere le mosse della Polizia quando è il ruolo automatico.
-// Prima era il metodo privato autoPlayPoliceTurn di GameEngine.
+// decide le mosse della Polizia quando è il ruolo automatico
 public class PoliceAI {
 
     private final Board board;
