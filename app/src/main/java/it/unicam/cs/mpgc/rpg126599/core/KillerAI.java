@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg126599.core;
 import java.util.Comparator;
 
 import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.model.GameRules;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 
@@ -32,7 +33,15 @@ public class KillerAI {
                     .orElseThrow();
             actions.applyChooseHome(home);
         }
-        String murderLocation = board.neighborsOf(state.getKillerHomeLocationId()).get(0).getId();
+        String home = state.getKillerHomeLocationId();
+        // rispetta la stessa regola richiesta al giocatore umano: il luogo dell'omicidio
+        // deve stare ad almeno MIN_MURDER_LOCATION_DISTANCE_FROM_HOME caselle da casa.
+        // Tra i nodi validi si sceglie il più vicino, per non allontanare l'IA più del necessario.
+        String murderLocation = board.all().stream()
+                .filter(location -> board.distance(home, location.getId()) >= GameRules.MIN_MURDER_LOCATION_DISTANCE_FROM_HOME)
+                .min(Comparator.comparingInt(location -> board.distance(home, location.getId())))
+                .map(Location::getId)
+                .orElseGet(() -> board.neighborsOf(home).get(0).getId());
         actions.applyChooseMurderLocation(murderLocation);
     }
 

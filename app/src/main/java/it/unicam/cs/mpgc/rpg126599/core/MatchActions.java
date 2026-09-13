@@ -177,7 +177,7 @@ public class MatchActions {
             state.clearKillerSmokeBombActive();
         } else {
             distance = board.distance(centerLocationId, state.getKiller().getCurrentLocationId());
-found = distance <= GameRules.SCANNER_DETECTION_RADIUS;
+            found = distance <= GameRules.SCANNER_DETECTION_RADIUS;
         }
         state.setLastScannerResult(centerLocationId, found);
         state.addPoliceXp(xp.scannerXp(state, found, distance));

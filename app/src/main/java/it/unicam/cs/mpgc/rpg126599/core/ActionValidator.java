@@ -80,4 +80,24 @@ public class ActionValidator {
                     "Un Checkpoint della Polizia blocca quel collegamento per questo turno: scegli un altro percorso oppure usa la Shortcut Map.");
         }
     }
+
+    // il Killer non può rientrare nel proprio nascondiglio finché il Poliziotto
+    // vi si trova sopra: deve aspettare che se ne allontani, o rischiare altrove
+    public void requireHomeNotGuardedByPolice(String targetLocationId) {
+        if (targetLocationId.equals(state.getKillerHomeLocationId())
+                && targetLocationId.equals(state.getPolice().getCurrentLocationId())) {
+            throw new IllegalArgumentException(
+                    "Il Poliziotto presidia il tuo nascondiglio: non puoi rientrare finché non se ne allontana.");
+        }
+    }
+
+    // il luogo del primo omicidio deve trovarsi ad almeno minDistance caselle dal nascondiglio,
+    // così il Killer non può "svelarsi" scegliendo un punto di partenza troppo rivelatore
+    public void requireMurderLocationFarEnoughFromHome(String locationId, int minDistance) {
+        int distanceFromHome = board.distance(state.getKillerHomeLocationId(), locationId);
+        if (distanceFromHome < minDistance) {
+            throw new IllegalArgumentException(
+                    "Il luogo dell'omicidio deve essere ad almeno " + minDistance + " caselle dal nascondiglio.");
+        }
+    }
 }

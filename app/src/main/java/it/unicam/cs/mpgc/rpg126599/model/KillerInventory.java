@@ -67,10 +67,7 @@ public class KillerInventory {
         smokeBombActive = true;
     }
 
-   public void clearSmokeBombActive() {
-    smokeBombActive = false;
+    public void clearSmokeBombActive() {
+        smokeBombActive = false;
+    }
 }
-}
-    
-
-

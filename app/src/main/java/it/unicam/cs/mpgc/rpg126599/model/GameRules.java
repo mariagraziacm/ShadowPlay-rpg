@@ -3,7 +3,7 @@ package it.unicam.cs.mpgc.rpg126599.model;
 // Regole del gioco che NON dipendono dal bilanciamento del match (quelle restano in
 // MatchDifficulty, perché variano da match a match): valgono sempre, in ogni partita.
 // Centralizzarle qui evita numeri "magici" ripetuti tra GameEngine, ActionValidator,
-// MatchActions, TurnState, XpLedger e CampaignManager.
+// MatchActions, TurnState, XpLedger, CampaignManager e KillerAI.
 public final class GameRules {
 
     private GameRules() {
@@ -27,4 +27,7 @@ public final class GameRules {
 
     // Bonus Xp per chi vince la serie Best of 3 della campagna.
     public static final int SERIES_WIN_XP_BONUS = 200;
+
+    // Distanza minima richiesta tra il nascondiglio del Killer e il luogo del primo omicidio.
+    public static final int MIN_MURDER_LOCATION_DISTANCE_FROM_HOME = 3;
 }

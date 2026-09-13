@@ -75,9 +75,7 @@ public class GameEngine {
         validator.requirePhase(Turn.AWAITING_MURDER_LOCATION_CHOICE);
         validator.requireHumanRole(RoleType.KILLER);
         validator.requireExistingLocation(locationId);
-        if (locationId.equals(state.getKillerHomeLocationId())) {
-            throw new IllegalArgumentException("Il luogo dell'omicidio deve essere diverso da casa.");
-        }
+        validator.requireMurderLocationFarEnoughFromHome(locationId, GameRules.MIN_MURDER_LOCATION_DISTANCE_FROM_HOME);
         actions.applyChooseMurderLocation(locationId);
         turnPhaseManager.resolveAutomaticPhases();
     }
@@ -89,9 +87,9 @@ public class GameEngine {
         String current = state.getKiller().getCurrentLocationId();
         int distance = board.distance(current, targetLocationId);
 
-      if (distance < GameRules.KILLER_MIN_MOVE_DISTANCE || distance > GameRules.KILLER_MAX_MOVE_DISTANCE) {
-    throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
-}
+        if (distance < GameRules.KILLER_MIN_MOVE_DISTANCE || distance > GameRules.KILLER_MAX_MOVE_DISTANCE) {
+            throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
+        }
 
         String intermediate = null;
         if (distance == 2) {
@@ -103,6 +101,7 @@ public class GameEngine {
         }
 
         validator.checkMovementNotBlocked(current, targetLocationId, intermediate);
+        validator.requireHomeNotGuardedByPolice(targetLocationId);
 
         if (intermediate != null) {
             state.markKillerVisited(intermediate);
@@ -161,6 +160,7 @@ public class GameEngine {
             throw new IllegalStateException("Hai già usato la Shortcut Map in questo match.");
         }
         validator.requireExistingLocation(targetLocationId);
+        validator.requireHomeNotGuardedByPolice(targetLocationId);
         actions.applyKillerShortcutMap(targetLocationId);
         turnPhaseManager.resolveAutomaticPhases();
     }

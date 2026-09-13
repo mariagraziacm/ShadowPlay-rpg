@@ -143,13 +143,13 @@ public class CampaignManager {
         }
         currentMatchNumber++;
 
-if (isSeriesOver()) {
-    if (matchWinner == RoleType.KILLER) {
-        killerXp += GameRules.SERIES_WIN_XP_BONUS;
-    } else {
-        policeXp += GameRules.SERIES_WIN_XP_BONUS;
-    }
-}
+        if (isSeriesOver()) {
+            if (matchWinner == RoleType.KILLER) {
+                killerXp += GameRules.SERIES_WIN_XP_BONUS;
+            } else {
+                policeXp += GameRules.SERIES_WIN_XP_BONUS;
+            }
+        }
 
         if (currentEngine != null) {
             currentEngine.getState().setCampaignProgress(currentMatchNumber, killerWins, policeWins, killerXp, policeXp);
