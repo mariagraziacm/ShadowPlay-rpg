@@ -17,7 +17,7 @@ public class TurnState {
     private boolean killerHasLeftHome;
 
     private int roundsElapsed;
-    private int maxRounds = 10;
+    private int maxRounds = GameRules.MAX_ROUNDS;
 
     private int killerMovesMade;
     private int policeMovesMade;

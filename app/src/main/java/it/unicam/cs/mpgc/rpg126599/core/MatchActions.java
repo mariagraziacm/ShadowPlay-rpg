@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.model.GameRules;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
@@ -176,7 +177,7 @@ public class MatchActions {
             state.clearKillerSmokeBombActive();
         } else {
             distance = board.distance(centerLocationId, state.getKiller().getCurrentLocationId());
-            found = distance <= 2;
+found = distance <= GameRules.SCANNER_DETECTION_RADIUS;
         }
         state.setLastScannerResult(centerLocationId, found);
         state.addPoliceXp(xp.scannerXp(state, found, distance));

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.model.GameRules;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.MatchDifficulty;
 import it.unicam.cs.mpgc.rpg126599.model.Player;
@@ -142,13 +143,13 @@ public class CampaignManager {
         }
         currentMatchNumber++;
 
-        if (isSeriesOver()) {
-            if (matchWinner == RoleType.KILLER) {
-                killerXp += 200;
-            } else {
-                policeXp += 200;
-            }
-        }
+if (isSeriesOver()) {
+    if (matchWinner == RoleType.KILLER) {
+        killerXp += GameRules.SERIES_WIN_XP_BONUS;
+    } else {
+        policeXp += GameRules.SERIES_WIN_XP_BONUS;
+    }
+}
 
         if (currentEngine != null) {
             currentEngine.getState().setCampaignProgress(currentMatchNumber, killerWins, policeWins, killerXp, policeXp);

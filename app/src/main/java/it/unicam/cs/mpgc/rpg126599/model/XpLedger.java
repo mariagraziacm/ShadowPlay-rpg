@@ -8,7 +8,7 @@ public class XpLedger {
     private int policeXpThisMatch;
     private int lastDeltaForKiller;
     private int lastDeltaForPolice;
-    private int policeScore = 100;
+    private int policeScore = GameRules.INITIAL_POLICE_SCORE;
 
     public int getKillerXpThisMatch() {
         return killerXpThisMatch;

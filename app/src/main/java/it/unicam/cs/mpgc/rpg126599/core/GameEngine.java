@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg126599.core;
 import java.util.Random;
 
 import it.unicam.cs.mpgc.rpg126599.model.Board;
+import it.unicam.cs.mpgc.rpg126599.model.GameRules;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 import it.unicam.cs.mpgc.rpg126599.model.MatchDifficulty;
@@ -88,9 +89,9 @@ public class GameEngine {
         String current = state.getKiller().getCurrentLocationId();
         int distance = board.distance(current, targetLocationId);
 
-        if (distance != 1 && distance != 2) {
-            throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
-        }
+      if (distance < GameRules.KILLER_MIN_MOVE_DISTANCE || distance > GameRules.KILLER_MAX_MOVE_DISTANCE) {
+    throw new IllegalArgumentException("Puoi spostarti solo di 1 o 2 caselle.");
+}
 
         String intermediate = null;
         if (distance == 2) {
@@ -189,7 +190,7 @@ public class GameEngine {
     public void policeAttemptArrest(String targetLocationId) {
         validator.requirePhase(Turn.AWAITING_POLICE_ACTION);
         validator.requireHumanRole(RoleType.POLICE);
-        validator.requireWithinDistance(state.getPolice().getCurrentLocationId(), targetLocationId, 3);
+        validator.requireWithinDistance(state.getPolice().getCurrentLocationId(), targetLocationId, GameRules.ARREST_MAX_DISTANCE);
         validator.requireNotAlreadySearched(targetLocationId);
 
         actions.applyPoliceArrestAttempt(targetLocationId);
