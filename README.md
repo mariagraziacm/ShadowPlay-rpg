@@ -55,6 +55,7 @@ Successivamente sceglie il luogo del **primo omicidio**, che rappresenta il punt
 Durante il proprio turno il Killer può spostarsi di **una o due caselle adiacenti** scegliendo il percorso migliore per depistare il Poliziotto e cercare di raggiungere il proprio nascondiglio senza essere catturato.
 
 Se il Poliziotto si trova fisicamente sulla casella del nascondiglio, il Killer non può rientrarvi in quel momento: deve aspettare che la Polizia si sposti,  oppure rischiare altre mosse sulla mappa.
+
 ---
 
 ### Indizi falsi del Killer
