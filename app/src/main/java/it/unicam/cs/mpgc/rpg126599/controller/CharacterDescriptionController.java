@@ -35,7 +35,7 @@ public class CharacterDescriptionController {
                 "Abilità: depistaggio con falsi indizi, coperture e alibi di ferro, " +
                 "creazione di tranelli strategici ed evasione rapida dai controlli.\n\n" +
                 "Inventario: Indizio Falso, Smoke Bomb, Trap Kit e Shortcut Map.\n\n" +
-                "Tratti iniziali: Manipolatore o Calcolatore; al livello 3 sblocca Sangue Freddo o Ombra Urbana."
+                "Tratti iniziali: Manipolatore o Calcolatore; al livello 2 sblocca Sangue Freddo o Ombra Urbana."
             );
         } else {
             descriptionArea.setText(
@@ -47,7 +47,7 @@ public class CharacterDescriptionController {
                 "Abilità: analisi degli indizi, controllo del territorio tramite " +
                 "blocchi stradali e checkpoint mobili, letture rapide dell'area con lo Scanner.\n\n" +
                 "Inventario: Indizio, Roadblock, Checkpoint e Scanner.\n\n" +
-                "Tratti iniziali: Deduttivo o Pressione Tattica; al livello 3 sblocca Metodico o Comando Operativo."
+                "Tratti iniziali: Deduttivo o Pressione Tattica; al livello 2 sblocca Metodico o Comando Operativo."
             );
         }
     }
