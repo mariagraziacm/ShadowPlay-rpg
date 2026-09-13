@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-//  fase di gioco, round trascorsi, casa del Killer,  tracce di ciò che è già stato visitato/tentato nel match
+//  fase di gioco, round trascorsi, casa del Killer,  tracce di ciò che è già stato visitatonel match
 public class TurnState {
 
     private Turn phase = Turn.AWAITING_HOME_CHOICE;

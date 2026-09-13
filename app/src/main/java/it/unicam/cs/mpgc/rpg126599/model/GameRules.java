@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Regole del gioco che NON dipendono dal bilanciamento del match 
+// regole del gioco che non dipendono dal bilanciamento del match 
 public final class GameRules {
 
     private GameRules() {

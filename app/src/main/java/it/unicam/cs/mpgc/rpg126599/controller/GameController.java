@@ -71,7 +71,7 @@ public class GameController {
         refreshView();
     }
 
-    // avvio di un match all'interno della campagna 
+    // avvio di un match 
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
         this.engine = campaign.getCurrentEngine();
@@ -138,8 +138,8 @@ public class GameController {
                 GameState state = engine.getState();
                 int xpDelta = state.getLastXpDelta(RoleType.POLICE);
                 String scannerMessage = state.isLastScannerFoundKiller()
-                        ? "📡 Killer rilevato nell'area! +" + xpDelta + " XP"
-                        : "📡 Nessun killer rilevato nell'area. +" + xpDelta + " XP";
+                        ? "⛶ Killer rilevato nell'area! +" + xpDelta + " XP"
+                        : "⛶ Nessun killer rilevato nell'area. +" + xpDelta + " XP";
                 showTemporaryFeedback(scannerMessage, Duration.seconds(5.5));
                 scheduleScannerClear();
             }
@@ -331,7 +331,7 @@ public class GameController {
     private void refreshView() {
         GameState state = engine.getState();
 
-        // se siamo dentro una campagna e il match è appena finito: registra il risultato
+        // se in una campagna il match è finito registra il risultato
     
         if (state.isFinished() && campaign != null && !matchResultRecorded) {
             matchResultRecorded = true;
@@ -402,8 +402,8 @@ public class GameController {
         setVisibleAndManaged(inventoryLabel, showScannerInfo);
         if (showScannerInfo) {
             inventoryLabel.setText(state.isLastScannerFoundKiller()
-                    ? "📡 Ultimo Scanner: Killer rilevato nell'area!"
-                    : "📡 Ultimo Scanner: nessuna traccia del Killer");
+                    ? "⛶ Ultimo Scanner: Killer rilevato nell'area!"
+                    : "⛶ Ultimo Scanner: nessuna traccia del Killer");
         }
     }
 

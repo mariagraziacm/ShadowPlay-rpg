@@ -7,7 +7,7 @@ import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Trait;
 
-// formule di ricompensa/penalità Xp del match.
+// formule di ricompensa/penalità Xp
 
 public class XpCalculator {
 

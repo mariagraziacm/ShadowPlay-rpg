@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Bilanciamento dei 3 match della campagna Best of 3.
+// Bilanciamento dei 3 match della campagna
 
 public enum MatchDifficulty {
 

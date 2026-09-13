@@ -7,7 +7,7 @@ import it.unicam.cs.mpgc.rpg126599.model.GameRules;
 import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.Location;
 
-//  decidere le mosse del Killer quando è il ruolo automatico
+//  decide le mosse del Killer quando è il ruolo automatico
 
 public class KillerAI {
 

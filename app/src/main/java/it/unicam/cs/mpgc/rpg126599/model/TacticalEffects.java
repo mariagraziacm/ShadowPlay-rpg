@@ -15,7 +15,7 @@ public class TacticalEffects {
     private String lastScannerCenterId;
     private boolean lastScannerFoundKiller;
 
-    // ---- Trap Zone (Killer) ----
+
 
     public String getActiveTrapZoneLocationId() {
         return activeTrapZoneLocationId;
@@ -37,7 +37,6 @@ public class TacticalEffects {
         this.policeStunnedNextTurn = value;
     }
 
-    // ---- Roadblock (Polizia) ----
 
     public String getActiveRoadblockLocationId() {
         return activeRoadblockLocationId;
@@ -51,7 +50,6 @@ public class TacticalEffects {
         this.activeRoadblockLocationId = null;
     }
 
-    // ---- Checkpoint Token (Polizia) ----
 
     public String getActiveCheckpointFromId() {
         return activeCheckpointFromId;
@@ -79,7 +77,6 @@ public class TacticalEffects {
                 || (activeCheckpointFromId.equals(b) && activeCheckpointToId.equals(a));
     }
 
-    // ---- Scanner ----
 
     public void setLastScannerResult(String centerId, boolean found) {
         this.lastScannerCenterId = centerId;

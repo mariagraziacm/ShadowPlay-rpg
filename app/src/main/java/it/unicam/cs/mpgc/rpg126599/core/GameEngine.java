@@ -203,7 +203,7 @@ public class GameEngine {
         turnPhaseManager.resolveAutomaticPhases();
     }
 
-    // Checkpoint: blocca un singolo collegamento vicino alla propria posizione
+    // checkpoint: blocca un singolo collegamento vicino alla propria posizione
     public void policeUseCheckpoint(String fromId, String toId) {
         validator.requirePhase(Turn.AWAITING_POLICE_ACTION);
         validator.requireHumanRole(RoleType.POLICE);

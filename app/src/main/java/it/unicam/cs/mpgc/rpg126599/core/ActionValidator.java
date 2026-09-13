@@ -89,7 +89,7 @@ public class ActionValidator {
         }
     }
 
-    // luogo del primo omicidio deve trovarsi ad almeno a un tot di  caselle di distanza dal nascondiglio,
+    // luogo del primo omicidio deve trovarsi ad almeno a un tot di  caselle di distanza dal nascondiglio
     
     public void requireMurderLocationFarEnoughFromHome(String locationId, int minDistance) {
         int distanceFromHome = board.distance(state.getKillerHomeLocationId(), locationId);

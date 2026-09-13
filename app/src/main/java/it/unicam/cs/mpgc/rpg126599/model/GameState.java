@@ -32,7 +32,7 @@ public class GameState {
         applyDifficulty(difficulty);
     }
 
-    // applica il bilanciamento di un match della campagna, azzerando gli oggetti "una tantum"
+    
     public void applyDifficulty(MatchDifficulty difficulty) {
         campaign.setDifficulty(difficulty);
         killerInventory.reset(difficulty);

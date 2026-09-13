@@ -78,8 +78,8 @@ public class GameActionPanelView {
         refreshCountedButton(trapKitButton, "⌖ Trap Kit", state.getKillerTrapKitsRemaining());
         shortcutMapButton.setDisable(state.isKillerShortcutMapUsed());
         shortcutMapButton.setText(state.isKillerShortcutMapUsed()
-                ? "🗺️ Shortcut Map\n(usata)"
-                : "🗺️ Shortcut Map\n(1)");
+                ? "🌐︎ Shortcut Map\n(usata)"
+                : "🌐︎ Shortcut Map\n(1)");
 
         setVisibleAndManaged(policeInventoryRow, isPoliceTurn);
         refreshCountedButton(roadblockButton, "❯❯❯❯❯ Roadblock", state.getPoliceRoadblocksRemaining());
