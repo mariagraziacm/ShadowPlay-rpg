@@ -14,8 +14,7 @@ import java.util.List;
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
-// Schermata di fine match: mostra l'immagine del vincitore (killer.png / police.png),
-// gli XP accumulati e propone di proseguire la campagna oppure tornare al menu
+// fine match: mostra l'immagine del vincitore (killer.png / police.png), gli XP accumulati è possibile   proseguire la campagna o tornare al menu
 public class MatchResultController {
 
     @FXML private ImageView backgroundImage;
@@ -49,14 +48,11 @@ public class MatchResultController {
             continueButton.setText("Prossimo match");
         }
 
-        xpLabel.setText(String.format("⭐ XP Killer: %d    ⭐ XP Poliziotto: %d",
-                campaign.getKillerXp(), campaign.getPoliceXp()));
+        xpLabel.setText(String.format("★ +%d XP Killer: %d    ★ +%d XP Poliziotto: %d",
+                campaign.getKillerXp(), campaign.getKillerXp(), campaign.getPoliceXp(), campaign.getPoliceXp()));
     }
 
-    // Carica l'immagine corretta cercandola prima nel classpath e poi sul filesystem.
-    // Nota: i vecchi System.out/System.err di debug sono stati rimossi (non
-    // vanno mai usati in codice di produzione: se serve tracciare il percorso
-    // usato, va introdotto un logger vero, es. java.util.logging o SLF4J).
+
     private Image loadWinnerImage(RoleType winner) {
         String fileName = winner == RoleType.KILLER ? "killer.png" : "police.png";
 

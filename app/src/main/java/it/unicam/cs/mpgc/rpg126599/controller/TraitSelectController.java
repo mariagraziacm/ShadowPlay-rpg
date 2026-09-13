@@ -27,7 +27,7 @@ public class TraitSelectController {
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
 
-        traitGroup.selectToggle(null); // reset di eventuale selezione residua
+        traitGroup.selectToggle(null); 
         confirmButton.setDisable(true);
         traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
                 confirmButton.setDisable(newVal == null));
@@ -35,7 +35,7 @@ public class TraitSelectController {
         int level = campaign.getCurrentLevel();
         titleLabel.setText(level == 1
                 ? "Scegli il tuo tratto iniziale"
-                : "Nuovo tratto sbloccato al livello 3: scegline uno");
+                : "Nuovo tratto sbloccato: scegline uno");
 
         if (campaign.getHumanRole() == RoleType.KILLER) {
             traitForButton1 = level == 1 ? Trait.MANIPOLATORE : Trait.SANGUE_FREDDO;
@@ -58,12 +58,12 @@ public class TraitSelectController {
 
         Trait chosenTrait = (selected == traitButton1) ? traitForButton1 : traitForButton2;
         campaign.addHumanTrait(chosenTrait);
-        campaign.startCurrentMatch(); // <-- fondamentale: crea davvero l'engine del match
+        campaign.startCurrentMatch(); 
 
         try {
             NavigationService.LoadedScreen<GameController> screen =
                     NavigationService.load(getClass(), "/fxml/gameview.fxml");
-            screen.controller.init(campaign); // <-- fondamentale: senza questa riga la mappa resta morta
+            screen.controller.init(campaign); 
             NavigationService.show(confirmButton, screen.root);
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile avviare la partita", e);

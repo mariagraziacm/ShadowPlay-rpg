@@ -9,20 +9,6 @@ import it.unicam.cs.mpgc.rpg126599.model.GameState;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 
-/**
- * Responsabilità unica: riflettere lo stato di gioco (GameState) sui controlli
- * del pannello comandi/inventario.
- *
- * Prima questa logica — circa 90 righe fatte quasi solo di setVisible/setManaged
- * /setText/setDisable ripetuti — viveva dentro GameController, che nello stesso
- * momento doveva occuparsi anche di leggere l'input, navigare tra le schermate
- * e gestire i messaggi temporanei: troppe ragioni per cambiare in un'unica
- * classe. Qui diventa una classe a parte, e in più testabile senza aprire una
- * finestra JavaFX vera (basta passare dei Button/Label costruiti a mano).
- *
- * I riferimenti @FXML restano dentro GameController (è l'unico modo in cui
- * JavaFX può iniettarli): questa classe li riceve già pronti nel costruttore.
- */
 public class GameActionPanelView {
 
     private final Label commandsHeaderLabel;
@@ -88,21 +74,20 @@ public class GameActionPanelView {
         fakeClueButton.setText("Indizio falso (" + state.getKillerFakeCluesRemaining() + ")");
 
         setVisibleAndManaged(killerInventoryRow, isKillerTurn);
-        refreshCountedButton(smokeBombButton, "💨 Smoke Bomb", state.getKillerSmokeBombsRemaining());
-        refreshCountedButton(trapKitButton, "🪤 Trap Kit", state.getKillerTrapKitsRemaining());
+        refreshCountedButton(smokeBombButton, "✸ Smoke Bomb", state.getKillerSmokeBombsRemaining());
+        refreshCountedButton(trapKitButton, "⌖ Trap Kit", state.getKillerTrapKitsRemaining());
         shortcutMapButton.setDisable(state.isKillerShortcutMapUsed());
         shortcutMapButton.setText(state.isKillerShortcutMapUsed()
                 ? "🗺️ Shortcut Map\n(usata)"
                 : "🗺️ Shortcut Map\n(1)");
 
         setVisibleAndManaged(policeInventoryRow, isPoliceTurn);
-        refreshCountedButton(roadblockButton, "🚧 Roadblock", state.getPoliceRoadblocksRemaining());
-        refreshCountedButton(checkpointButton, "⛔ Checkpoint", state.getPoliceCheckpointTokensRemaining());
-        refreshCountedButton(scannerButton, "📡 Scanner", state.getPoliceScannerRemaining());
+        refreshCountedButton(roadblockButton, "❯❯❯❯❯ Roadblock", state.getPoliceRoadblocksRemaining());
+        refreshCountedButton(checkpointButton, "⦸ Checkpoint", state.getPoliceCheckpointTokensRemaining());
+        refreshCountedButton(scannerButton, "⛶ Scanner", state.getPoliceScannerRemaining());
     }
 
-    // fattorizza lo schema comune a smoke bomb / trap kit / roadblock / checkpoint / scanner:
-    // "disabilita se esaurito, mostra l'etichetta con il conteggio residuo"
+
     private void refreshCountedButton(Button button, String label, int remaining) {
         button.setDisable(remaining <= 0);
         button.setText(label + "\n(" + remaining + ")");

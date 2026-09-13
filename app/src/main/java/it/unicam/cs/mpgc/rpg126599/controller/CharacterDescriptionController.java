@@ -3,9 +3,7 @@ package it.unicam.cs.mpgc.rpg126599.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-
 import java.io.IOException;
-
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
@@ -24,7 +22,6 @@ public class CharacterDescriptionController {
             throw new IllegalStateException("L'elemento 'descriptionArea' non è stato iniettato da FXML. Verifica il file .fxml.");
         }
 
-        // Impedisce all'utente di modificare il testo descrittivo a schermo
         descriptionArea.setEditable(false);
 
         RoleType role = campaign.getHumanRole();

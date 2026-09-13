@@ -18,22 +18,7 @@ import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 import it.unicam.cs.mpgc.rpg126599.model.Turn;
 import it.unicam.cs.mpgc.rpg126599.persistence.GameJsonStorage;
 
-/**
- * Responsabilità unica: tradurre l'input dell'utente in chiamate a GameEngine
- * e richiedere il refresh della vista dopo ogni azione.
- *
- * Prima questa classe (549 righe) era una God Class che faceva anche da:
- *  - gestore di visibilità/testo di ogni singolo pulsante del pannello
- *    (spostato in GameActionPanelView);
- *  - gestore di navigazione tra schermate, con FXMLLoader/Stage/Scene
- *    duplicati (spostato in NavigationService);
- *  - un controllo "il gioco è finito?" ripetuto identico in nove metodi
- *    diversi (ora centralizzato in ensureGameOngoing()/runGuardedAction()).
- *
- * Quello che resta qui è davvero solo controller-logic: leggere il click,
- * decidere quale azione dell'engine invocare, e chiedere alla vista di
- * aggiornarsi.
- */
+
 public class GameController {
 
     private enum PendingAction {
@@ -78,7 +63,6 @@ public class GameController {
                 roadblockButton, checkpointButton, scannerButton);
     }
 
-    // retrocompatibilità: partita singola senza campagna (es. "Carica partita salvata")
     public void init(GameEngine engine) {
         this.engine = engine;
         this.campaign = null;
@@ -87,7 +71,7 @@ public class GameController {
         refreshView();
     }
 
-    // avvio di un match all'interno della campagna Best of 3
+    // avvio di un match all'interno della campagna 
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
         this.engine = campaign.getCurrentEngine();
@@ -127,13 +111,13 @@ public class GameController {
         switch (pendingAction) {
             case MOVE -> {
                 engine.killerMove(locationId);
-                showTemporaryFeedback("⭐ +" + lastXp(RoleType.KILLER) + " XP", Duration.seconds(4.5));
+                showTemporaryFeedback("★ +" + lastXp(RoleType.KILLER) + " XP", Duration.seconds(4.5));
             }
             case FAKE_CLUE -> engine.killerLeaveFakeClue(locationId);
             case TRAP_KIT -> engine.killerPlaceTrap(locationId);
             case SHORTCUT_MOVE -> {
                 engine.killerUseShortcutMap(locationId);
-                showTemporaryFeedback("⭐ +" + lastXp(RoleType.KILLER) + " XP", Duration.seconds(4.5));
+                showTemporaryFeedback("★ +" + lastXp(RoleType.KILLER) + " XP", Duration.seconds(4.5));
             }
             default -> throw new IllegalStateException("Scegli prima un'azione dal pannello comandi.");
         }
@@ -143,7 +127,7 @@ public class GameController {
         switch (pendingAction) {
             case MOVE -> {
                 engine.policeMoveTo(locationId);
-                showTemporaryFeedback("⭐ +" + lastXp(RoleType.POLICE) + " XP", Duration.seconds(4.5));
+                showTemporaryFeedback("★ +" + lastXp(RoleType.POLICE) + " XP", Duration.seconds(4.5));
             }
             case ARREST -> engine.policeAttemptArrest(locationId);
             case ROADBLOCK -> engine.policePlaceRoadblock(locationId);
@@ -277,9 +261,6 @@ public class GameController {
         }
     }
 
-    // Esegue un'azione che non richiede la selezione di una casella sulla mappa
-    // (es. usare un indizio o uno Smoke Bomb): evita di ripetere in ogni handler
-    // il controllo "partita finita?" e la gestione dell'eccezione.
     private void runGuardedAction(Runnable action) {
         if (!ensureGameOngoing()) return;
         try {
@@ -338,7 +319,6 @@ public class GameController {
         });
     }
 
-    // fattorizza lo start/stop del PauseTransition, comune a showTemporaryFeedback e scheduleScannerClear
     private void restartTimer(Duration duration, Runnable onFinished) {
         if (temporaryMessageTimer != null) {
             temporaryMessageTimer.stop();
@@ -352,7 +332,7 @@ public class GameController {
         GameState state = engine.getState();
 
         // se siamo dentro una campagna e il match è appena finito: registra il risultato
-        // (con relativi XP) e passa subito alla schermata con l'immagine del vincitore
+    
         if (state.isFinished() && campaign != null && !matchResultRecorded) {
             matchResultRecorded = true;
             RoleType winner = state.getWinner();
@@ -389,7 +369,7 @@ public class GameController {
             state.getFailedArrestLocations().forEach(id -> mapController.setInteractable(id, false));
         }
 
-        // a partita finita (es. partita singola senza campagna): mappa completamente non cliccabile
+        // se lla partita è finita  la mappa risulta completamente non cliccabile
         if (state.isFinished()) {
             engine.getBoard().all().forEach(loc -> mapController.setInteractable(loc.getId(), false));
         }
@@ -407,7 +387,7 @@ public class GameController {
         }
     }
 
-    // mostra info extra solo quando serve (es. esito dell'ultimo Scanner): niente doppioni con le tessere
+
     private void updateInventoryLabel(GameState state) {
         if (state.isFinished()) {
             setVisibleAndManaged(inventoryLabel, false);

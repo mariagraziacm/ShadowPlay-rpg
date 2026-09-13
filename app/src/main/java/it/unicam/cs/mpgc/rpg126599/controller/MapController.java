@@ -75,7 +75,7 @@ public class MapController {
             circle.pseudoClassStateChanged(HOME, false);
         });
     }
-// colorare i nodi della mappa in base a ruoli e stati
+// colora i nodi della mappa in base a ruoli e stati
     public void markPolice(String locationId) {
         setState(locationId, POLICE);
     }

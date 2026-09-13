@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Tratti RPG: caratterizzano lo stile di interpretazione del ruolo.
-// Ogni ruolo ha 2 tratti scelti alla creazione (livello 1) e 2 sbloccati al terzo match (livello 3).
+// Ogni ruolo ha 2 tratti scelti alla creazione (livello 1) e 2 sbloccati al secondo match (livello 2).
 public enum Trait {
 
     MANIPOLATORE(RoleType.KILLER, "Manipolatore",
@@ -12,18 +12,18 @@ public enum Trait {
     CALCOLATORE(RoleType.KILLER, "Calcolatore",
             "Premia il timing: agire nei momenti chiave della partita ti dà un vantaggio.", 1, 5),
     SANGUE_FREDDO(RoleType.KILLER, "Sangue Freddo",
-            "Valorizza l'errore avversario: ogni arresto sbagliato della Polizia ti frutta una Smoke Bomb extra.", 3, 7),
+            "Valorizza l'errore avversario: ogni arresto sbagliato della Polizia ti frutta una Smoke Bomb extra.", 2, 7),
     OMBRA_URBANA(RoleType.KILLER, "Ombra Urbana",
-            "Offre elasticità contro il controllo mappa: sei più difficile da bloccare.", 3, 6),
+            "Offre elasticità contro il controllo mappa: sei più difficile da bloccare.", 2, 6),
 
     DEDUTTIVO(RoleType.POLICE, "Deduttivo",
             "Premia la continuità investigativa: i tuoi indizi restringono il campo con più efficacia.", 1, 4),
     PRESSIONE_TATTICA(RoleType.POLICE, "Pressione Tattica",
             "Premia gli arresti corretti: la sicurezza nel colpire nel segno è la tua forza.", 1, 5),
     METODICO(RoleType.POLICE, "Metodico",
-            "Rafforza la preparazione iniziale: ti muovi sulla mappa con più metodo fin dal primo turno.", 3, 6),
+            "Rafforza la preparazione iniziale: ti muovi sulla mappa con più metodo fin dal primo turno.", 2, 6),
     COMANDO_OPERATIVO(RoleType.POLICE, "Comando Operativo",
-            "Potenzia il controllo territoriale nei momenti chiave della partita.", 3, 7);
+            "Potenzia il controllo territoriale nei momenti chiave della partita.", 2, 7);
 
     private final RoleType role;
     private final String displayName;

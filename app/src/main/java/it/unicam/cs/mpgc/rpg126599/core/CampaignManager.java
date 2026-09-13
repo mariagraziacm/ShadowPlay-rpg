@@ -85,8 +85,12 @@ public class CampaignManager {
         return policeXp;
     }
 
+    // sblocco del secondo tratto: si gioca sempre almeno un match 1 e un match 2
+    // in ogni campagna Best of 3 (il match 3 esiste solo se la serie è 1-1),
+    // quindi ancorare lo sblocco al match 2 garantisce che avvenga sempre,
+    // anche se la serie si chiude 2-0 dopo il secondo match.
     public boolean isSecondTraitUnlockPending() {
-        return currentMatchNumber == 3 && humanTraits.size() < 2;
+        return currentMatchNumber == 2 && humanTraits.size() < 2;
     }
 
     public void addHumanTrait(Trait trait) {

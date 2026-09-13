@@ -71,9 +71,6 @@ public class RoleSelectController {
         }
     }
 
-    // Entrare in partita (nuova campagna o "Carica partita salvata") è l'unico
-    // punto in cui serve garantire una dimensione minima: usa showGameScreen
-    // invece di show, esattamente come nella versione precedente al refactoring.
     private void openGameScreen(java.util.function.Consumer<GameController> initializer) {
         try {
             NavigationService.LoadedScreen<GameController> screen =
