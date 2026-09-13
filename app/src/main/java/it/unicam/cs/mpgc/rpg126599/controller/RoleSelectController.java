@@ -1,12 +1,8 @@
 package it.unicam.cs.mpgc.rpg126599.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,7 +25,6 @@ public class RoleSelectController {
 
     private final GameJsonStorage storage = new GameJsonStorage();
 
-    // scegliendo un ruolo si avvia una nuova campagna 
     @FXML
     private void onChooseKiller() {
         Board board = BoardLoader.loadFromResource("/rounds/maps.json");
@@ -44,7 +39,6 @@ public class RoleSelectController {
         openCharacterDescription(campaign);
     }
 
-    // il caricamento di un salvataggio resta una partita singola, fuori dalla campagna
     @FXML
     private void onLoadGame() {
         try {
@@ -52,77 +46,40 @@ public class RoleSelectController {
             GameState savedState = storage.load(Path.of("Persistence.json"));
             if (savedState.isCampaignInProgress()) {
                 CampaignManager campaign = CampaignManager.resume(board, savedState);
-                openGameScreen(campaign);
+                openGameScreen(controller -> controller.init(campaign));
             } else {
                 GameEngine engine = GameEngine.resume(board, savedState);
-                openGameScreen(engine);
+                openGameScreen(controller -> controller.init(engine));
             }
         } catch (IOException e) {
             messageLabel.setText("Nessun salvataggio valido trovato (Persistence.json).");
         }
     }
 
- private void openCharacterDescription(CampaignManager campaign) {
-    try {
-        String fxmlPath = campaign.getHumanRole() == RoleType.KILLER
-                ? "/fxml/killer.fxml"
-                : "/fxml/police.fxml";
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent root = loader.load();
-
-        CharacterDescriptionController controller = loader.getController();
-        controller.init(campaign);
-
-        Stage stage = (Stage) killerButton.getScene().getWindow();
-        double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
-        double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
-        stage.setScene(new Scene(root, width, height));
-        stage.setTitle("SHADOW PLAY");
-    } catch (IOException e) {
-        throw new IllegalStateException("Impossibile aprire la schermata del personaggio", e);
-    }
-}
-
-    private void openGameScreen(GameEngine engine) {
+    private void openCharacterDescription(CampaignManager campaign) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
-            Parent root = loader.load();
+            String fxmlPath = campaign.getHumanRole() == RoleType.KILLER
+                    ? "/fxml/killer.fxml"
+                    : "/fxml/police.fxml";
 
-            GameController gameController = loader.getController();
-            gameController.init(engine);
-
-            Stage stage = (Stage) killerButton.getScene().getWindow();
-            double width = Math.max(1280, stage.getWidth() > 0 ? stage.getWidth() : 1320);
-            double height = Math.max(720, stage.getHeight() > 0 ? stage.getHeight() : 732);
-            stage.setMinWidth(1100);
-            stage.setMinHeight(650);
-            stage.setWidth(width);
-            stage.setHeight(height);
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("SHADOWPLAY");
+            NavigationService.LoadedScreen<CharacterDescriptionController> screen =
+                    NavigationService.load(getClass(), fxmlPath);
+            screen.controller.init(campaign);
+            NavigationService.show(killerButton, screen.root);
         } catch (IOException e) {
-            throw new IllegalStateException("Impossibile aprire la schermata di gioco", e);
+            throw new IllegalStateException("Impossibile aprire la schermata del personaggio", e);
         }
     }
 
-    private void openGameScreen(CampaignManager campaign) {
+    // Entrare in partita (nuova campagna o "Carica partita salvata") è l'unico
+    // punto in cui serve garantire una dimensione minima: usa showGameScreen
+    // invece di show, esattamente come nella versione precedente al refactoring.
+    private void openGameScreen(java.util.function.Consumer<GameController> initializer) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
-            Parent root = loader.load();
-
-            GameController gameController = loader.getController();
-            gameController.init(campaign);
-
-            Stage stage = (Stage) killerButton.getScene().getWindow();
-            double width = Math.max(1280, stage.getWidth() > 0 ? stage.getWidth() : 1280);
-            double height = Math.max(720, stage.getHeight() > 0 ? stage.getHeight() : 720);
-            stage.setMinWidth(1100);
-            stage.setMinHeight(650);
-            stage.setWidth(width);
-            stage.setHeight(height);
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("SHADOWPLAY");
+            NavigationService.LoadedScreen<GameController> screen =
+                    NavigationService.load(getClass(), "/fxml/gameview.fxml");
+            initializer.accept(screen.controller);
+            NavigationService.showGameScreen(killerButton, screen.root);
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile aprire la schermata di gioco", e);
         }

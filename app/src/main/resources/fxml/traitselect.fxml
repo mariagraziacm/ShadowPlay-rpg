@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 
 <AnchorPane fx:id="rootPane" prefHeight="561.0" prefWidth="724.0" stylesheets="@../style/traitselect.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.TraitSelectController">
    <children>
@@ -14,10 +15,14 @@
          <ToggleGroup fx:id="traitGroup" />
       </fx:define>
 
-      <ToggleButton fx:id="traitButton1" prefHeight="299.0" prefWidth="300.0" styleClass="trait-card-button" text="Tratto 1" toggleGroup="$traitGroup" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="120.0" AnchorPane.bottomAnchor="100.0" />
-      
-      <ToggleButton fx:id="traitButton2" prefHeight="299.0" prefWidth="300.0" styleClass="trait-card-button" text="Tratto 2" toggleGroup="$traitGroup" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0" AnchorPane.bottomAnchor="100.0" />
+      <!-- HBox contenitore per i due bottoni dei tratti -->
+      <HBox alignment="CENTER" spacing="40.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <ToggleButton fx:id="traitButton1" maxHeight="1.5978359409835056E308" maxWidth="1.5978359409835056E308" styleClass="trait-card-button" text="Tratto 1" toggleGroup="$traitGroup" HBox.hgrow="ALWAYS" />
+            <ToggleButton fx:id="traitButton2" maxHeight="1.5978359409835056E308" maxWidth="1.5978359409835056E308" styleClass="trait-card-button" text="Tratto 2" toggleGroup="$traitGroup" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
 
-      <Button fx:id="confirmButton" onAction="#onConfirm" prefHeight="42.0" prefWidth="260.0" text="Conferma e inizia il match" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" AnchorPane.bottomAnchor="28.0" />
+      <Button fx:id="confirmButton" onAction="#onConfirm" prefHeight="42.0" prefWidth="260.0" text="Conferma e inizia il match" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" />
    </children>
 </AnchorPane>

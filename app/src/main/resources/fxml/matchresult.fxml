@@ -10,8 +10,12 @@
 
 <AnchorPane fx:id="rootPane" prefHeight="560.0" prefWidth="900.0" stylesheets="@../style/matchresult.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.MatchResultController">
    <children>
-      <ImageView fx:id="backgroundImage" preserveRatio="false" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-      
+      <ImageView fx:id="backgroundImage" 
+           preserveRatio="true" 
+           AnchorPane.bottomAnchor="0.0" 
+           AnchorPane.leftAnchor="0.0" 
+           AnchorPane.rightAnchor="0.0" 
+           AnchorPane.topAnchor="0.0" />
       <VBox alignment="BOTTOM_CENTER" spacing="14.0" styleClass="result-overlay" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <padding>
             <Insets bottom="48.0" left="40.0" right="40.0" top="20.0" />

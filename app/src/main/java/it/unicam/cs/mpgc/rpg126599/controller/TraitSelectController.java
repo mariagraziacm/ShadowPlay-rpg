@@ -1,15 +1,10 @@
 package it.unicam.cs.mpgc.rpg126599.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -19,7 +14,6 @@ import it.unicam.cs.mpgc.rpg126599.model.Trait;
 
 public class TraitSelectController {
 
-    @FXML private AnchorPane rootPane;
     @FXML private Label titleLabel;
     @FXML private Button confirmButton;
     @FXML private ToggleButton traitButton1;
@@ -33,14 +27,7 @@ public class TraitSelectController {
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
 
-        if (rootPane != null && traitButton1 != null && traitButton2 != null) {
-            traitButton1.prefWidthProperty().bind(rootPane.widthProperty().multiply(0.38));
-            traitButton2.prefWidthProperty().bind(rootPane.widthProperty().multiply(0.38));
-            traitButton1.prefHeightProperty().bind(rootPane.heightProperty().multiply(0.52));
-            traitButton2.prefHeightProperty().bind(rootPane.heightProperty().multiply(0.52));
-        }
-
-        traitGroup.selectToggle(null);
+        traitGroup.selectToggle(null); // reset di eventuale selezione residua
         confirmButton.setDisable(true);
         traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
                 confirmButton.setDisable(newVal == null));
@@ -71,20 +58,13 @@ public class TraitSelectController {
 
         Trait chosenTrait = (selected == traitButton1) ? traitForButton1 : traitForButton2;
         campaign.addHumanTrait(chosenTrait);
-        campaign.startCurrentMatch();
+        campaign.startCurrentMatch(); // <-- fondamentale: crea davvero l'engine del match
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
-            Parent root = loader.load();
-
-            GameController controller = loader.getController();
-            controller.init(campaign); 
-
-            Stage stage = (Stage) confirmButton.getScene().getWindow();
-            double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
-            double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("SHADOW PLAY");
+            NavigationService.LoadedScreen<GameController> screen =
+                    NavigationService.load(getClass(), "/fxml/gameview.fxml");
+            screen.controller.init(campaign); // <-- fondamentale: senza questa riga la mappa resta morta
+            NavigationService.show(confirmButton, screen.root);
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile avviare la partita", e);
         }

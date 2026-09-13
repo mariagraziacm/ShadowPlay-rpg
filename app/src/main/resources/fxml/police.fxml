@@ -9,7 +9,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style/police.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg126599.controller.CharacterDescriptionController">
    <children>
-      <ImageView fx:id="characterImage" fitWidth="1200" fitHeight="800" pickOnBounds="true" preserveRatio="false" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+      <ImageView fx:id="characterImage" fitWidth="1320" fitHeight="775" pickOnBounds="true" preserveRatio="false" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
          <image>
             <Image url="@/images/police.png" />
          </image>

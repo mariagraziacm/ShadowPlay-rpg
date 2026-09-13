@@ -1,15 +1,11 @@
 package it.unicam.cs.mpgc.rpg126599.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,25 +14,19 @@ import java.util.List;
 import it.unicam.cs.mpgc.rpg126599.core.CampaignManager;
 import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
-// Schermata di fine match: mostra l'immagine del vincitore 
+// Schermata di fine match: mostra l'immagine del vincitore (killer.png / police.png),
 // gli XP accumulati e propone di proseguire la campagna oppure tornare al menu
 public class MatchResultController {
 
-    @FXML private AnchorPane rootPane;
     @FXML private ImageView backgroundImage;
     @FXML private Label resultLabel;
     @FXML private Label xpLabel;
     @FXML private Button continueButton;
-
+@FXML private AnchorPane rootPane;
     private CampaignManager campaign;
 
     public void init(CampaignManager campaign, RoleType matchWinner, String endReason) {
         this.campaign = campaign;
-
-        if (rootPane != null && backgroundImage != null) {
-            backgroundImage.fitWidthProperty().bind(rootPane.widthProperty());
-            backgroundImage.fitHeightProperty().bind(rootPane.heightProperty());
-        }
 
         Image winnerImage = loadWinnerImage(matchWinner);
         String titolo = matchWinner == RoleType.KILLER ? "IL KILLER VINCE IL MATCH" : "IL POLIZIOTTO VINCE IL MATCH";
@@ -63,70 +53,63 @@ public class MatchResultController {
                 campaign.getKillerXp(), campaign.getPoliceXp()));
     }
 
-    // Carica l'immagine corretta cercandola prima nel classpath e poi sul filesystem
+    // Carica l'immagine corretta cercandola prima nel classpath e poi sul filesystem.
+    // Nota: i vecchi System.out/System.err di debug sono stati rimossi (non
+    // vanno mai usati in codice di produzione: se serve tracciare il percorso
+    // usato, va introdotto un logger vero, es. java.util.logging o SLF4J).
     private Image loadWinnerImage(RoleType winner) {
         String fileName = winner == RoleType.KILLER ? "killer.png" : "police.png";
 
-        // 1. Prova dal Classpath (cartella /images/ dentro resources)
-        String resourcePath = "/images/" + fileName;
-        var stream = getClass().getResourceAsStream(resourcePath);
-        if (stream != null) {
-            System.out.println("Immagine trovata nel CLASSPATH: " + resourcePath);
-            return new Image(stream);
+        var classpathStream = getClass().getResourceAsStream("/images/" + fileName);
+        if (classpathStream != null) {
+            return new Image(classpathStream);
         }
 
-        // 2. Fallback su FileSystem per ambiente di sviluppo (Gradle/Maven/IDE)
         List<String> fileCandidates = List.of(
                 "app/src/main/resources/images/" + fileName,
                 "src/main/resources/images/" + fileName,
                 "images/" + fileName
         );
 
-        for (String path : fileCandidates) {
-            File file = new File(path);
-            if (file.exists()) {
-                System.out.println("Immagine trovata su FILESYSTEM: " + file.getAbsolutePath());
-                return new Image(file.toURI().toString());
-            }
-        }
-
-        System.err.println("ATTENZIONE: Immagine " + fileName + " non trovata nei percorsi previsti.");
-        return null;
+        return fileCandidates.stream()
+                .map(File::new)
+                .filter(File::exists)
+                .findFirst()
+                .map(file -> new Image(file.toURI().toString()))
+                .orElse(null);
     }
 
     @FXML
     private void onContinue() {
         try {
             if (campaign.isSeriesOver()) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/roleselect.fxml"));
-                Parent root = loader.load();
-                setScene(root);
+                NavigationService.LoadedScreen<Object> screen =
+                        NavigationService.load(getClass(), "/fxml/roleselect.fxml");
+                NavigationService.show(continueButton, screen.root);
                 return;
             }
             if (campaign.isSecondTraitUnlockPending()) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/traitselect.fxml"));
-                Parent root = loader.load();
-                TraitSelectController controller = loader.getController();
-                controller.init(campaign);
-                setScene(root);
+                NavigationService.LoadedScreen<TraitSelectController> screen =
+                        NavigationService.load(getClass(), "/fxml/traitselect.fxml");
+                screen.controller.init(campaign);
+                NavigationService.show(continueButton, screen.root);
             } else {
                 campaign.startCurrentMatch();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameview.fxml"));
-                Parent root = loader.load();
-                GameController controller = loader.getController();
-                controller.init(campaign);
-                setScene(root);
+                NavigationService.LoadedScreen<GameController> screen =
+                        NavigationService.load(getClass(), "/fxml/gameview.fxml");
+                screen.controller.init(campaign);
+                NavigationService.show(continueButton, screen.root);
             }
         } catch (IOException e) {
             resultLabel.setText("Errore nel caricamento della schermata successiva.");
         }
+        
     }
-
-    private void setScene(Parent root) {
-        Stage stage = (Stage) continueButton.getScene().getWindow();
-        double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
-        double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
-        stage.setScene(new Scene(root, width, height));
-        stage.setTitle("SHADOW PLAY");
+    @FXML
+    public void initialize() {
+        backgroundImage.setPreserveRatio(false);
+        backgroundImage.fitWidthProperty().bind(rootPane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(rootPane.heightProperty());
     }
+    
 }
