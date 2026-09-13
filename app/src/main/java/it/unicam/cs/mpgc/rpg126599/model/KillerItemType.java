@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Cataloga gli oggetti dell'inventario Killer (manipolazione e fuga)
+// oggetti dell'inventario Killer 
 public enum KillerItemType {
     FAKE_CLUE("Fake Clue", "Lascia un indizio falso per depistare il Poliziotto."),
     SMOKE_BOMB("Smoke Bomb", "Copertura per un turno: neutralizza il prossimo tentativo di Scanner."),

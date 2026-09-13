@@ -15,7 +15,7 @@
          <ToggleGroup fx:id="traitGroup" />
       </fx:define>
 
-      <!-- HBox contenitore per i due bottoni dei tratti -->
+    
       <HBox alignment="CENTER" spacing="40.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0">
          <children>
             <ToggleButton fx:id="traitButton1" maxHeight="1.5978359409835056E308" maxWidth="1.5978359409835056E308" styleClass="trait-card-button" text="Tratto 1" toggleGroup="$traitGroup" HBox.hgrow="ALWAYS" />

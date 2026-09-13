@@ -1,7 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Responsabilità unica: contabilità dei punti esperienza del match corrente
-// e del punteggio informativo della Polizia.
+//conta punti XP del match
 public class XpLedger {
 
     private int killerXpThisMatch;

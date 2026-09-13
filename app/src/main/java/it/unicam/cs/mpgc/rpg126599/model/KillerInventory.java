@@ -1,7 +1,7 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Responsabilità unica: tenere il conteggio degli oggetti del Killer e le regole
-// di consumo/ricarica legate ad essi. Prima viveva come un fascio di campi dentro GameState.
+// tiwnw il conteggio degli oggetti del Killer e le regole
+
 public class KillerInventory {
 
     private int fakeCluesRemaining;
@@ -10,7 +10,6 @@ public class KillerInventory {
     private boolean shortcutMapUsed;
     private boolean smokeBombActive;
 
-    // riporta l'inventario ai valori previsti dal bilanciamento del match corrente
     public void reset(MatchDifficulty difficulty) {
         this.fakeCluesRemaining = difficulty.getKillerFakeClues();
         this.smokeBombsRemaining = difficulty.getKillerSmokeBombs();
@@ -26,7 +25,7 @@ public class KillerInventory {
         fakeCluesRemaining--;
     }
 
-    // bonus concesso dal tratto Sangue Freddo / dagli arresti falliti della Polizia
+    // bonus concesso dal tratto della Polizia
     public void grantFakeClueBonus() {
         fakeCluesRemaining++;
     }

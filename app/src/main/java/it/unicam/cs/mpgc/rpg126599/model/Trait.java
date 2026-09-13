@@ -45,7 +45,7 @@ public enum Trait {
     public int getRequiredLevel() { return requiredLevel; }
     public int getMatchXpBonus() { return matchXpBonus; }
 
-    // tratti disponibili per un ruolo al livello di campagna raggiunto
+    // tratti disponibili per un ruolo in base al livello
     public static List<Trait> availableFor(RoleType role, int level) {
         List<Trait> result = new ArrayList<>();
         for (Trait t : values()) {

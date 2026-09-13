@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Cataloga gli oggetti dell'inventario Poliziotto (analisi e controllo)
+//oggetti dell'inventario Poliziotto 
 public enum PoliceItemType {
     CLUE("Clue", "Restringe le ipotesi eliminando una casella candidata al nascondiglio."),
     ROADBLOCK("Roadblock", "Blocca un intero nodo per il prossimo turno del Killer."),

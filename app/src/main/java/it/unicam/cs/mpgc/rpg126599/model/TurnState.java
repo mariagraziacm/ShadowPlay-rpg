@@ -5,9 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-// Responsabilità unica: la fase di gioco corrente, i round trascorsi, la casa del Killer
-// e le tracce di ciò che è già stato visitato/tentato nel match. Prima era mischiata
-// dentro GameState insieme a inventari, effetti tattici e progressione di campagna.
+//  fase di gioco, round trascorsi, casa del Killer,  tracce di ciò che è già stato visitato/tentato nel match
 public class TurnState {
 
     private Turn phase = Turn.AWAITING_HOME_CHOICE;

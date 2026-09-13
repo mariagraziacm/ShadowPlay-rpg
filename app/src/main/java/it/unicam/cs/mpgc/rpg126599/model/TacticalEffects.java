@@ -1,7 +1,7 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Responsabilità unica: gli effetti "attivi per un turno" piazzati da Killer o Polizia
-// (Trap Zone, Roadblock, Checkpoint) e l'ultimo esito dello Scanner per la UI.
+// effetti attivi piazzati da Killer o Polizia
+
 public class TacticalEffects {
 
     private String activeTrapZoneLocationId;

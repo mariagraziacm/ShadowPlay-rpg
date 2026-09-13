@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126599.model;
 
-// Simmetrico a KillerInventory: stessa responsabilità, lato Polizia.
+
 public class PoliceInventory {
 
     private int cluesRemaining;
