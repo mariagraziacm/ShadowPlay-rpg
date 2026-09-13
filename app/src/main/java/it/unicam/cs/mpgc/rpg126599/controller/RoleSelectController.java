@@ -75,9 +75,9 @@ public class RoleSelectController {
         controller.init(campaign);
 
         Stage stage = (Stage) killerButton.getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.sizeToScene();
+        double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+        double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+        stage.setScene(new Scene(root, width, height));
         stage.setTitle("SHADOW PLAY");
     } catch (IOException e) {
         throw new IllegalStateException("Impossibile aprire la schermata del personaggio", e);
@@ -93,9 +93,13 @@ public class RoleSelectController {
             gameController.init(engine);
 
             Stage stage = (Stage) killerButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.sizeToScene();
+            double width = Math.max(1280, stage.getWidth() > 0 ? stage.getWidth() : 1320);
+            double height = Math.max(720, stage.getHeight() > 0 ? stage.getHeight() : 732);
+            stage.setMinWidth(1100);
+            stage.setMinHeight(650);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOWPLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile aprire la schermata di gioco", e);
@@ -111,9 +115,13 @@ public class RoleSelectController {
             gameController.init(campaign);
 
             Stage stage = (Stage) killerButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.sizeToScene();
+            double width = Math.max(1280, stage.getWidth() > 0 ? stage.getWidth() : 1280);
+            double height = Math.max(720, stage.getHeight() > 0 ? stage.getHeight() : 720);
+            stage.setMinWidth(1100);
+            stage.setMinHeight(650);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOWPLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile aprire la schermata di gioco", e);

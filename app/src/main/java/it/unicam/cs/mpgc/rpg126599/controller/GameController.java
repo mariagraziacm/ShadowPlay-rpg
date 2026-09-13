@@ -133,7 +133,13 @@ public class GameController {
                 engine.policeMoveTo(locationId);
                 showTemporaryFeedback("⭐ +" + calculateMoveXp(RoleType.POLICE) + " XP", Duration.seconds(4.5));
             }
-            case ARREST -> engine.policeAttemptArrest(locationId);
+            case ARREST -> {
+                engine.policeAttemptArrest(locationId);
+                if (!engine.getState().isFinished()) {
+                    showTemporaryFeedback("Tentativo di arresto fallito: il killer non era in questa posizione",
+                            Duration.seconds(4.0));
+                }
+            }
             case ROADBLOCK -> engine.policePlaceRoadblock(locationId);
             case CHECKPOINT -> engine.policeUseCheckpoint(engine.getState().getPolice().getCurrentLocationId(), locationId);
             case SCANNER -> {
@@ -303,9 +309,9 @@ private void onSelectArrest() {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/roleselect.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) statusLabel.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.sizeToScene();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             statusLabel.setText("Impossibile tornare al menu.");
@@ -319,8 +325,9 @@ private void onSelectArrest() {
             MatchResultController controller = loader.getController();
             controller.init(campaign, winner, endReason);
             Stage stage = (Stage) statusLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             statusLabel.setText("Impossibile mostrare la schermata di fine match.");

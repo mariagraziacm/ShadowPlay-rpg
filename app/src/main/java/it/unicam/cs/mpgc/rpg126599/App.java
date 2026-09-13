@@ -11,7 +11,11 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/roleselect.fxml"));
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setMinWidth(1145);
+        primaryStage.setMinHeight(705);
+        primaryStage.setWidth(1325);
+        primaryStage.setHeight(775);
+        primaryStage.setScene(new Scene(root, 1325, 775));
         primaryStage.setTitle("SHADOW PLAY — inzia a giocaare!");
         primaryStage.show();
     }

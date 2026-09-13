@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -15,6 +17,8 @@ import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 
 public class CharacterDescriptionController {
 
+    @FXML private AnchorPane rootPane;
+    @FXML private ImageView characterImage;
     @FXML private TextArea descriptionArea;
     @FXML private Button continueButton;
     @FXML private Button backButton;
@@ -26,6 +30,16 @@ public class CharacterDescriptionController {
 
         if (descriptionArea == null) {
             throw new IllegalStateException("L'elemento 'descriptionArea' non è stato iniettato da FXML. Verifica il file .fxml.");
+        }
+
+        if (rootPane != null && characterImage != null) {
+            characterImage.setPreserveRatio(false);
+            characterImage.fitWidthProperty().bind(rootPane.widthProperty());
+            characterImage.fitHeightProperty().bind(rootPane.heightProperty());
+            AnchorPane.setTopAnchor(characterImage, 0.0);
+            AnchorPane.setRightAnchor(characterImage, 0.0);
+            AnchorPane.setBottomAnchor(characterImage, 0.0);
+            AnchorPane.setLeftAnchor(characterImage, 0.0);
         }
 
         // Impedisce all'utente di modificare il testo descrittivo a schermo
@@ -69,9 +83,9 @@ public class CharacterDescriptionController {
             controller.init(campaign);
 
             Stage stage = (Stage) continueButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.sizeToScene();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile aprire la schermata dei tratti", e);
@@ -85,9 +99,9 @@ public class CharacterDescriptionController {
             Parent root = loader.load();
 
             Stage stage = (Stage) backButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.sizeToScene();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile tornare alla selezione del ruolo", e);

@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import it.unicam.cs.mpgc.rpg126599.model.Trait;
 
 public class TraitSelectController {
 
+    @FXML private AnchorPane rootPane;
     @FXML private Label titleLabel;
     @FXML private Button confirmButton;
     @FXML private ToggleButton traitButton1;
@@ -31,7 +33,14 @@ public class TraitSelectController {
     public void init(CampaignManager campaign) {
         this.campaign = campaign;
 
-       traitGroup.selectToggle(null); 
+        if (rootPane != null && traitButton1 != null && traitButton2 != null) {
+            traitButton1.prefWidthProperty().bind(rootPane.widthProperty().multiply(0.38));
+            traitButton2.prefWidthProperty().bind(rootPane.widthProperty().multiply(0.38));
+            traitButton1.prefHeightProperty().bind(rootPane.heightProperty().multiply(0.52));
+            traitButton2.prefHeightProperty().bind(rootPane.heightProperty().multiply(0.52));
+        }
+
+        traitGroup.selectToggle(null);
         confirmButton.setDisable(true);
         traitGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
                 confirmButton.setDisable(newVal == null));
@@ -72,9 +81,9 @@ public class TraitSelectController {
             controller.init(campaign); 
 
             Stage stage = (Stage) confirmButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.sizeToScene();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+            stage.setScene(new Scene(root, width, height));
             stage.setTitle("SHADOW PLAY");
         } catch (IOException e) {
             throw new IllegalStateException("Impossibile avviare la partita", e);

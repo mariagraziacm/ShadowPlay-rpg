@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import it.unicam.cs.mpgc.rpg126599.model.RoleType;
 // gli XP accumulati e propone di proseguire la campagna oppure tornare al menu
 public class MatchResultController {
 
+    @FXML private AnchorPane rootPane;
     @FXML private ImageView backgroundImage;
     @FXML private Label resultLabel;
     @FXML private Label xpLabel;
@@ -30,6 +32,11 @@ public class MatchResultController {
 
     public void init(CampaignManager campaign, RoleType matchWinner, String endReason) {
         this.campaign = campaign;
+
+        if (rootPane != null && backgroundImage != null) {
+            backgroundImage.fitWidthProperty().bind(rootPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootPane.heightProperty());
+        }
 
         Image winnerImage = loadWinnerImage(matchWinner);
         String titolo = matchWinner == RoleType.KILLER ? "IL KILLER VINCE IL MATCH" : "IL POLIZIOTTO VINCE IL MATCH";
@@ -117,8 +124,9 @@ public class MatchResultController {
 
     private void setScene(Parent root) {
         Stage stage = (Stage) continueButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.sizeToScene();
+        double width = stage.getWidth() > 0 ? stage.getWidth() : 1024;
+        double height = stage.getHeight() > 0 ? stage.getHeight() : 741;
+        stage.setScene(new Scene(root, width, height));
         stage.setTitle("SHADOW PLAY");
     }
 }
