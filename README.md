@@ -126,7 +126,7 @@ Il Poliziotto vince se riesce a individuare e arrestare il Killer prima della fi
 
 ### Tratti
 
-All'inizio della campagna il giocatore sceglie un **tratto** per il proprio ruolo, che ne caratterizza lo stile di gioco (il Killer può puntare sul depistaggio o sul timing, il Poliziotto sulla continuità investigativa o sulla sicurezza negli arresti).
+All'inizio della campagna il giocatore sceglie un **tratto** per il proprio ruolo, che ne caratterizza lo stile di gioco (il Killer può puntare sul depistaggio o sul timing, il Poliziotto sulla continuità investigativa o sulla sicurezza negli arresti), alla fine del primo match, se l'utente ne risulta vincitore sblocca un nuovo livello per il proprio personaggi con nuovi tratti selezionabili.
 
 ### Campagna Best of 3
 
